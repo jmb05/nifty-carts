@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.jmb19905.astikorcarts.client.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ClientLevelMixin",
+    "ModelManagerMixin",
+    "ModelPartMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+  ]
+}

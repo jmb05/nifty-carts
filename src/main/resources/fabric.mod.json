@@ -1,31 +1,32 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "astikorcarts",
 	"version": "${version}",
-	"name": "Example mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "AstikorCarts",
+	"description": "A Fabric mod port for Minecraft: Java Edition which adds carts for travel, shipping and farming.",
 	"authors": [
-		"Me!"
+		"MennoMax",
+		"paul101",
+		"jmb19905"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/jmb05/astikor-carts"
 	},
-	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"license": "MIT",
+	"icon": "assets/astikorcarts/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"net.jmb19905.astikorcarts.AstikorCarts"
 		],
 		"client": [
-			"com.example.ExampleModClient"
+			"net.jmb19905.astikorcarts.client.AstikorCartsClient"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json",
+		"astikorcarts.mixins.json",
 		{
-			"config": "modid.client.mixins.json",
+			"config": "astikorcarts.client.mixins.json",
 			"environment": "client"
 		}
 	],
@@ -37,5 +38,6 @@
 	},
 	"suggests": {
 		"another-mod": "*"
-	}
+	},
+	"accessWidener": "astikorcarts.accesswidener"
 }

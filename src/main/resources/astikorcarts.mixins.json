@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.jmb19905.astikorcarts.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "AbstractHorseMixin",
+    "PlayerListMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}
