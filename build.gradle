@@ -12,20 +12,16 @@ base {
 }
 
 repositories {
-	maven {
-		url 'https://jitpack.io'
-	}
-	maven {
-		url "https://maven.terraformersmc.com/"
-	}
-	maven {
-		url "https://maven.shedaniel.me/"
-	}
-	maven {
-		url "https://maven.siphalor.de/"
-	}
-	maven {
-		url "https://maven.isxander.dev/releases"
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
 	}
 }
 
@@ -50,8 +46,7 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-	modImplementation("com.github.Lortseam.completeconfig:base:${project.complete_config_version}")
+	modApi "maven.modrinth:forge-config-api-port:${project.forge_config_version}"
 }
 
 processResources {

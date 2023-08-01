@@ -3,26 +3,20 @@ package net.jmb19905.astikorcarts.entity;
 import net.jmb19905.astikorcarts.util.ACInventory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.HasCustomInventoryScreen;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.ContainerEntity;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity implements HasCustomInventoryScreen, ContainerEntity {
+public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity implements MenuProvider, Container {
 
     private ACInventory itemStacks;
     private final int containerSize;
@@ -38,7 +32,11 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
     }
 
     public boolean stillValid(Player player) {
-        return this.isChestVehicleStillValid(player);
+        if (this.isRemoved()) {
+            return false;
+        } else {
+            return !(player.distanceToSqr(this) > 64.0);
+        }
     }
 
     @Override
@@ -60,13 +58,14 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
         if (this.canAddPassenger(player) && !player.isSecondaryUseActive()) {
             return onInteractNotOpen(player, interactionHand);
         } else {
-            InteractionResult interactionResult = this.interactWithContainerVehicle(player);
-            if (interactionResult.consumesAction()) {
+            player.openMenu(this);
+            if (!player.level.isClientSide) {
                 this.gameEvent(GameEvent.CONTAINER_OPEN, player);
                 PiglinAi.angerNearbyPiglins(player, true);
+                return InteractionResult.CONSUME;
+            } else {
+                return InteractionResult.SUCCESS;
             }
-
-            return interactionResult;
         }
     }
 
@@ -109,19 +108,6 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
     public void setChanged() {
     }
 
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-        if (this.lootTable != null && player.isSpectator()) {
-            return null;
-        } else {
-            this.unpackLootTable(inventory.player);
-            return createMenuLootUnpacked(i, inventory, player);
-        }
-    }
-
-    protected abstract AbstractContainerMenu createMenuLootUnpacked(int i, Inventory inventory, Player player);
-
     public @NotNull NonNullList<ItemStack> getItemStacks() {
         return this.itemStacks;
     }
@@ -132,30 +118,9 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
     }
 
     public void stopOpen(Player player) {
-        this.level.gameEvent(GameEvent.CONTAINER_CLOSE, this.position(), GameEvent.Context.of(player));
+        this.level.gameEvent(player, GameEvent.CONTAINER_CLOSE, this.getOnPos());
     }
 
     protected void onContentsChanged(int slot) {}
-
-    public void unpackLootTable(@Nullable Player player) {
-        this.unpackChestVehicleLootTable(player);
-    }
-
-    @Nullable
-    public ResourceLocation getLootTable() {
-        return this.lootTable;
-    }
-
-    public void setLootTable(@Nullable ResourceLocation resourceLocation) {
-        this.lootTable = resourceLocation;
-    }
-
-    public long getLootTableSeed() {
-        return this.lootTableSeed;
-    }
-
-    public void setLootTableSeed(long l) {
-        this.lootTableSeed = l;
-    }
 
 }

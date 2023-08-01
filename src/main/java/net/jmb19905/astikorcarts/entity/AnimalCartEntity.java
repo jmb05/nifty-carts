@@ -2,6 +2,7 @@ package net.jmb19905.astikorcarts.entity;
 
 import net.jmb19905.astikorcarts.AstikorCarts;
 import net.jmb19905.astikorcarts.config.ACConfig;
+import net.jmb19905.astikorcarts.config.AstikorCartsConfig;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,8 +23,8 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    protected ACConfig.CartConfig getConfig() {
-        return AstikorCarts.config.animalCart;
+    protected AstikorCartsConfig.CartConfig getConfig() {
+        return AstikorCartsConfig.get().supplyCart;
     }
 
     @Override

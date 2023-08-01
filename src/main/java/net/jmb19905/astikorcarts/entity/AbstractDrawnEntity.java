@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.jmb19905.astikorcarts.AstikorCarts;
-import net.jmb19905.astikorcarts.config.ACConfig;
+import net.jmb19905.astikorcarts.config.AstikorCartsConfig;
 import net.jmb19905.astikorcarts.network.clientbound.UpdateDrawnMessage;
 import net.jmb19905.astikorcarts.util.AstikorWorld;
 import net.jmb19905.astikorcarts.util.CartWheel;
@@ -86,7 +86,7 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     public AbstractDrawnEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
-        setMaxUpStep(1.2f);
+        this.maxUpStep = 1.2f;
         this.blocksBuilding = true;
         this.initWheels();
     }
@@ -417,7 +417,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         return allowed.contains(EntityType.getKey(entity.getType()).toString());
     }
 
-    protected abstract ACConfig.CartConfig getConfig();
+    protected abstract AstikorCartsConfig.CartConfig getConfig();
 
     @Override
     public boolean hurt(final DamageSource source, final float amount) {
