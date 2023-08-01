@@ -43,12 +43,12 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     @Override
     public void onDestroyedAndDoDrops(DamageSource source) {
-        this.chestVehicleDestroyed(source, this.level(), this);
+        this.chestVehicleDestroyed(source, this.level, this);
     }
 
     public void remove(Entity.RemovalReason removalReason) {
-        if (!this.level().isClientSide && removalReason.shouldDestroy()) {
-            Containers.dropContents(this.level(), this, this);
+        if (!this.level.isClientSide && removalReason.shouldDestroy()) {
+            Containers.dropContents(this.level, this, this);
         }
         super.remove(removalReason);
     }
@@ -72,7 +72,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     public void openCustomInventoryScreen(Player player) {
         player.openMenu(this);
-        if (!player.level().isClientSide) {
+        if (!player.level.isClientSide) {
             this.gameEvent(GameEvent.CONTAINER_OPEN, player);
             PiglinAi.angerNearbyPiglins(player, true);
         }
@@ -132,7 +132,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
     }
 
     public void stopOpen(Player player) {
-        this.level().gameEvent(GameEvent.CONTAINER_CLOSE, this.position(), GameEvent.Context.of(player));
+        this.level.gameEvent(GameEvent.CONTAINER_CLOSE, this.position(), GameEvent.Context.of(player));
     }
 
     protected void onContentsChanged(int slot) {}

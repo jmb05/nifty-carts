@@ -32,11 +32,11 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
         final Entity coachman = this.getControllingPassenger();
         final Entity pulling = this.getPulling();
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
-            final PostilionEntity postilion = AstikorCarts.POSTILION_ENTITY.create(this.level());
+            final PostilionEntity postilion = AstikorCarts.POSTILION_ENTITY.create(this.level);
             if (postilion != null) {
                 postilion.moveTo(pulling.getX(), pulling.getY(), pulling.getZ(), coachman.getYRot(), coachman.getXRot());
                 if (postilion.startRiding(pulling)) {
-                    this.level().addFreshEntity(postilion);
+                    this.level.addFreshEntity(postilion);
                 } else {
                     postilion.discard();
                 }
@@ -47,14 +47,14 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     @Override
     public @NotNull InteractionResult interact(final Player player, final InteractionHand hand) {
         if (player.isSecondaryUseActive()) {
-            if (!this.level().isClientSide) {
+            if (!this.level.isClientSide) {
                 for (final Entity entity : this.getPassengers()) {
                     if (!(entity instanceof Player)) {
                         entity.stopRiding();
                     }
                 }
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.sidedSuccess(this.level.isClientSide);
         }
         final InteractionResult bannerResult = this.useBanner(player, hand);
         if (bannerResult.consumesAction()) {
@@ -64,7 +64,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
             if (!this.canAddPassenger(player)) {
                 return InteractionResult.PASS;
             }
-            if (!this.level().isClientSide) {
+            if (!this.level.isClientSide) {
                 return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
             }
             return InteractionResult.SUCCESS;
@@ -75,7 +75,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     @Override
     public void push(final Entity entityIn) {
         if (!entityIn.hasPassenger(this)) {
-            if (!this.level().isClientSide && this.getPulling() != entityIn && this.getControllingPassenger() == null && this.getPassengers().size() < 2 && !entityIn.isPassenger() && entityIn.getBbWidth() < this.getBbWidth() && entityIn instanceof LivingEntity
+            if (!this.level.isClientSide && this.getPulling() != entityIn && this.getControllingPassenger() == null && this.getPassengers().size() < 2 && !entityIn.isPassenger() && entityIn.getBbWidth() < this.getBbWidth() && entityIn instanceof LivingEntity
                     && !(entityIn instanceof WaterAnimal) && !(entityIn instanceof Player)) {
                 entityIn.startRiding(this);
             } else {

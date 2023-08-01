@@ -51,10 +51,10 @@ public final class CartWheel {
         final float travelledForward = Mth.sign(dxNormalized * nx + dzNormalized * nz);
         if (distanceTravelled > 0.2) {
             final BlockPos blockpos = new BlockPos(Mth.floor(this.posX), Mth.floor(this.cart.getY() - 0.2F), Mth.floor(this.posZ));
-            final BlockState blockstate = this.cart.level().getBlockState(blockpos);
-            //if (!blockstate.addRunningEffects(this.cart.level(), blockpos, this.cart)) {
+            final BlockState blockstate = this.cart.level.getBlockState(blockpos);
+            //if (!blockstate.addRunningEffects(this.cart.level, blockpos, this.cart)) {
                 if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
-                    this.cart.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), this.posX, this.cart.getY(), this.posZ, dx, distanceTravelled, dz);
+                    this.cart.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), this.posX, this.cart.getY(), this.posZ, dx, distanceTravelled, dz);
                 }
             //}
         }

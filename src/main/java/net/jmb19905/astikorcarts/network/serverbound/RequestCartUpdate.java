@@ -31,7 +31,7 @@ public class RequestCartUpdate implements Message {
     }
 
     public static void handle(RequestCartUpdate msg, ServerPlayer player) {
-        var level = player.level();
+        var level = player.level;
         var pulling = AstikorWorld.get(level).getPulling();
         pulling.keySet().intStream()
                 .filter(pullId -> pulling.get(pullId).getId() == msg.cartId)

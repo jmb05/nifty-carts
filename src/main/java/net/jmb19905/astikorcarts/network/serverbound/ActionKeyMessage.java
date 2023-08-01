@@ -23,7 +23,7 @@ public class ActionKeyMessage implements Message {
 
     public static void handle(final ActionKeyMessage msg, final ServerPlayer player) {
         final Entity pulling = player.getVehicle();
-        final Level level = player.level();
+        final Level level = player.level;
         if (pulling == null) return;
         var drawn = AstikorWorld.getServer(AstikorCarts.server, level.dimension()).getDrawn(pulling);
         drawn.map(c -> Pair.of(c, (Entity) null))

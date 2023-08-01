@@ -54,7 +54,7 @@ public class AvoidCartGoal<T extends AbstractDrawnEntity>
     @SuppressWarnings("resource")
     @Override
     public boolean canUse() {
-        List<? extends AbstractDrawnEntity> entityList = this.mob.level().getEntitiesOfClass(this.avoidClass, this.mob.getBoundingBox().inflate(this.maxDist, 3.0, this.maxDist), entity -> true);
+        List<? extends AbstractDrawnEntity> entityList = this.mob.level.getEntitiesOfClass(this.avoidClass, this.mob.getBoundingBox().inflate(this.maxDist, 3.0, this.maxDist), entity -> true);
         this.toAvoid = TargetingUtil.getNearestEntity(entityList, this.avoidEntityTargeting, this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ());
         if (this.toAvoid == null) {
             return false;

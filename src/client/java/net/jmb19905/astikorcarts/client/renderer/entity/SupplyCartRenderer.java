@@ -174,7 +174,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
             if (i >= 2 && cargo.get(i - 2).is(ItemTags.BEDS)) continue;
             final double x = (ix - 0.5D) * 11.0D / 16.0D;
             final double z = (iz * 11.0D - 9.0D) / 16.0D;
-            final BakedModel model = renderer.getModel(itemStack, entity.level(), null, i);
+            final BakedModel model = renderer.getModel(itemStack, entity.level, null, i);
             stack.pushPose();
             if (model.isGui3d() && itemStack.getItem() != Items.TRIDENT) {
                 stack.translate(x, -0.46D, z);

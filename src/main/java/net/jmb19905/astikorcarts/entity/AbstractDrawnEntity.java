@@ -64,7 +64,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("resource")
 public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
@@ -116,7 +115,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.attemptReattach();
         }
-        for (final Entity entity : this.level().getEntities(this, this.getBoundingBox(), EntitySelector.pushableBy(this))) {
+        for (final Entity entity : this.level.getEntities(this, this.getBoundingBox(), EntitySelector.pushableBy(this))) {
             this.push(entity);
         }
     }
@@ -139,7 +138,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         while (this.getYRot() - this.yRotO >= 180.0F) {
             this.yRotO += 360.0F;
         }
-        if (this.pulling.onGround()) {
+        if (this.pulling.isOnGround()) {
             targetVec = new Vec3(targetVec.x, 0.0D, targetVec.z);
         }
         final double targetVecLength = targetVec.length();
@@ -161,7 +160,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             return;
         }
         this.addStats(this.getX() - startX, this.getY() - startY, this.getZ() - startZ);
-        if (this.level().isClientSide) {
+        if (this.level.isClientSide) {
             for (final CartWheel wheel : this.wheels) {
                 wheel.tick();
             }
@@ -178,7 +177,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     private void addStats(final double x, final double y, final double z) {
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             final int cm = Math.round(Mth.sqrt((float) (x * x + y * y + z * z)) * 100.0F);
             if (cm > 0) {
                 for (final Entity passenger : this.getPassengers()) {
@@ -201,7 +200,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (this.horizontalCollision) {
             final Vec3 start = new Vec3(this.getX(), this.getY() + this.getBbHeight(), this.getZ());
             final Vec3 end = new Vec3(this.pulling.getX(), this.pulling.getY() + this.pulling.getBbHeight() / 2, this.pulling.getZ());
-            final BlockHitResult result = this.level().clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+            final BlockHitResult result = this.level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
             return result.getType() == HitResult.Type.BLOCK;
         }
         return false;
@@ -223,7 +222,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      * @param entityIn new pulling entity
      */
     public void setPulling(final Entity entityIn) {
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             if (this.canBePulledBy(entityIn)) {
                 if (entityIn == null) {
                     if (this.pulling instanceof LivingEntity) {
@@ -275,7 +274,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                     ((AbstractDrawnEntity) entityIn).drawn = this;
                 }
                 this.pulling = entityIn;
-                AstikorWorld.get(this.level()).addPulling(this);
+                AstikorWorld.get(this.level).addPulling(this);
 
             }
         } else {
@@ -294,7 +293,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 }
             }
             this.pulling = entityIn;
-            AstikorWorld.get(this.level()).addPulling(this);
+            AstikorWorld.get(this.level).addPulling(this);
         }
     }
 
@@ -310,16 +309,16 @@ public abstract class AbstractDrawnEntity extends Entity {
      * Attempts to reattach the cart to the last pulling entity.
      */
     private void attemptReattach() {
-        if (this.level().isClientSide) {
+        if (this.level.isClientSide) {
             if (this.pullingId != -1) {
-                final Entity entity = this.level().getEntity(this.pullingId);
+                final Entity entity = this.level.getEntity(this.pullingId);
                 if (entity != null && entity.isAlive()) {
                     this.setPulling(entity);
                 }
             }
         } else {
             if (this.pullingUUID != null) {
-                final Entity entity = ((ServerLevel) this.level()).getEntity(this.pullingUUID);
+                final Entity entity = ((ServerLevel) this.level).getEntity(this.pullingUUID);
                 if (entity != null && entity.isAlive()) {
                     this.setPulling(entity);
                 }
@@ -335,7 +334,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 this.pulling = null;
             }
             return true;
-        } else if (!this.level().isClientSide && this.shouldRemovePulling()) {
+        } else if (!this.level.isClientSide && this.shouldRemovePulling()) {
             this.setPulling(null);
             return true;
         }
@@ -398,7 +397,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      *
      */
     protected boolean canBePulledBy(final Entity entityIn) {
-        if (this.level().isClientSide) {
+        if (this.level.isClientSide) {
             return true;
         }
         if (entityIn == null) {
@@ -424,7 +423,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     public boolean hurt(final DamageSource source, final float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
-        } else if (!this.level().isClientSide && this.isAlive()) {
+        } else if (!this.level.isClientSide && this.isAlive()) {
             if (source.is(DamageTypes.CACTUS)) {
                 return false;
             }
@@ -449,7 +448,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         ItemStack stack = player.getItemInHand(hand);
         if (stack.is(ItemTags.BANNERS)) {
             ItemStack oldBanner = this.getBanner();
-            if (!this.level().isClientSide) {
+            if (!this.level.isClientSide) {
                 ItemStack banner = stack.split(1);
                 if (!oldBanner.isEmpty()) {
                     if (stack.isEmpty()) {
@@ -461,7 +460,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 this.playSound(SoundEvents.WOOD_PLACE, 1.0F, 0.8F);
                 this.setBanner(banner);
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.sidedSuccess(this.level.isClientSide);
         }
         return InteractionResult.PASS;
     }
@@ -472,7 +471,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      *
      */
     public void onDestroyed(final DamageSource source, final boolean byCreativePlayer) {
-        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             if (!byCreativePlayer) {
                 this.spawnAtLocation(this.getCartItem());
                 this.spawnAtLocation(this.getBanner());
@@ -570,11 +569,11 @@ public abstract class AbstractDrawnEntity extends Entity {
         for (final Pose pose : rider.getDismountPoses()) {
             blockPos.set(x, y, z);
             while (blockPos.getY() < limit) {
-                final double ground = this.level().getBlockFloorHeight(blockPos);
+                final double ground = this.level.getBlockFloorHeight(blockPos);
                 if (blockPos.getY() + ground > limit) break;
                 if (DismountHelper.isBlockFloorValid(ground)) {
                     final Vec3 pos = new Vec3(x, blockPos.getY() + ground, z);
-                    if (DismountHelper.canDismountTo(this.level(), rider, rider.getLocalBoundsForPose(pose).move(pos))) {
+                    if (DismountHelper.canDismountTo(this.level, rider, rider.getLocalBoundsForPose(pose).move(pos))) {
                         rider.setPose(pose);
                         return pos;
                     }

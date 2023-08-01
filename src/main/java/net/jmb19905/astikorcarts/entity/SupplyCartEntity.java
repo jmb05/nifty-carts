@@ -60,7 +60,7 @@ public class SupplyCartEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void positionRider(Entity passenger, MoveFunction moveFunction) {
+    public void positionRider(Entity passenger) {
         if (this.hasPassenger(passenger)) {
             final Vec3 forward = this.getLookAngle();
             final Vec3 origin = new Vec3(0.0D, this.getPassengersRidingOffset(), 1.0D / 16.0D);
@@ -100,7 +100,7 @@ public class SupplyCartEntity extends AbstractDrawnInventoryEntity {
         if (this.isVehicle()) {
             return InteractionResult.PASS;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
         }
         return InteractionResult.SUCCESS;

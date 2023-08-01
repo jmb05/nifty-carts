@@ -8,6 +8,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class ProxyItemUseContext extends UseOnContext {
     public ProxyItemUseContext(final Player player, final ItemStack itemstack, final BlockHitResult rayTraceResultIn) {
-        super(player.level(), player, InteractionHand.MAIN_HAND, itemstack, rayTraceResultIn);
+        super(player.level, player, InteractionHand.MAIN_HAND, itemstack, rayTraceResultIn);
     }
 }

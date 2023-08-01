@@ -51,7 +51,7 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation("com.github.Lortseam.completeconfig:base:2.5.0")
+	modImplementation("com.github.Lortseam.completeconfig:base:${project.complete_config_version}")
 }
 
 processResources {

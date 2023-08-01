@@ -44,7 +44,7 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
                     s.translate(0.0D, -0.1D, 0.0D);
                     s.mulPose(Axis.ZP.rotationDegrees(180.0F));
                 }
-                Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, s, source, entity.level(), 0);
+                Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, s, source, entity.level, 0);
             }, stack);
         }
     }
