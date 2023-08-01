@@ -1,0 +1,20 @@
+{
+  "entity.cart.attach": {
+    "sounds": [
+      "niftycarts:entity/cart/attach"
+    ],
+    "subtitle": "subtitles.niftycarts.cart.attached"
+  },
+  "entity.cart.detach": {
+    "sounds": [
+      "niftycarts:entity/cart/detach"
+    ],
+    "subtitle": "subtitles.niftycarts.cart.detached"
+  },
+  "entity.cart.place": {
+    "sounds": [
+      "niftycarts:entity/cart/place"
+    ],
+    "subtitle": "subtitles.niftycarts.cart.placed"
+  }
+}

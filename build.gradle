@@ -33,13 +33,13 @@ loom {
     splitEnvironmentSourceSets()
 
 	mods {
-		"astikorcarts" {
+		"niftycarts" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
 	}
 
-	accessWidenerPath = file("src/main/resources/astikorcarts.accesswidener")
+	accessWidenerPath = file("src/main/resources/niftycarts.accesswidener")
 }
 
 dependencies {

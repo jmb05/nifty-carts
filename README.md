@@ -1,9 +1,4 @@
-# Fabric Example Mod
+# NiftyCarts
 
-## Setup
-
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
-
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+NiftyCarts a Fabric port of the mod: [AstikorCarts](https://github.com/issork/astikor-carts).
+It is a Minecraft mod that lets you travel, transport goods, and plow fields with horse drawn carts!
