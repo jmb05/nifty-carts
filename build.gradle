@@ -12,6 +12,7 @@ base {
 }
 
 repositories {
+	mavenCentral()
 	exclusiveContent {
 		forRepository {
 			maven {
@@ -29,13 +30,13 @@ loom {
     splitEnvironmentSourceSets()
 
 	mods {
-		"astikorcarts" {
+		"niftycarts" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
 	}
 
-	accessWidenerPath = file("src/main/resources/astikorcarts.accesswidener")
+	accessWidenerPath = file("src/main/resources/niftycarts.accesswidener")
 }
 
 dependencies {
@@ -47,6 +48,9 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modApi "maven.modrinth:forge-config-api-port:${project.forge_config_version}"
+
+	modImplementation 'com.electronwill.night-config:core:3.6.3'
+	modImplementation 'com.electronwill.night-config:toml:3.6.3'
 }
 
 processResources {

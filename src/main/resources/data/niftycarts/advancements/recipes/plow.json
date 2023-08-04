@@ -1,0 +1,31 @@
+{
+  "rewards": {
+    "recipes": [
+      "niftycarts:plow"
+    ]
+  },
+  "criteria": {
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "niftycarts:plow"
+      }
+    },
+    "has_wheel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "niftycarts:wheel"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_wheel"
+    ]
+  ]
+}
