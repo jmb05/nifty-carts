@@ -6,3 +6,4 @@ accessible field net/minecraft/world/entity/Mob targetSelector Lnet/minecraft/wo
 accessible method net/minecraft/client/renderer/entity/layers/HumanoidArmorLayer usesInnerModel (Lnet/minecraft/world/entity/EquipmentSlot;)Z
 accessible method net/minecraft/client/renderer/entity/layers/HumanoidArmorLayer getArmorLocation (Lnet/minecraft/world/item/ArmorItem;ZLjava/lang/String;)Lnet/minecraft/resources/ResourceLocation;
 extendable method net/minecraft/world/entity/Entity positionRider (Lnet/minecraft/world/entity/Entity;)V
+accessible field net/minecraft/world/entity/animal/horse/AbstractHorse gallopSoundCounter I
