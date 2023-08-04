@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.jmb19905.niftycarts.NiftyCarts;
-import net.jmb19905.niftycarts.config.NCConfig;
+import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -50,8 +50,8 @@ public class SupplyCartEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected NCConfig.CartConfig getConfig() {
-        return NiftyCarts.config.supplyCart;
+    protected NiftyCartsConfig.CartConfig getConfig() {
+        return NiftyCartsConfig.get().supplyCart;
     }
 
     @Override

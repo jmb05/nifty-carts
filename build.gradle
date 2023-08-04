@@ -27,6 +27,10 @@ repositories {
 	maven {
 		url "https://maven.isxander.dev/releases"
 	}
+	maven {
+		name = "Fuzs Mod Resources"
+		url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+	}
 }
 
 loom {
@@ -51,7 +55,7 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modApi "com.github.Lortseam.completeconfig:base:${project.completeconfig_version}"
+	modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"   // `modVersion` e.g. 7.0.0 for Minecraft 1.20
 }
 
 processResources {

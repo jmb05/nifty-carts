@@ -2,7 +2,7 @@ package net.jmb19905.niftycarts.entity;
 
 import com.google.common.collect.ImmutableList;
 import net.jmb19905.niftycarts.NiftyCarts;
-import net.jmb19905.niftycarts.config.NCConfig;
+import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.container.PlowMenu;
 import net.jmb19905.niftycarts.util.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
@@ -43,8 +43,8 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected NCConfig.CartConfig getConfig() {
-        return NiftyCarts.config.plowCart;
+    protected NiftyCartsConfig.CartConfig getConfig() {
+        return NiftyCartsConfig.get().plow;
     }
 
     public boolean getPlowing() {

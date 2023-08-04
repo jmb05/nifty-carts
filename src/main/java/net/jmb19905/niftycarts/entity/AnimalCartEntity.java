@@ -1,7 +1,7 @@
 package net.jmb19905.niftycarts.entity;
 
 import net.jmb19905.niftycarts.NiftyCarts;
-import net.jmb19905.niftycarts.config.NCConfig;
+import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,8 +22,8 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    protected NCConfig.CartConfig getConfig() {
-        return NiftyCarts.config.animalCart;
+    protected NiftyCartsConfig.CartConfig getConfig() {
+        return NiftyCartsConfig.get().animalCart;
     }
 
     @Override
