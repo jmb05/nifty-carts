@@ -1,5 +1,6 @@
 package net.jmb19905.astikorcarts;
 
+import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -10,7 +11,6 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.jmb19905.astikorcarts.config.ACConfig;
 import net.jmb19905.astikorcarts.container.PlowMenu;
 import net.jmb19905.astikorcarts.entity.AnimalCartEntity;
 import net.jmb19905.astikorcarts.entity.PlowEntity;
@@ -41,6 +41,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fml.config.ModConfig;
 
 import java.util.function.Supplier;
 
@@ -97,8 +98,6 @@ public class AstikorCarts implements ModInitializer {
 	public static final ResourceLocation REQUEST_CART_UPDATE_MESSAGE_ID = new ResourceLocation(AstikorCarts.MOD_ID, "request_cart_update");
 	public static final ResourceLocation OPEN_SUPPLY_MESSAGE_ID = new ResourceLocation(AstikorCarts.MOD_ID, "open_supply");
 
-	public static final ACConfig config = new ACConfig();
-
 	public static final GoalAdder<Mob> MOB_GOAL_ADDER = GoalAdder.mobGoal(Mob.class)
 			.add(1, PullCartGoal::new)
 			.add(1, RideCartGoal::new)
@@ -115,7 +114,7 @@ public class AstikorCarts implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		config.load();
+		ForgeConfigRegistry.INSTANCE.register(MOD_ID, ModConfig.Type.COMMON, AstikorCartsConfig.spec());
 
 		Registry.register(BuiltInRegistries.CUSTOM_STAT, CART_ONE_CM, CART_ONE_CM);
 		Stats.CUSTOM.get(CART_ONE_CM, StatFormatter.DEFAULT);

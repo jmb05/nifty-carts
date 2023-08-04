@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.jmb19905.astikorcarts.AstikorCarts;
-import net.jmb19905.astikorcarts.config.ACConfig;
+import net.jmb19905.astikorcarts.AstikorCartsConfig;
 import net.jmb19905.astikorcarts.network.clientbound.UpdateDrawnMessage;
 import net.jmb19905.astikorcarts.util.AstikorWorld;
 import net.jmb19905.astikorcarts.util.CartWheel;
@@ -62,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
@@ -245,13 +244,13 @@ public abstract class AbstractDrawnEntity extends Entity {
                         this.playDetachSound();
                     }
                 } else {
-                    if (entityIn instanceof LivingEntity && this.getConfig().pullSpeed != 0.0D) {
+                    if (entityIn instanceof LivingEntity && this.getConfig().pullSpeed.get() != 0.0D) {
                         final AttributeInstance attr = ((LivingEntity) entityIn).getAttribute(Attributes.MOVEMENT_SPEED);
                         if (attr != null && attr.getModifier(PULL_MODIFIER_UUID) == null) {
                             attr.addTransientModifier(new AttributeModifier(
                                     PULL_MODIFIER_UUID,
                                     "Pull modifier",
-                                    this.getConfig().pullSpeed,
+                                    this.getConfig().pullSpeed.get(),
                                     AttributeModifier.Operation.MULTIPLY_TOTAL
                             ));
                         }
@@ -409,7 +408,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     private boolean canPull(final Entity entity) {
         if (entity instanceof Saddleable && !((Saddleable) entity).isSaddleable()) return false;
         if (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) return false;
-        final ArrayList<String> allowed = Arrays.stream(this.getConfig().pullAnimals).collect(Collectors.toCollection(ArrayList::new));
+        final ArrayList<String> allowed = this.getConfig().pullAnimals.get();
         if (allowed.isEmpty()) {
             return entity instanceof Player ||
                     entity instanceof Saddleable && !(entity instanceof ItemSteerable);
@@ -417,7 +416,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         return allowed.contains(EntityType.getKey(entity.getType()).toString());
     }
 
-    protected abstract ACConfig.CartConfig getConfig();
+    protected abstract AstikorCartsConfig.CartConfig getConfig();
 
     @Override
     public boolean hurt(final DamageSource source, final float amount) {
@@ -677,7 +676,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             speed.addTransientModifier(new AttributeModifier(
                     PULL_SLOWLY_MODIFIER_UUID,
                     "Pull slowly modifier",
-                    this.getConfig().slowSpeed,
+                    this.getConfig().slowSpeed.get(),
                     AttributeModifier.Operation.MULTIPLY_TOTAL
             ));
         } else {

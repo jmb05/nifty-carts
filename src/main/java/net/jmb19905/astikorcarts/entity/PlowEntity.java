@@ -2,7 +2,7 @@ package net.jmb19905.astikorcarts.entity;
 
 import com.google.common.collect.ImmutableList;
 import net.jmb19905.astikorcarts.AstikorCarts;
-import net.jmb19905.astikorcarts.config.ACConfig;
+import net.jmb19905.astikorcarts.AstikorCartsConfig;
 import net.jmb19905.astikorcarts.container.PlowMenu;
 import net.jmb19905.astikorcarts.util.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
@@ -43,8 +43,8 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected ACConfig.CartConfig getConfig() {
-        return AstikorCarts.config.plowCart;
+    protected AstikorCartsConfig.CartConfig getConfig() {
+        return AstikorCartsConfig.get().plow;
     }
 
     public boolean getPlowing() {

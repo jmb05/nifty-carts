@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.jmb19905.astikorcarts.AstikorCarts;
-import net.jmb19905.astikorcarts.config.ACConfig;
+import net.jmb19905.astikorcarts.AstikorCartsConfig;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -50,8 +50,8 @@ public class SupplyCartEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected ACConfig.CartConfig getConfig() {
-        return AstikorCarts.config.supplyCart;
+    protected AstikorCartsConfig.CartConfig getConfig() {
+        return AstikorCartsConfig.get().supplyCart;
     }
 
     @Override
