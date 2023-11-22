@@ -4,8 +4,10 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.client.renderer.texture.AssembledTexture;
 import net.jmb19905.niftycarts.client.renderer.texture.AssembledTextureFactory;
 import net.jmb19905.niftycarts.client.renderer.texture.Material;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ModelManager.class)
 public abstract class ModelManagerMixin {
 
-    @Inject(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V"))
-    private void apply(ModelManager.ReloadState reloadState, ProfilerFiller profilerFiller, CallbackInfo ci){
+    @Inject(method = "apply(Lnet/minecraft/client/resources/model/ModelBakery;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V"))
+    private void apply(ModelBakery modelBakery, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci){
         new AssembledTextureFactory()
                 .add(new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/animal_cart.png"), new AssembledTexture(64, 64)
                         .add(new Material(new ResourceLocation("block/oak_planks"), 16)

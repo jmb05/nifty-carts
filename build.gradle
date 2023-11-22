@@ -31,6 +31,20 @@ repositories {
 		name = "Fuzs Mod Resources"
 		url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
 	}
+	maven {
+		url "https://cursemaven.com"
+	}
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
 }
 
 loom {
@@ -55,7 +69,10 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapi_version}"
+	modImplementation "curse.maven:forge-config-api-port-fabric-547434:${project.forgeconfigapi_version}"
+
+	implementation 'com.electronwill.night-config:core:3.6.5'
+	implementation 'com.electronwill.night-config:toml:3.6.5'
 }
 
 processResources {

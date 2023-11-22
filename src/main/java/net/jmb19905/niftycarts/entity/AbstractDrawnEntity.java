@@ -13,6 +13,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,7 +26,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
@@ -85,7 +86,7 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     public AbstractDrawnEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
-        setMaxUpStep(1.2f);
+        this.maxUpStep = 1.2f;
         this.blocksBuilding = true;
         this.initWheels();
     }
@@ -423,7 +424,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else if (!this.level.isClientSide && this.isAlive()) {
-            if (source.is(DamageTypes.CACTUS)) {
+            if (source == DamageSource.CACTUS) {
                 return false;
             }
             if (source.getEntity() != null && this.hasPassenger(source.getEntity())) {
@@ -557,6 +558,11 @@ public abstract class AbstractDrawnEntity extends Entity {
             if (pos != null) return pos;
         }
         return this.position();
+    }
+
+    @Override
+    public @NotNull Packet<?> getAddEntityPacket() {
+        return new ClientboundAddEntityPacket(this);
     }
 
     private Vec3 dismount(final Vec3 dir, LivingEntity rider) {

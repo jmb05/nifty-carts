@@ -60,13 +60,14 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
         if (this.canAddPassenger(player) && !player.isSecondaryUseActive()) {
             return onInteractNotOpen(player, interactionHand);
         } else {
-            InteractionResult interactionResult = this.interactWithContainerVehicle(player);
-            if (interactionResult.consumesAction()) {
+            player.openMenu(this);
+            if (!player.level.isClientSide) {
                 this.gameEvent(GameEvent.CONTAINER_OPEN, player);
                 PiglinAi.angerNearbyPiglins(player, true);
+                return InteractionResult.CONSUME;
+            } else {
+                return InteractionResult.SUCCESS;
             }
-
-            return interactionResult;
         }
     }
 

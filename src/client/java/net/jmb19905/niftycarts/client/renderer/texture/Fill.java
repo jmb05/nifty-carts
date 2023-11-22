@@ -32,8 +32,7 @@ public class Fill {
                     for (int dx = 0; dx < r; dx++) {
                         final int u1 = x * this.rot[0][0] + y * this.rot[0][1] + Math.min(this.rot[0][0], this.rot[0][1]) + u0;
                         final int v1 = x * this.rot[1][0] + y * this.rot[1][1] + Math.min(this.rot[1][0], this.rot[1][1]) + v0;
-                        final int rgba = sprite.contents().originalImage.getPixelRGBA(Math.floorMod(u1, sprite.contents().width()), Math.floorMod(v1, sprite.contents().height()));
-                        //final int rgba = sprite.getPixelRGBA(0, Math.floorMod(u1, sprite.contents().width()), Math.floorMod(v1, sprite.contents().height()));
+                        final int rgba = sprite.mainImage[0].getPixelRGBA(Math.floorMod(u1, sprite.getWidth()), Math.floorMod(v1, sprite.getHeight()));
                         image.setPixelRGBA(r * x + dx, r * y + dy, rgba);
                     }
                 }
