@@ -218,7 +218,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
 
     private void renderArmor(final SupplyCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final ItemStack itemStack, final int ix) {
         final Item item = itemStack.getItem();
-        if (!(item instanceof final ArmorItem armor)) return;
+        if (!(item instanceof final ArmorItem armor_)) return;
         final EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(itemStack);
         final HumanoidModel<LivingEntity> m = slot == EquipmentSlot.LEGS ? this.leggings : this.armor;
         stack.mulPose(Vector3f.YP.rotation(ix == 0 ? (float) Math.PI * 0.5F : (float) -Math.PI * 0.5F));
@@ -272,8 +272,8 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
                 false,
                 itemStack.hasFoil()
         );
-        if (armor instanceof DyeableArmorItem) {
-            final int rgb = ((DyeableArmorItem) armor).getColor(itemStack);
+        if (armor_ instanceof DyeableArmorItem) {
+            final int rgb = ((DyeableArmorItem) armor_).getColor(itemStack);
             final float r = (float) (rgb >> 16 & 255) / 255.0F;
             final float g = (float) (rgb >> 8 & 255) / 255.0F;
             final float b = (float) (rgb & 255) / 255.0F;
