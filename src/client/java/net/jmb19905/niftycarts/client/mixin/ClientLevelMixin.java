@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientLevelMixin {
 
     @Inject(method = "addEntity", at = @At("TAIL"))
-    public void addEntity(int i, Entity entity, CallbackInfo ci) {
+    public void addEntity(Entity entity, CallbackInfo ci) {
         if (entity instanceof AbstractDrawnEntity d) {
             var buf = PacketByteBufs.create();
             RequestCartUpdate msg = new RequestCartUpdate(d.getId());

@@ -6,6 +6,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 public final class AnimalCartEntity extends AbstractDrawnEntity {
     public AnimalCartEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
@@ -89,10 +91,19 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
         return this.getPassengers().size() < 2;
     }
 
+    public float getPassengersRidingOffsetY(EntityDimensions entityDimensions, float f) {
+        return (entityDimensions.height - 8f / 16f) * f;
+    }
+
     @Override
+    protected @NotNull Vector3f getPassengerAttachmentPoint(Entity entity, EntityDimensions entityDimensions, float f) {
+        return new Vector3f(0, getPassengersRidingOffsetY(entityDimensions, f), 1f / 16f);
+    }
+
+    /*@Override
     public double getPassengersRidingOffset() {
         return 11.0D / 16.0D;
-    }
+    }*/
 
     @Override
     public void positionRider(final Entity passenger) {
@@ -108,9 +119,9 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
             }
 
             final Vec3 forward = this.getLookAngle();
-            final Vec3 origin = new Vec3(0.0D, this.getPassengersRidingOffset(), 1.0D / 16.0D);
+            final Vec3 origin = new Vec3(0.0D, this.getPassengersRidingOffsetY(this.getDimensions(this.getPose()), 1), 1.0D / 16.0D);
             final Vec3 pos = origin.add(forward.scale(f + Mth.sin((float) Math.toRadians(this.getXRot())) * 0.7D));
-            passenger.setPos(this.getX() + pos.x, this.getY() + pos.y + passenger.getMyRidingOffset(), this.getZ() + pos.z);
+            passenger.setPos(this.getX() + pos.x, this.getY() + pos.y + passenger.getMyRidingOffset(passenger), this.getZ() + pos.z);
             passenger.setYBodyRot(this.getYRot());
             final float f2 = Mth.wrapDegrees(passenger.getYRot() - this.getYRot());
             final float f1 = Mth.clamp(f2, -105.0F, 105.0F);

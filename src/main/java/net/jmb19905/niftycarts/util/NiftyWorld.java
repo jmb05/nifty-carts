@@ -106,7 +106,12 @@ public class NiftyWorld extends SavedData {
 
     public static NiftyWorld getServer(MinecraftServer server, ResourceKey<Level> levelType) {
         var dataStorage = Objects.requireNonNull(server.getLevel(levelType)).getDataStorage();
-        return dataStorage.computeIfAbsent((tag) -> NiftyWorld.createFromNbt(tag, server.getLevel(levelType)), NiftyWorld::new, NiftyCarts.MOD_ID);
+        Factory<NiftyWorld> factory = new Factory<>(
+                NiftyWorld::new,
+                tag -> NiftyWorld.createFromNbt(tag, server.getLevel(levelType)),
+                null
+        );
+        return dataStorage.computeIfAbsent(factory, NiftyCarts.MOD_ID);
     }
 
 }

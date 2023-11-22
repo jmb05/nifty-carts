@@ -13,8 +13,8 @@ public class PostilionEntity extends DummyLivingEntity {
     }
 
     @Override
-    public double getMyRidingOffset() {
-        return 0.125D;
+    public float getMyRidingOffset(Entity entity) {
+        return 0.125f;
     }
 
     @Override

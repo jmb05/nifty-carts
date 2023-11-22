@@ -514,7 +514,7 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     @Override
     //Client
-    public void lerpTo(final double x, final double y, final double z, final float yaw, final float pitch, final int posRotationIncrements, final boolean teleport) {
+    public void lerpTo(final double x, final double y, final double z, final float yaw, final float pitch, final int posRotationIncrements) {
         this.lerpX = x;
         this.lerpY = y;
         this.lerpZ = z;
@@ -681,7 +681,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                     AttributeModifier.Operation.MULTIPLY_TOTAL
             ));
         } else {
-            speed.removeModifier(modifier);
+            speed.removeModifier(modifier.getId());
         }
     }
 

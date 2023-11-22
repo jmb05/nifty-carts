@@ -309,10 +309,10 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
         final float bu1 = back.getU1();
         final float bv0 = back.getV0();
         final float bv1 = back.getV1();
-        final float bup = back.getU(1.0D);
-        final float bvp = back.getV(1.0D);
-        final double uvX = 16.0D / blockWidth;
-        final double uvY = 16.0D / blockHeight;
+        final float bup = back.getU(1.0f);
+        final float bvp = back.getV(1.0f);
+        final float uvX = 16.0f / blockWidth;
+        final float uvY = 16.0f / blockHeight;
         for (int x = 0; x < blockWidth; ++x) {
             for (int y = 0; y < blockHeight; ++y) {
                 final float x1 = offsetX + (x + 1);

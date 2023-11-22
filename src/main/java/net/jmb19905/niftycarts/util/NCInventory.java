@@ -24,7 +24,7 @@ public class NCInventory extends NonNullList<ItemStack> {
     }
 
     public static NCInventory withSize(int i, ItemStack object) {
-        Validate.notNull(object);
+        Validate.notNull(object, "ItemStack is null");
         ItemStack[] objects = new ItemStack[i];
         Arrays.fill(objects, object);
         return new NCInventory(Arrays.asList(objects), object);
