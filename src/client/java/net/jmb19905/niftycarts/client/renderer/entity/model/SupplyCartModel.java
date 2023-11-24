@@ -10,7 +10,6 @@ public final class SupplyCartModel extends CartModel<SupplyCartEntity> {
 
     public SupplyCartModel(final ModelPart root) {
         super(root);
-
         this.flowerBasket = root.getChild("flowerBasket");
     }
 
@@ -19,7 +18,7 @@ public final class SupplyCartModel extends CartModel<SupplyCartEntity> {
     }
 
     public static LayerDefinition createLayer() {
-        final MeshDefinition def = CartModel.createDefinition();
+        final MeshDefinition def = CartModel.createDefinition(9, 25);
 
         final EasyMeshBuilder boardBottom = new EasyMeshBuilder("boardBottom", 0, 0);
         boardBottom.addBox(-15.5F, -11.0F, -2.0F, 29, 22, 1);
@@ -29,13 +28,13 @@ public final class SupplyCartModel extends CartModel<SupplyCartEntity> {
         final EasyMeshBuilder axis = new EasyMeshBuilder("axis", 0, 23);
         axis.addBox(-12.5F, -1.0F, -1.0F, 25, 2, 2);
 
-        final EasyMeshBuilder shaft = new EasyMeshBuilder("shaft", 0, 31);
+        final EasyMeshBuilder shaft = new EasyMeshBuilder("shaft", 0, 28);
         shaft.setRotationPoint(0.0F, -5.0F, -15.0F);
         shaft.yRot = (float) Math.PI / 2.0F;
         shaft.addBox(0.0F, -2.5F, -8.0F, 20, 2, 1);
         shaft.addBox(0.0F, -2.5F, 7.0F, 20, 2, 1);
 
-        final EasyMeshBuilder boardFront = new EasyMeshBuilder("boardFront", 0, 34);
+        final EasyMeshBuilder boardFront = new EasyMeshBuilder("boardFront", 0, 31);
         boardFront.addBox(-12.0F, -12.0F, -15.5F, 24, 10, 1);
 
         final EasyMeshBuilder[] boardsSide = new EasyMeshBuilder[4];
@@ -60,13 +59,13 @@ public final class SupplyCartModel extends CartModel<SupplyCartEntity> {
         boardsSide[3].yRot = (float) Math.PI / 2.0F;
 
         final EasyMeshBuilder[] boardsRear = new EasyMeshBuilder[2];
-        boardsRear[0] = new EasyMeshBuilder("boards_rear_0", 50, 31);
+        boardsRear[0] = new EasyMeshBuilder("boards_rear_0", 42, 0);
         boardsRear[0].addBox(10.0F, -12.0F, 13.5F, 2, 11, 1);
 
-        boardsRear[1] = new EasyMeshBuilder("boards_rear_1", 50, 31);
+        boardsRear[1] = new EasyMeshBuilder("boards_rear_1", 42, 0);
         boardsRear[1].addBox(-12.0F, -12.0F, 13.5F, 2, 11, 1);
 
-        final EasyMeshBuilder body = CartModel.createBody();
+        final EasyMeshBuilder body = CartModel.createBody(9);
         body.addChild(axis);
         body.addChild(shaft);
         body.addChild(boardBottom);

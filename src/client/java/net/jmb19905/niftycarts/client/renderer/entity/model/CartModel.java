@@ -53,36 +53,40 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
         this.leftWheel.zRot = rot;
     }
 
-    public static MeshDefinition createDefinition() {
+    public static MeshDefinition createDefinition(float rimLength, float axleLength) {
         final MeshDefinition def = new MeshDefinition();
 
+        float angle = Mth.PI / 8f;
+        float wheelRadius = (rimLength / 2f) / (Mth.sin(angle) / Mth.cos(angle));
+        float f = axleLength / 2f + 2;
+
         final EasyMeshBuilder leftWheel = new EasyMeshBuilder("leftWheel", 46, 60);
-        leftWheel.setRotationPoint(14.5F, -11.0F, 1.0F);
+        leftWheel.setRotationPoint(f, -wheelRadius, 1.0F);
         leftWheel.addBox(-2.0F, -1.0F, -1.0F, 2, 2, 2);
         for (int i = 0; i < 8; i++) {
             final EasyMeshBuilder rim = new EasyMeshBuilder("rim_" + i, 58, 54);
-            rim.addBox(-2.0F, -4.5F, 9.86F, 2, 9, 1);
+            rim.addBox(-2.0F, -rimLength / 2f, wheelRadius - 1, 2, rimLength, 1);
             rim.xRot = i * (float) Math.PI / 4.0F;
             leftWheel.addChild(rim);
 
             final EasyMeshBuilder spoke = new EasyMeshBuilder("spoke_" + i, 54, 54);
-            spoke.addBox(-1.5F, 1.0F, -0.5F, 1, 9, 1);
+            spoke.addBox(-1.5F, 1.0F, -0.5F, 1, wheelRadius - 2, 1);
             spoke.xRot = i * (float) Math.PI / 4.0F;
             leftWheel.addChild(spoke);
         }
         leftWheel.build(def.getRoot());
 
         final EasyMeshBuilder rightWheel = new EasyMeshBuilder("rightWheel", 46, 60);
-        rightWheel.setRotationPoint(-14.5F, -11.0F, 1.0F);
+        rightWheel.setRotationPoint(-f, -wheelRadius, 1.0F);
         rightWheel.addBox(0.0F, -1.0F, -1.0F, 2, 2, 2);
         for (int i = 0; i < 8; i++) {
             final EasyMeshBuilder rim = new EasyMeshBuilder("rim_" + i, 58, 54);
-            rim.addBox(0.0F, -4.5F, 9.86F, 2, 9, 1);
+            rim.addBox(0.0F, -rimLength / 2f, wheelRadius - 1, 2, rimLength, 1);
             rim.xRot = i * (float) Math.PI / 4.0F;
             rightWheel.addChild(rim);
 
             final EasyMeshBuilder spoke = new EasyMeshBuilder("spoke_" + i, 54, 54);
-            spoke.addBox(0.5F, 1.0F, -0.5F, 1, 9, 1);
+            spoke.addBox(0.5F, 1.0F, -0.5F, 1, wheelRadius - 2, 1);
             spoke.xRot = i * (float) Math.PI / 4.0F;
             rightWheel.addChild(spoke);
         }
@@ -91,9 +95,11 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
         return def;
     }
 
-    public static EasyMeshBuilder createBody() {
+    public static EasyMeshBuilder createBody(int rimLength) {
         final EasyMeshBuilder body = new EasyMeshBuilder("body");
-        body.setRotationPoint(0.0F, -11.0F, 1.0F);
+        float angle = Mth.PI / 8f;
+        float wheelRadius = (rimLength / 2f) / (Mth.sin(angle) / Mth.cos(angle));
+        body.setRotationPoint(0.0F, -wheelRadius, 1.0F);
         return body;
     }
 }

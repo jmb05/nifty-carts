@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "pcp",
+    "wpw"
+  ],
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "c": {
+      "item": "minecraft:chest"
+    },
+    "w": {
+      "item": "niftycarts:wheel"
+    }
+  },
+  "result": {
+    "item": "niftycarts:hand_cart"
+  }
+}

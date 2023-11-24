@@ -11,7 +11,7 @@ public final class AnimalCartModel extends CartModel<AnimalCartEntity> {
     }
 
     public static LayerDefinition createLayer() {
-        final MeshDefinition def = CartModel.createDefinition();
+        final MeshDefinition def = CartModel.createDefinition(9, 25);
 
         final EasyMeshBuilder axis = new EasyMeshBuilder("axis", 0, 21);
         axis.addBox(-12.5F, -1.0F, -1.0F, 25, 2, 2);
@@ -43,7 +43,7 @@ public final class AnimalCartModel extends CartModel<AnimalCartEntity> {
         final EasyMeshBuilder boardFront = new EasyMeshBuilder("boardFront", 20, 28);
         boardFront.addBox(-9F, -10.0F, -16.5F, 18, 8, 2);
 
-        final EasyMeshBuilder body = CartModel.createBody();
+        final EasyMeshBuilder body = CartModel.createBody(9);
         body.addChild(axis);
         body.addChild(cartBase);
         body.addChild(shaft);

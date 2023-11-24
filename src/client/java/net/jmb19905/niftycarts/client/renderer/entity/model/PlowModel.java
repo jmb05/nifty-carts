@@ -31,7 +31,7 @@ public final class PlowModel extends CartModel<PlowEntity> {
     }
 
     public static LayerDefinition createLayer() {
-        final MeshDefinition def = CartModel.createDefinition();
+        final MeshDefinition def = CartModel.createDefinition(9, 25);
 
         final EasyMeshBuilder axis = new EasyMeshBuilder("axis", 0, 0);
         axis.addBox(-12.5F, -1.0F, -1.0F, 25, 2, 2);
@@ -102,7 +102,7 @@ public final class PlowModel extends CartModel<PlowEntity> {
         parts.addChild(plowShaftUpper[1]);
         parts.addChild(plowShaftUpper[2]);
 
-        final EasyMeshBuilder body = CartModel.createBody();
+        final EasyMeshBuilder body = CartModel.createBody(9);
         body.addChild(axis);
         body.addChild(parts);
         body.build(def.getRoot());

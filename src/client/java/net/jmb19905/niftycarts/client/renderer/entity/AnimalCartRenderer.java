@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, AnimalCartModel> {
+    //This texture is not a real file it is assembled during resource loading
     private static final ResourceLocation TEXTURE = new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/animal_cart.png");
 
     public AnimalCartRenderer(final EntityRendererProvider.Context renderManager) {

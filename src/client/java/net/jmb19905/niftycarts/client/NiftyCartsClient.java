@@ -10,11 +10,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
-import net.jmb19905.niftycarts.client.renderer.entity.AnimalCartRenderer;
-import net.jmb19905.niftycarts.client.renderer.entity.PlowRenderer;
-import net.jmb19905.niftycarts.client.renderer.entity.PostilionRenderer;
-import net.jmb19905.niftycarts.client.renderer.entity.SupplyCartRenderer;
+import net.jmb19905.niftycarts.client.renderer.entity.*;
 import net.jmb19905.niftycarts.client.renderer.entity.model.AnimalCartModel;
+import net.jmb19905.niftycarts.client.renderer.entity.model.HandCartModel;
 import net.jmb19905.niftycarts.client.renderer.entity.model.PlowModel;
 import net.jmb19905.niftycarts.client.renderer.entity.model.SupplyCartModel;
 import net.jmb19905.niftycarts.client.screen.PlowScreen;
@@ -45,11 +43,13 @@ public class NiftyCartsClient implements ClientModInitializer {
 		EntityRendererRegistry.register(NiftyCarts.SUPPLY_CART_ENTITY, SupplyCartRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.ANIMAL_CART_ENTITY, AnimalCartRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.PLOW_ENTITY, PlowRenderer::new);
+		EntityRendererRegistry.register(NiftyCarts.HAND_CART_ENTITY, HandCartRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.POSTILION_ENTITY, PostilionRenderer::new);
 
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.SUPPLY_CART, SupplyCartModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.ANIMAL_CART, AnimalCartModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.PLOW, PlowModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.HAND_CART, HandCartModel::createLayer);
 
 		MenuScreens.register(NiftyCarts.PLOW_MENU_TYPE, PlowScreen::new);
 

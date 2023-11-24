@@ -4,9 +4,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.jmb19905.niftycarts.NiftyCarts;
+import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
+import net.jmb19905.niftycarts.client.renderer.entity.model.HandCartModel;
+import net.jmb19905.niftycarts.entity.HandCartEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -33,11 +37,6 @@ import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-
-import net.jmb19905.niftycarts.NiftyCarts;
-import net.jmb19905.niftycarts.entity.SupplyCartEntity;
-import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
-import net.jmb19905.niftycarts.client.renderer.entity.model.SupplyCartModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,41 +48,39 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, SupplyCartModel> {
+public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartModel> {
     //This texture is not a real file it is assembled during resource loading
-    private static final ResourceLocation TEXTURE = new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/supply_cart.png");
-
+    private static final ResourceLocation TEXTURE = new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/hand_cart.png");
     private static final HumanoidArmorLayer<LivingEntity, HumanoidModel<LivingEntity>, HumanoidModel<LivingEntity>> DUMMY = new HumanoidArmorLayer<>(null, null, null, Minecraft.getInstance().getModelManager());
-
     private final HumanoidModel<LivingEntity> leggings, armor;
 
-    public SupplyCartRenderer(final EntityRendererProvider.Context renderManager) {
-        super(renderManager, new SupplyCartModel(renderManager.bakeLayer(NiftyCartsModelLayers.SUPPLY_CART)));
+    public HandCartRenderer(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new HandCartModel(renderManager.bakeLayer(NiftyCartsModelLayers.HAND_CART)));
         this.leggings = new HumanoidModel<>(renderManager.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR));
         this.armor = new HumanoidModel<>(renderManager.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR));
         this.shadowRadius = 1.0F;
     }
 
     @Override
-    protected void renderContents(final SupplyCartEntity entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
+    protected void renderContents(HandCartEntity entity, float delta, PoseStack stack, MultiBufferSource source, int packedLight) {
         final NonNullList<ItemStack> cargo = entity.getCargo();
-        Contents contents = Contents.SUPPLIES;
+        HandCartRenderer.Contents contents = HandCartRenderer.Contents.SUPPLIES;
         final Iterator<ItemStack> it = cargo.iterator();
         outer:
         while (it.hasNext()) {
             final ItemStack s = it.next();
             if (s.isEmpty()) continue;
-            for (final Contents c : Contents.values()) {
+            for (final HandCartRenderer.Contents c : HandCartRenderer.Contents.values()) {
                 if (c.predicate.test(s)) {
                     contents = c;
                     break outer;
                 }
             }
         }
-        while (contents != Contents.SUPPLIES && it.hasNext()) {
+        while (contents != HandCartRenderer.Contents.SUPPLIES && it.hasNext()) {
             final ItemStack s = it.next();
             if (s.isEmpty()) continue;
-            if (!contents.predicate.test(s)) contents = Contents.SUPPLIES;
+            if (!contents.predicate.test(s)) contents = HandCartRenderer.Contents.SUPPLIES;
         }
         stack.pushPose();
         this.model.getBody().translateAndRotate(stack);
@@ -96,7 +93,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
         stack.popPose();
     }
 
-    private void renderFlowers(final SupplyCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
+    private void renderFlowers(final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
         this.model.getFlowerBasket().render(stack, source.getBuffer(this.model.renderType(this.getTextureLocation(entity))), packedLight, OverlayTexture.NO_OVERLAY);
         final BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
         final ModelBlockRenderer renderer = dispatcher.getModelRenderer();
@@ -112,7 +109,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
             final float g = (float) (rgb >> 8 & 255) / 255.0F;
             final float b = (float) (rgb & 255) / 255.0F;
             stack.pushPose();
-            stack.translate(0.0D, -0.7D, -3.0D / 16.0D);
+            stack.translate(0.0D, -0.7D, -1.0D / 16.0D);
             stack.scale(0.65F, 0.65F, 0.65F);
             stack.translate(ix, 0.5D, iz - 1.0D);
             stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
@@ -121,9 +118,9 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
         }
     }
 
-    private void renderWheel(final SupplyCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
+    private void renderWheel(final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
         stack.pushPose();
-        stack.translate(1.18D, 0.1D, -0.15D);
+        stack.translate(0.91D, 0.05D, -0.15D);
         final ModelPart wheel = this.model.getWheel();
         wheel.xRot = 0.9F;
         wheel.zRot = (float) Math.PI * 0.3F;
@@ -131,35 +128,30 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
         stack.popPose();
     }
 
-    private void renderPaintings(final SupplyCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
+    private void renderPaintings(final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
         final VertexConsumer buf = source.getBuffer(RenderType.entitySolid(Minecraft.getInstance().getPaintingTextures().getBackSprite().atlasLocation()));
         final ObjectList<PaintingVariant> types = StreamSupport.stream(BuiltInRegistries.PAINTING_VARIANT.spliterator(), false)
                 .filter(t -> t.getWidth() == 16 && t.getHeight() == 16)
                 .collect(Collectors.toCollection(ObjectArrayList::new));
         final Random rng = new Random(entity.getUUID().getMostSignificantBits() ^ entity.getUUID().getLeastSignificantBits());
         ObjectLists.shuffle(types, rng);
-        int count = 0;
-        for (final ItemStack itemStack : cargo) {
-            if (itemStack.isEmpty()) continue;
-            count++;
-        }
         stack.pushPose();
         stack.translate(0.0D, -2.5D / 16.0D, 0.0D);
         stack.mulPose(Axis.XP.rotationDegrees(-90.0F));
-        for (int i = 0, n = 0; i < cargo.size(); i++) {
+        for (int i = 0; i < cargo.size(); i++) {
             final ItemStack itemStack = cargo.get(i);
             if (itemStack.isEmpty()) continue;
             final PaintingVariant t = types.get(i % types.size());
             stack.pushPose();
-            stack.translate(0.0D, (n++ - (count - 1) * 0.5D) / count, -1.0D / 16.0D * i);
-            stack.mulPose(Axis.ZP.rotation(rng.nextFloat() * (float) Math.PI));
+            stack.translate(0.0D, 0.03D, -1D / 16.0D * i + 0.0001f);
+            stack.mulPose(Axis.ZP.rotation(rng.nextFloat() * (float) Math.PI * 0.2f));
             CargoRenderUtil.renderPainting(t, stack, buf, packedLight);
             stack.popPose();
         }
         stack.popPose();
     }
 
-    private void renderSupplies(final SupplyCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
+    private void renderSupplies(final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
         final ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         final Random rng = new Random();
         for (int i = 0; i < cargo.size(); i++) {
@@ -168,13 +160,13 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
             final int ix = i % 2, iz = i / 2;
             if (i < cargo.size() - 2 && cargo.get(i + 2).is(ItemTags.BEDS)) continue;
             if (i >= 2 && cargo.get(i - 2).is(ItemTags.BEDS)) continue;
-            final double x = (ix - 0.5D) * 11.0D / 16.0D;
-            final double z = (iz * 11.0D - 9.0D) / 16.0D;
+            final double x = ((ix * 2 - 1) * 4) / 16.0D;
+            final double z = ((iz * 2 - 1) * 5) / 16.0D;
             final BakedModel model = renderer.getModel(itemStack, entity.level(), null, i);
             stack.pushPose();
             if (model.isGui3d() && itemStack.getItem() != Items.TRIDENT) {
                 stack.translate(x, -0.46D, z);
-                stack.scale(0.65F, 0.65F, 0.65F);
+                stack.scale(0.5F, 0.5F, 0.5F);
                 stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
                 if (itemStack.getItem() == Items.SHIELD) {
                     stack.scale(1.2F, 1.2F, 1.2F);
@@ -191,9 +183,10 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
                 rng.setSeed(32L * i + Objects.hashCode(BuiltInRegistries.ITEM.getKey(itemStack.getItem())));
                 stack.translate(x, -0.15D + ((ix + iz) % 2 == 0 ? 0.0D : 1.0e-4D), z);
                 if (ArmorItem.class.equals(itemStack.getItem().getClass()) || DyeableArmorItem.class.equals(itemStack.getItem().getClass())) {
+                    stack.scale(0.9f, 0.9f, 0.9f);
                     this.renderArmor(stack, source, packedLight, itemStack, ix);
                 } else {
-                    stack.scale(0.7F, 0.7F, 0.7F);
+                    stack.scale(0.6F, 0.6F, 0.6F);
                     stack.mulPose(Axis.YP.rotation(rng.nextFloat() * (float) Math.PI));
                     stack.mulPose(Axis.XP.rotationDegrees(-90.0F));
                     final int copies = Math.min(itemStack.getCount(), (itemStack.getCount() - 1) / 16 + 2);
@@ -289,20 +282,20 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(final SupplyCartEntity entity) {
+    public @NotNull ResourceLocation getTextureLocation(HandCartEntity entity) {
         return TEXTURE;
     }
 
     private enum Contents {
-        FLOWERS(s -> s.getItem() instanceof BlockItem && s.is(ItemTags.FLOWERS), SupplyCartRenderer::renderFlowers),
-        PAINTINGS(s -> s.getItem() == Items.PAINTING, SupplyCartRenderer::renderPaintings),
-        WHEEL(s -> s.getItem() == NiftyCarts.WHEEL, SupplyCartRenderer::renderWheel),
-        SUPPLIES(s -> true, SupplyCartRenderer::renderSupplies);
+        FLOWERS(s -> s.getItem() instanceof BlockItem && s.is(ItemTags.FLOWERS), HandCartRenderer::renderFlowers),
+        PAINTINGS(s -> s.getItem() == Items.PAINTING, HandCartRenderer::renderPaintings),
+        WHEEL(s -> s.getItem() == NiftyCarts.WHEEL, HandCartRenderer::renderWheel),
+        SUPPLIES(s -> true, HandCartRenderer::renderSupplies);
 
         private final Predicate<? super ItemStack> predicate;
         private final ContentsRenderer renderer;
 
-        Contents(final Predicate<? super ItemStack> predicate, final ContentsRenderer renderer) {
+        Contents(final Predicate<? super ItemStack> predicate, final HandCartRenderer.ContentsRenderer renderer) {
             this.predicate = predicate;
             this.renderer = renderer;
         }
@@ -310,6 +303,6 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
 
     @FunctionalInterface
     private interface ContentsRenderer {
-        void render(final SupplyCartRenderer renderer, final SupplyCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo);
+        void render(final HandCartRenderer renderer, final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo);
     }
 }

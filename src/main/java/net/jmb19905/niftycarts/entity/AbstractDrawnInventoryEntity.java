@@ -55,9 +55,13 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     protected abstract InteractionResult onInteractNotOpen(Player player, InteractionHand hand);
 
+    protected boolean canInteractNotOpen() {
+        return true;
+    }
+
     @Override
     public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
-        if (this.canAddPassenger(player) && !player.isSecondaryUseActive()) {
+        if (canInteractNotOpen() && this.canAddPassenger(player) && !player.isSecondaryUseActive()) {
             return onInteractNotOpen(player, interactionHand);
         } else {
             InteractionResult interactionResult = this.interactWithContainerVehicle(player);
