@@ -3,8 +3,10 @@ package net.jmb19905.niftycarts.entity;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.PushReaction;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -25,13 +27,13 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public Iterable<ItemStack> getArmorSlots() {
+    public @NotNull Iterable<ItemStack> getArmorSlots() {
         return Collections.emptyList();
 
     }
 
     @Override
-    public ItemStack getItemBySlot(final EquipmentSlot slotIn) {
+    public @NotNull ItemStack getItemBySlot(final EquipmentSlot slotIn) {
         return ItemStack.EMPTY;
     }
 
@@ -40,24 +42,24 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public HumanoidArm getMainArm() {
+    public @NotNull HumanoidArm getMainArm() {
         return HumanoidArm.RIGHT;
     }
 
     @Override
-    public boolean ignoreExplosion() {
+    public boolean ignoreExplosion(Explosion explosion) {
         return true;
     }
 
     @Override
-    public PushReaction getPistonPushReaction() {
+    public @NotNull PushReaction getPistonPushReaction() {
         return PushReaction.IGNORE;
     }
 
-    @Override
+    /*@Override
     public boolean canBreatheUnderwater() {
         return true;
-    }
+    }*/
 
     @Override
     public boolean isEffectiveAi() {
