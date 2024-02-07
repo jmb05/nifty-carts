@@ -69,7 +69,7 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation "curse.maven:forge-config-api-port-fabric-547434:${project.forgeconfigapi_version}"
+	modApi "net.minecraftforge:forgeconfigapiport-fabric:${project.forgeconfigapi_version}"
 
 	implementation 'com.electronwill.night-config:core:3.6.5'
 	implementation 'com.electronwill.night-config:toml:3.6.5'
