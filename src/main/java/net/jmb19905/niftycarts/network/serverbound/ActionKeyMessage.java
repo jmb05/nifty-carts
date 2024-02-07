@@ -21,10 +21,14 @@ public class ActionKeyMessage implements Message {
     public void decode(FriendlyByteBuf buf) {
     }
 
-    public static void handle(final ActionKeyMessage msg, final ServerPlayer player) {
-        final Entity pulling = player.getVehicle();
+    public static void handle(final ActionKeyMessage ignoredMsg, final ServerPlayer player) {
+        final Entity pulling;
         final Level level = player.level;
-        if (pulling == null) return;
+        if (player.getVehicle() == null) {
+            pulling = player;
+        } else {
+            pulling = player.getVehicle();
+        }
         var drawn = NiftyWorld.getServer(NiftyCarts.server, level.dimension()).getDrawn(pulling);
         drawn.map(c -> Pair.of(c, (Entity) null))
                 .or(() -> level.getEntitiesOfClass(AbstractDrawnEntity.class, pulling.getBoundingBox().inflate(2.0d), entity -> entity != pulling).stream()
