@@ -2,6 +2,7 @@
 plugins {
 	id 'fabric-loom' version '1.3-SNAPSHOT'
 	id 'maven-publish'
+	id "com.modrinth.minotaur" version "2.+"
 }
 
 version = project.mod_version
@@ -84,6 +85,21 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}"}
 	}
+}
+
+modrinth {
+	token = System.getenv("MODRINTH_TOKEN")
+	projectId = "niftycarts"
+	versionNumber = project.mod_version
+	versionType = "release"
+	uploadFile = remapJar
+	gameVersions = [ project.minecraft_version ]
+	loaders = ["fabric"]
+	dependencies {
+		required.project "fabric-api"
+		required.project "forge-config-api-port"
+	}
+	changelog = "- Allows player pulling carts"
 }
 
 // configure the maven publication
