@@ -1,0 +1,16 @@
+{
+  "item.niftycarts.supply_cart": "Тележка для припасов",
+  "item.niftycarts.plow": "Плуг",
+  "item.niftycarts.animal_cart": "Тележка для животных",
+  "item.niftycarts.wheel": "Колесо",
+  "entity.niftycarts.supply_cart": "Тележка для припасов",
+  "entity.niftycarts.plow": "Плуг",
+  "entity.niftycarts.animal_cart": "Тележка для животных",
+  "entity.niftycarts.postilion": "Форейтор",
+  "key.categories.niftycarts": "Изящные тележки",
+  "key.niftycarts.desc": "Ключ действия",
+  "subtitles.niftycarts.cart.attached": "Тележка крепится",
+  "subtitles.niftycarts.cart.detached": "Тележка крепится",
+  "subtitles.niftycarts.cart.placed": "Тележка установлена",
+  "stat.niftycarts.cart_one_cm": "Расстояние на тележке"
+}
