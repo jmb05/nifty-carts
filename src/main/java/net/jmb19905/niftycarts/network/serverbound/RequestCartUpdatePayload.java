@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record RequestCartUpdatePayload(int cartId) implements CustomPacketPayload {
 
-    public static final Type<RequestCartUpdatePayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + ":request_cart_update");
+    public static final Type<RequestCartUpdatePayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_request_cart_update");
     public static final StreamCodec<FriendlyByteBuf, RequestCartUpdatePayload> CODEC = new StreamCodec<>() {
         @Override
         public @NotNull RequestCartUpdatePayload decode(FriendlyByteBuf buf) {

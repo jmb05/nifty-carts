@@ -13,8 +13,8 @@ public class CargoRenderUtil {
 
     public static void renderPainting(final PaintingVariant painting, final PoseStack stack, final VertexConsumer buf, final int packedLight) {
         final PaintingTextureManager uploader = Minecraft.getInstance().getPaintingTextures();
-        final int width = painting.getWidth();
-        final int height = painting.getHeight();
+        final int width = painting.width() * 16;
+        final int height = painting.height() * 16;
         final TextureAtlasSprite art = uploader.get(painting);
         final TextureAtlasSprite back = uploader.getBackSprite();
         final Matrix4f model = stack.last().pose();
@@ -76,7 +76,7 @@ public class CargoRenderUtil {
     }
 
     private static void vert(final Matrix4f stack, final PoseStack.Pose pose, final VertexConsumer buf, final float x, final float y, final float u, final float v, final float z, final int nx, final int ny, final int nz, final int packedLight) {
-        buf.vertex(stack, x, y, z).color(0xFF, 0xFF, 0xFF, 0xFF).uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(pose, nx, ny, nz).endVertex();
+        buf.addVertex(stack, x, y, z).setColor(-1).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(pose, nx, ny, nz);
     }
 
 }

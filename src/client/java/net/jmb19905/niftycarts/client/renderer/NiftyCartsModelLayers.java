@@ -17,6 +17,6 @@ public class NiftyCartsModelLayers {
 
     @SuppressWarnings("SameParameterValue")
     private static ModelLayerLocation layer(String name, String layer) {
-        return new ModelLayerLocation(new ResourceLocation(NiftyCarts.MOD_ID, name), layer);
+        return new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, name), layer);
     }
 }

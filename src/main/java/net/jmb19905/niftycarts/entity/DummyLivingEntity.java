@@ -98,7 +98,7 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public boolean canChangeDimensions() {
+    public boolean canChangeDimensions(Level level, Level level2) {
         return false;
     }
 

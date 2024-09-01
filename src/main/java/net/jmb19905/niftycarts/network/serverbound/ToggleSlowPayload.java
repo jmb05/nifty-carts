@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public record ToggleSlowPayload() implements CustomPacketPayload {
 
-    public static final Type<ToggleSlowPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + ":toggle_slow");
+    public static final Type<ToggleSlowPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_toggle_slow");
     public static final StreamCodec<FriendlyByteBuf, ToggleSlowPayload> CODEC = new StreamCodec<>() {
         @Override
         public @NotNull ToggleSlowPayload decode(FriendlyByteBuf object) {

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record OpenSupplyCartPayload() implements CustomPacketPayload {
 
-    public static final Type<OpenSupplyCartPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + ":open_supply_cart");
+    public static final Type<OpenSupplyCartPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_open_supply_cart");
     public static final StreamCodec<FriendlyByteBuf, OpenSupplyCartPayload> CODEC = new StreamCodec<>() {
         @Override
         public @NotNull OpenSupplyCartPayload decode(FriendlyByteBuf object) {

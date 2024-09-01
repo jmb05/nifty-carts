@@ -46,7 +46,7 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends Ent
 
         this.model.setupAnim(entity, delta, 0.0F, 0.0F, 0.0F, info.getPitch());
         final VertexConsumer buf = source.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
-        this.model.renderToBuffer(stack, buf, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.model.renderToBuffer(stack, buf, packedLight, OverlayTexture.NO_OVERLAY);
         this.renderContents(entity, delta, stack, source, packedLight);
 
         stack.popPose();

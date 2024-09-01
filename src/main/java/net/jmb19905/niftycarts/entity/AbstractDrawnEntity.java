@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -65,8 +66,8 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
-    private static final UUID PULL_SLOWLY_MODIFIER_UUID = UUID.fromString("49B0E52E-48F2-4D89-BED7-4F5DF26F1263");
-    private static final UUID PULL_MODIFIER_UUID = UUID.fromString("BA594616-5BE3-46C6-8B40-7D0230C64B77");
+    private static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "pull_slowly");
+    private static final ResourceLocation PULL_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "pull");
     private int lerpSteps;
     private double lerpX;
     private double lerpY;
@@ -228,8 +229,8 @@ public abstract class AbstractDrawnEntity extends Entity {
                     if (this.pulling instanceof LivingEntity) {
                         final AttributeInstance attr = ((LivingEntity) this.pulling).getAttribute(Attributes.MOVEMENT_SPEED);
                         if (attr != null) {
-                            attr.removeModifier(PULL_SLOWLY_MODIFIER_UUID);
-                            attr.removeModifier(PULL_MODIFIER_UUID);
+                            attr.removeModifier(PULL_SLOWLY_MODIFIER_ID);
+                            attr.removeModifier(PULL_MODIFIER_ID);
                         }
                     } else if (this.pulling instanceof AbstractDrawnEntity) {
                         ((AbstractDrawnEntity) this.pulling).drawn = null;
@@ -244,10 +245,9 @@ public abstract class AbstractDrawnEntity extends Entity {
                 } else {
                     if (entityIn instanceof LivingEntity && this.getConfig().pullSpeed.get() != 0.0D) {
                         final AttributeInstance attr = ((LivingEntity) entityIn).getAttribute(Attributes.MOVEMENT_SPEED);
-                        if (attr != null && attr.getModifier(PULL_MODIFIER_UUID) == null) {
+                        if (attr != null && attr.getModifier(PULL_MODIFIER_ID) == null) {
                             attr.addTransientModifier(new AttributeModifier(
-                                    PULL_MODIFIER_UUID,
-                                    "Pull modifier",
+                                    PULL_MODIFIER_ID,
                                     this.getConfig().pullSpeed.get(),
                                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                             ));
@@ -677,11 +677,10 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (!(pulling instanceof LivingEntity)) return;
         final AttributeInstance speed = ((LivingEntity) pulling).getAttribute(Attributes.MOVEMENT_SPEED);
         if (speed == null) return;
-        final AttributeModifier modifier = speed.getModifier(PULL_SLOWLY_MODIFIER_UUID);
+        final AttributeModifier modifier = speed.getModifier(PULL_SLOWLY_MODIFIER_ID);
         if (modifier == null) {
             speed.addTransientModifier(new AttributeModifier(
-                    PULL_SLOWLY_MODIFIER_UUID,
-                    "Pull slowly modifier",
+                    PULL_SLOWLY_MODIFIER_ID,
                     this.getConfig().slowSpeed.get(),
                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
             ));

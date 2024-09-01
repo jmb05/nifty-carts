@@ -38,7 +38,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.fml.config.ModConfig;
 
 import java.util.function.Supplier;
 
@@ -54,9 +54,9 @@ public class NiftyCarts implements ModInitializer {
 
 	public static MinecraftServer server = null;
 
-	public static final ResourceLocation ATTACH_SOUND_ID = new ResourceLocation(MOD_ID, "entity.cart.attach");
-	public static final ResourceLocation DETACH_SOUND_ID = new ResourceLocation(MOD_ID, "entity.cart.detach");
-	public static final ResourceLocation PLACE_SOUND_ID = new ResourceLocation(MOD_ID, "entity.cart.place");
+	public static final ResourceLocation ATTACH_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "entity.cart.attach");
+	public static final ResourceLocation DETACH_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "entity.cart.detach");
+	public static final ResourceLocation PLACE_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "entity.cart.place");
 
 	public static SoundEvent ATTACH_SOUND = SoundEvent.createVariableRangeEvent(ATTACH_SOUND_ID);
 	public static SoundEvent DETACH_SOUND = SoundEvent.createVariableRangeEvent(DETACH_SOUND_ID);
@@ -64,31 +64,31 @@ public class NiftyCarts implements ModInitializer {
 
 	public static final EntityType<SupplyCartEntity> SUPPLY_CART_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(MOD_ID, "supply_cart"),
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "supply_cart"),
 			EntityType.Builder.of(SupplyCartEntity::new, MobCategory.MISC).sized(1.5f, 1.4f).build()
 	);
 
 	public static final EntityType<AnimalCartEntity> ANIMAL_CART_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(MOD_ID, "animal_cart"),
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "animal_cart"),
 			EntityType.Builder.of(AnimalCartEntity::new, MobCategory.MISC).sized(1.3f, 1.4f).build()
 	);
 
 	public static final EntityType<PlowEntity> PLOW_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(MOD_ID, "plow"),
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"),
 			EntityType.Builder.of(PlowEntity::new, MobCategory.MISC).sized(1.3f, 1.4f).build()
 	);
 
 	public static final EntityType<HandCartEntity> HAND_CART_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(MOD_ID, "hand_cart"),
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "hand_cart"),
 			EntityType.Builder.of(HandCartEntity::new, MobCategory.MISC).sized(1.3f, 1.1f).build()
 	);
 
 	public static final EntityType<PostilionEntity> POSTILION_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(MOD_ID, "postilion"),
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "postilion"),
 			EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
 					.sized(0.25f, 0.25f)
 					.noSummon()
@@ -108,11 +108,11 @@ public class NiftyCarts implements ModInitializer {
 
 	public static final MenuType<PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
 
-	public static final ResourceLocation CART_ONE_CM = new ResourceLocation(MOD_ID, "cart_one_cm");
+	public static final ResourceLocation CART_ONE_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "cart_one_cm");
 
-	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, new ResourceLocation(NiftyCarts.MOD_ID, "plow_breakable/hoe"));
-	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, new ResourceLocation(NiftyCarts.MOD_ID, "plow_breakable/shovel"));
-	public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, new ResourceLocation(NiftyCarts.MOD_ID, "plow_breakable/axe"));
+	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/hoe"));
+	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/shovel"));
+	public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/axe"));
 
 	@Override
 	public void onInitialize() {
@@ -121,13 +121,13 @@ public class NiftyCarts implements ModInitializer {
 		Registry.register(BuiltInRegistries.CUSTOM_STAT, CART_ONE_CM, CART_ONE_CM);
 		Stats.CUSTOM.get(CART_ONE_CM, StatFormatter.DEFAULT);
 
-		Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, "wheel"), WHEEL);
-		Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, "supply_cart"), SUPPLY_CART);
-		Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, "plow"), PLOW);
-		Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, "animal_cart"), ANIMAL_CART);
-		Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, "hand_cart"), HAND_CART);
+		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "wheel"), WHEEL);
+		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "supply_cart"), SUPPLY_CART);
+		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"), PLOW);
+		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "animal_cart"), ANIMAL_CART);
+		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "hand_cart"), HAND_CART);
 
-		Registry.register(BuiltInRegistries.MENU, new ResourceLocation(MOD_ID, "plow"), PLOW_MENU_TYPE);
+		Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"), PLOW_MENU_TYPE);
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {

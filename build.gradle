@@ -1,6 +1,6 @@
 //file:noinspection GroovyAssignabilityCheck
 plugins {
-	id 'fabric-loom' version '1.6-SNAPSHOT'
+	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -72,7 +72,7 @@ dependencies {
 	//modImplementation "curse.maven:mythic-mounts-517650:4758535"
 
 	modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"   // `modVersion` e.g. 7.0.0 for Minecraft 1.20
-	modImplementation "maven.modrinth:sodium:mc1.20.6-0.5.8"
+	modImplementation "maven.modrinth:sodium:mc1.21-0.5.11"
 }
 
 processResources {

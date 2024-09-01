@@ -30,10 +30,10 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
     }
 
     @Override
-    public void renderToBuffer(final PoseStack stack, final VertexConsumer buf, final int packedLight, final int packedOverlay, final float red, final float green, final float blue, final float alpha) {
-        this.body.render(stack, buf, packedLight, packedOverlay, red, green, blue, alpha);
-        this.leftWheel.render(stack, buf, packedLight, packedOverlay, red, green, blue, alpha);
-        this.rightWheel.render(stack, buf, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(final PoseStack stack, final VertexConsumer buf, final int packedLight, final int packedOverlay, int k) {
+        this.body.render(stack, buf, packedLight, packedOverlay, k);
+        this.leftWheel.render(stack, buf, packedLight, packedOverlay, k);
+        this.rightWheel.render(stack, buf, packedLight, packedOverlay, k);
     }
 
     @Override

@@ -26,17 +26,23 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.PaintingVariantTags;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.Painting;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.armortrim.ArmorTrim;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -45,6 +51,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -52,7 +59,7 @@ import java.util.stream.StreamSupport;
 
 public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartModel> {
     //This texture is not a real file it is assembled during resource loading
-    private static final ResourceLocation TEXTURE = new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/hand_cart.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/hand_cart.png");
     private final HumanoidModel<LivingEntity> leggings, armor;
     private final TextureAtlas armorTrimAtlas;
 
@@ -135,22 +142,32 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
 
     private void renderPaintings(final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
         final VertexConsumer buf = source.getBuffer(RenderType.entitySolid(Minecraft.getInstance().getPaintingTextures().getBackSprite().atlasLocation()));
-        final ObjectList<PaintingVariant> types = StreamSupport.stream(BuiltInRegistries.PAINTING_VARIANT.spliterator(), false)
-                .filter(t -> t.getWidth() == 16 && t.getHeight() == 16)
-                .collect(Collectors.toCollection(ObjectArrayList::new));
         final Random rng = new Random(entity.getUUID().getMostSignificantBits() ^ entity.getUUID().getLeastSignificantBits());
-        ObjectLists.shuffle(types, rng);
         stack.pushPose();
         stack.translate(0.0D, -2.5D / 16.0D, 0.0D);
         stack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+        var registryAccess = entity.level().registryAccess();
+        ObjectList<PaintingVariant> variants = new ObjectArrayList<>();
+        registryAccess.registryOrThrow(Registries.PAINTING_VARIANT).getTagOrEmpty(PaintingVariantTags.PLACEABLE).forEach(variantHolder -> {
+            if (variantHolder.value().area() == 1) variants.add(variantHolder.value());
+        });
+        ObjectLists.shuffle(variants, rng);
         for (int i = 0; i < cargo.size(); i++) {
             final ItemStack itemStack = cargo.get(i);
             if (itemStack.isEmpty()) continue;
-            final PaintingVariant t = types.get(i % types.size());
+            CustomData customData = itemStack.getOrDefault(DataComponents.ENTITY_DATA, CustomData.EMPTY);
+            Optional<PaintingVariant> paintingVariant = Optional.empty();
+            if (!customData.isEmpty()) {
+                paintingVariant = customData.read(registryAccess.createSerializationContext(NbtOps.INSTANCE), Painting.VARIANT_MAP_CODEC).result().map(Holder::value);
+            }
+            if (paintingVariant.isEmpty() || paintingVariant.get().area() > 1) {
+                if (variants.isEmpty()) continue;
+                paintingVariant = Optional.of(variants.get(i % variants.size()));
+            }
             stack.pushPose();
             stack.translate(0.0D, 0.03D, -1D / 16.0D * i + 0.0001f);
             stack.mulPose(Axis.ZP.rotation(rng.nextFloat() * (float) Math.PI * 0.2f));
-            CargoRenderUtil.renderPainting(t, stack, buf, packedLight);
+            CargoRenderUtil.renderPainting(paintingVariant.get(), stack, buf, packedLight);
             stack.popPose();
         }
         stack.popPose();
@@ -209,10 +226,19 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
         }
     }
 
+    private EquipmentSlot getEquipmentSlotForItem(ItemStack itemStack) {
+        Equipable equipable = Equipable.get(itemStack);
+        if (equipable != null) {
+            return equipable.getEquipmentSlot();
+        }
+
+        return EquipmentSlot.MAINHAND;
+    }
+
     private void renderArmor(final PoseStack stack, final MultiBufferSource source, final int packedLight, final ItemStack itemStack, final int ix) {
         final Item item = itemStack.getItem();
         if (!(item instanceof final ArmorItem armorItem)) return;
-        final EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(itemStack);
+        final EquipmentSlot slot = getEquipmentSlotForItem(itemStack);
         final HumanoidModel<LivingEntity> m = slot == EquipmentSlot.LEGS ? this.leggings : this.armor;
         stack.mulPose(Axis.YP.rotation(ix == 0 ? (float) Math.PI * 0.5F : (float) -Math.PI * 0.5F));
         m.setAllVisible(false);
@@ -272,11 +298,10 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
         float g;
         float b;
         VertexConsumer armor;
-        for(Iterator<ArmorMaterial.Layer> it = material.layers().iterator(); it.hasNext(); m.renderToBuffer(stack, armor, packedLight, OverlayTexture.NO_OVERLAY, r, g, b, 1.0F)) {
+        for(Iterator<ArmorMaterial.Layer> it = material.layers().iterator(); it.hasNext(); m.renderToBuffer(stack, armor, packedLight, OverlayTexture.NO_OVERLAY)) {
             layer = it.next();
             armor = ItemRenderer.getArmorFoilBuffer(source,
                     RenderType.armorCutoutNoCull(layer.texture(usesInnerModel)),
-                    false,
                     itemStack.hasFoil()
             );
             if (layer.dyeable() && rgb != -1) {
@@ -294,11 +319,11 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
         if (armorTrim != null) {
             TextureAtlasSprite textureAtlasSprite = this.armorTrimAtlas.getSprite(usesInnerModel ? armorTrim.innerTexture(armorItem.getMaterial()) : armorTrim.outerTexture(armorItem.getMaterial()));
             VertexConsumer vertexConsumer = textureAtlasSprite.wrap(source.getBuffer(Sheets.armorTrimsSheet(armorTrim.pattern().value().decal())));
-            m.renderToBuffer(stack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            m.renderToBuffer(stack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY);
         }
 
         if (itemStack.hasFoil()) {
-            m.renderToBuffer(stack, source.getBuffer(RenderType.armorEntityGlint()), packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            m.renderToBuffer(stack, source.getBuffer(RenderType.armorEntityGlint()), packedLight, OverlayTexture.NO_OVERLAY);
         }
     }
 

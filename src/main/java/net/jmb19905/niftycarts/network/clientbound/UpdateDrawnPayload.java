@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record UpdateDrawnPayload(int pullingId, int cartId) implements CustomPacketPayload {
 
-    public static final Type<UpdateDrawnPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + ":update_drawn");
+    public static final Type<UpdateDrawnPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_update_drawn");
     public static final StreamCodec<FriendlyByteBuf, UpdateDrawnPayload> CODEC = new StreamCodec<>() {
         @Override
         public @NotNull UpdateDrawnPayload decode(FriendlyByteBuf buf) {
