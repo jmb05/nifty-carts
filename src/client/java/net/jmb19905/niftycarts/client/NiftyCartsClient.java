@@ -23,7 +23,7 @@ import net.jmb19905.niftycarts.network.serverbound.ToggleSlowPayload;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.neoforged.fml.config.ModConfig;
+import net.minecraftforge.fml.config.ModConfig;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Objects;
