@@ -54,8 +54,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartModel> {
     //This texture is not a real file it is assembled during resource loading
@@ -288,42 +286,21 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
         stack.scale(0.75F, 0.75F, 0.75F);
 
         ArmorMaterial material = armorItem.getMaterial().value();
-
-        final int rgb = itemStack.is(ItemTags.DYEABLE) ? DyedItemColor.getOrDefault(itemStack, -6265536) : -1;
-
+        final int rgb = itemStack.is(ItemTags.DYEABLE) ? FastColor.ARGB32.opaque(DyedItemColor.getOrDefault(itemStack, -6265536)) : -1;
         boolean usesInnerModel = slot == EquipmentSlot.LEGS;
-
-        ArmorMaterial.Layer layer;
-        float r;
-        float g;
-        float b;
-        VertexConsumer armor;
-        for(Iterator<ArmorMaterial.Layer> it = material.layers().iterator(); it.hasNext(); m.renderToBuffer(stack, armor, packedLight, OverlayTexture.NO_OVERLAY)) {
-            layer = it.next();
-            armor = ItemRenderer.getArmorFoilBuffer(source,
-                    RenderType.armorCutoutNoCull(layer.texture(usesInnerModel)),
-                    itemStack.hasFoil()
-            );
-            if (layer.dyeable() && rgb != -1) {
-                r = (float) FastColor.ARGB32.red(rgb) / 255.0F;
-                g = (float) FastColor.ARGB32.green(rgb) / 255.0F;
-                b = (float) FastColor.ARGB32.blue(rgb) / 255.0F;
-            } else {
-                r = 1.0F;
-                g = 1.0F;
-                b = 1.0F;
-            }
+        for (ArmorMaterial.Layer layer : material.layers()) {
+            int k = layer.dyeable() ? rgb : -1;
+            VertexConsumer vertexConsumer = source.getBuffer(RenderType.armorCutoutNoCull(layer.texture(usesInnerModel)));
+            m.renderToBuffer(stack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, k);
         }
-
         ArmorTrim armorTrim = itemStack.get(DataComponents.TRIM);
         if (armorTrim != null) {
             TextureAtlasSprite textureAtlasSprite = this.armorTrimAtlas.getSprite(usesInnerModel ? armorTrim.innerTexture(armorItem.getMaterial()) : armorTrim.outerTexture(armorItem.getMaterial()));
             VertexConsumer vertexConsumer = textureAtlasSprite.wrap(source.getBuffer(Sheets.armorTrimsSheet(armorTrim.pattern().value().decal())));
-            m.renderToBuffer(stack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY);
+            m.renderToBuffer(stack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, rgb);
         }
-
         if (itemStack.hasFoil()) {
-            m.renderToBuffer(stack, source.getBuffer(RenderType.armorEntityGlint()), packedLight, OverlayTexture.NO_OVERLAY);
+            m.renderToBuffer(stack, source.getBuffer(RenderType.armorEntityGlint()), packedLight, OverlayTexture.NO_OVERLAY, rgb);
         }
     }
 
