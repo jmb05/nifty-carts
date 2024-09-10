@@ -49,6 +49,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -688,6 +689,12 @@ public abstract class AbstractDrawnEntity extends Entity {
             speed.removeModifier(modifier.id());
         }
     }
+
+    @Override
+    protected void playStepSound(BlockPos blockPos, BlockState blockState) {}
+
+    @Override
+    protected void playMuffledStepSound(BlockState blockState) {}
 
     public class RenderInfo {
         final float delta;
