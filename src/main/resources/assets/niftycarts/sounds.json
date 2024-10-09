@@ -16,5 +16,15 @@
       "niftycarts:entity/cart/place"
     ],
     "subtitle": "subtitles.niftycarts.cart.placed"
+  },
+  "entity.cart.creak": {
+    "sounds": [
+      "niftycarts:entity/cart/creak0",
+      "niftycarts:entity/cart/creak1",
+      "niftycarts:entity/cart/creak2",
+      "niftycarts:entity/cart/creak3",
+      "niftycarts:entity/cart/creak4"
+    ],
+    "subtitle": "subtitles.niftycarts.cart.creak"
   }
 }

@@ -38,7 +38,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fml.config.ModConfig;
 
 import java.util.function.Supplier;
 
@@ -57,10 +56,12 @@ public class NiftyCarts implements ModInitializer {
 	public static final ResourceLocation ATTACH_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "entity.cart.attach");
 	public static final ResourceLocation DETACH_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "entity.cart.detach");
 	public static final ResourceLocation PLACE_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "entity.cart.place");
+	public static final ResourceLocation CREAK_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "entity.cart.creak");
 
 	public static SoundEvent ATTACH_SOUND = SoundEvent.createVariableRangeEvent(ATTACH_SOUND_ID);
 	public static SoundEvent DETACH_SOUND = SoundEvent.createVariableRangeEvent(DETACH_SOUND_ID);
 	public static SoundEvent PLACE_SOUND = SoundEvent.createVariableRangeEvent(PLACE_SOUND_ID);
+	public static SoundEvent CREAK_SOUND = SoundEvent.createVariableRangeEvent(CREAK_SOUND_ID);
 
 	public static final EntityType<SupplyCartEntity> SUPPLY_CART_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
@@ -116,7 +117,9 @@ public class NiftyCarts implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ForgeConfigRegistry.INSTANCE.register(MOD_ID, ModConfig.Type.COMMON, NiftyCartsConfig.spec());
+		//needed for compatibility with 1.21
+        //noinspection removal
+        ForgeConfigRegistry.INSTANCE.register(MOD_ID, net.minecraftforge.fml.config.ModConfig.Type.COMMON, NiftyCartsConfig.spec());
 
 		Registry.register(BuiltInRegistries.CUSTOM_STAT, CART_ONE_CM, CART_ONE_CM);
 		Stats.CUSTOM.get(CART_ONE_CM, StatFormatter.DEFAULT);
