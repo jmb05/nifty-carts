@@ -41,6 +41,7 @@ public final class NiftyCartsConfig {
     }
 
     public static class Client {
+        public final ForgeConfigSpec.BooleanValue creakingSounds;
         public final ForgeConfigSpec.BooleanValue renderSupplies;
         public final ForgeConfigSpec.BooleanValue renderSupplyGear;
         public final ForgeConfigSpec.BooleanValue renderSupplyFlowers;
@@ -49,6 +50,7 @@ public final class NiftyCartsConfig {
 
         Client(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration to disable the rendering of certain supplies in the supply cart");
+            this.creakingSounds = builder.comment("Experimental: Cart Creaking sounds").define("creaking_sounds", false);
             this.renderSupplies = builder.comment("Enables/Disables the rendering of all supplies")
                     .define("render_supplies", true);
             this.renderSupplyGear = builder.comment("Falls back to rendering as items if false").define("render_supply_gear", true);
@@ -81,6 +83,7 @@ public final class NiftyCartsConfig {
         public final ForgeConfigSpec.ConfigValue<ArrayList<String>> pullEntities;
         public final ForgeConfigSpec.DoubleValue slowSpeed;
         public final ForgeConfigSpec.DoubleValue pullSpeed;
+        public final ForgeConfigSpec.IntValue destroyDamage;
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description) {
             this(builder, name, description, new ArrayList<>(), 0);
@@ -98,6 +101,8 @@ public final class NiftyCartsConfig {
                     .defineInRange("slow_speed", -0.65D, -1.0D, 0.0D);
             this.pullSpeed = builder.comment("Base speed modifier applied to animals (-0.5 = half normal speed)")
                     .defineInRange("pull_speed", 0.0D, -1.0D, defaultPullSpeed);
+            this.destroyDamage = builder.comment("Damage needed to destroy the cart. Damage accumulates over time but decays at a rate of 2 damage per second.")
+                            .defineInRange("destroy_damage", 4, 1, 100);
             builder.pop();
         }
     }

@@ -429,7 +429,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             this.setTimeSinceHit(10);
             this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
             final boolean flag = source.getEntity() instanceof Player && ((Player) source.getEntity()).getAbilities().instabuild;
-            if (flag || this.getDamageTaken() > 40.0F) {
+            if (flag || this.getDamageTaken() > getConfig().destroyDamage.get() * 10) {
                 this.onDestroyed(source, flag);
                 this.setPulling(null);
                 this.discard();
@@ -691,7 +691,10 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     @Override
-    protected void playStepSound(BlockPos blockPos, BlockState blockState) {}
+    protected void playStepSound(BlockPos blockPos, BlockState blockState) {
+        if (!NiftyCartsConfig.getClient().creakingSounds.get() || random.nextFloat() < 0.7f) return;
+        this.playSound(NiftyCarts.CREAK_SOUND, 0.75f + random.nextFloat() * 0.25f, 1);
+    }
 
     @Override
     protected void playMuffledStepSound(BlockState blockState) {}

@@ -44,7 +44,7 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
         final float time = entity.getTimeSinceHit() - delta;
         final float rot;
         if (time > 0.0F) {
-            final float damage = Math.max(entity.getDamageTaken() - delta, 0.0F);
+            final float damage = Math.max(entity.getDamageTaken() - delta, 0.0F) * 0.5f;
             rot = (float) Math.toRadians(Mth.sin(time) * time * damage / 40.0F * -entity.getForwardDirection());
         } else {
             rot = 0.0F;
