@@ -82,7 +82,7 @@ public class CargoRenderUtil {
     }
 
     public static void renderFlowers(IFlowerCargoModel model, ResourceLocation textureLocation, double offset, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
-        model.getFlowerBasket().render(stack, source.getBuffer(model.renderType(textureLocation)), packedLight, OverlayTexture.NO_OVERLAY);
+        model.getFlowerBasket().render(stack, source.getBuffer(RenderType.entityCutoutNoCull(textureLocation)), packedLight, OverlayTexture.NO_OVERLAY);
         final BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
         final ModelBlockRenderer renderer = dispatcher.getModelRenderer();
         for (int i = 0; i < cargo.size(); i++) {
