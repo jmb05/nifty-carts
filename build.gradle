@@ -70,9 +70,6 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation "maven.modrinth:regions-unexplored:A-0.5.6+1.20.1"
-	modImplementation "maven.modrinth:terrablender:FZV63yhg"
-
 	modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"   // `modVersion` e.g. 7.0.0 for Minecraft 1.20
 	//modImplementation "maven.modrinth:open-parties-and-claims:fabric-1.20.1-0.23.2"
 }

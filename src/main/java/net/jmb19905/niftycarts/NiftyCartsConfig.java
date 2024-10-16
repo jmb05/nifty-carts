@@ -65,7 +65,7 @@ public final class NiftyCartsConfig {
         public final CartConfig supplyCart;
         public final CartConfig handCart;
         public final CartConfig animalCart;
-        public final CartConfig plow;
+        public final PlowConfig plow;
 
         Common(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
@@ -73,8 +73,11 @@ public final class NiftyCartsConfig {
             ArrayList<String> list = new ArrayList<>();
             list.add("minecraft:player");
             this.handCart = new CartConfig(builder, "handCart", "The Hand Cart, a player pulled cart that stores items", list, -0.1);
+            this.handCart.pop();
             this.animalCart = new CartConfig(builder, "animal_cart", "The Animal Cart, a type of cart to haul other animals");
-            this.plow = new CartConfig(builder, "plow", "The Plow, an animal pulled machine for tilling soil and creating paths");
+            this.animalCart.pop();
+            this.plow = new PlowConfig(builder, "plow", "The Plow, an animal pulled machine for tilling soil and creating paths");
+            this.plow.pop();
             builder.pop();
         }
     }
@@ -83,12 +86,14 @@ public final class NiftyCartsConfig {
         public final ForgeConfigSpec.ConfigValue<ArrayList<String>> pullEntities;
         public final ForgeConfigSpec.DoubleValue slowSpeed;
         public final ForgeConfigSpec.DoubleValue pullSpeed;
+        private final ForgeConfigSpec.Builder builder;
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description) {
             this(builder, name, description, new ArrayList<>(), -0.1);
         }
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description, ArrayList<String> defaultEntityList, double defaultPullSpeed) {
+            this.builder = builder;
             builder.comment(description).push(name);
             this.pullEntities = builder
                     .comment(
@@ -100,7 +105,29 @@ public final class NiftyCartsConfig {
                     .defineInRange("slow_speed", -0.65D, -1.0D, 0.0D);
             this.pullSpeed = builder.comment("Base speed modifier applied to animals (-0.5 = half normal speed)")
                     .defineInRange("pull_speed", 0.0D, -1.0D, defaultPullSpeed);
+        }
+
+        protected void pop() {
             builder.pop();
         }
     }
+
+    public static class PlowConfig extends CartConfig {
+
+        public final ForgeConfigSpec.ConfigValue<ArrayList<String>> harvestItems;
+        public final ForgeConfigSpec.ConfigValue<ArrayList<String>> sowItems;
+
+        PlowConfig(ForgeConfigSpec.Builder builder, String name, String description) {
+            this(builder, name, description, new ArrayList<>(), -0.1, new ArrayList<>(), new ArrayList<>());
+        }
+
+        PlowConfig(ForgeConfigSpec.Builder builder, String name, String description, ArrayList<String> defaultEntityList, double defaultPullSpeed, ArrayList<String> defaultHarvestItemList, ArrayList<String> defaultSowItemsList) {
+            super(builder, name, description, defaultEntityList, defaultPullSpeed);
+            this.harvestItems = builder.comment("Items that can harvest crops. Leave empty to disable")
+                    .define("harvest_items", defaultHarvestItemList);
+            this.sowItems = builder.comment("Items that can be planted. Leave empty to disable")
+                    .define("sow_items", defaultSowItemsList);
+        }
+    }
+
 }

@@ -7,11 +7,14 @@ import net.jmb19905.niftycarts.container.PlowMenu;
 import net.jmb19905.niftycarts.util.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
@@ -28,6 +31,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private static final int SLOT_COUNT = 3;
@@ -76,18 +82,36 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private void plow(final Player player) {
         for (int i = 0; i < SLOT_COUNT; i++) {
             final ItemStack stack = this.getStackInSlot(i);
-            if (stack.getItem() instanceof TieredItem) {
-                final float offset = 38.0F - i * 38.0F;
-                final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
-                final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
-                final BlockPos blockPos = new BlockPos((int) blockPosX, (int) Math.round(this.getY() - 0.75D), (int) blockPosZ);
-                final boolean damageable = stack.isDamageableItem();
-                final int count = stack.getCount();
-                tryBreakBlock(stack, blockPos.above(), level(), player);
-                stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
-                if (damageable && stack.getCount() < count) {
-                    this.playSound(SoundEvents.ITEM_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
-                    this.updateSlot(i);
+            final float offset = 38.0F - i * 38.0F;
+            final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
+            final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
+            final BlockPos blockPos = new BlockPos((int) blockPosX, (int) Math.round(this.getY() - 0.75D), (int) blockPosZ);
+            final boolean damageable = stack.isDamageableItem();
+            final int count = stack.getCount();
+            tryBreakBlock(stack, blockPos.above(), level(), player);
+            tryPlaceBlock(stack, blockPos.above(), level(), i);
+            stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
+            if (damageable && stack.getCount() < count) {
+                this.playSound(SoundEvents.ITEM_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
+                this.updateSlot(i);
+            }
+        }
+    }
+
+    private void tryPlaceBlock(ItemStack stack, BlockPos pos, Level level, int slot) {
+        var list = NiftyCartsConfig.get().plow.sowItems.get();
+        if (list.contains(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) {
+            int i = list.indexOf(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
+            ResourceLocation id = ResourceLocation.tryParse(NiftyCartsConfig.get().plow.sowItems.get().get(i));
+            if (id == null) return;
+            Item item = BuiltInRegistries.ITEM.get(id);
+            if (item instanceof BlockItem blockItem) {
+                Block block = blockItem.getBlock();
+                //noinspection deprecation
+                if (block.canSurvive(block.defaultBlockState(), level, pos)) {
+                    level.setBlockAndUpdate(pos, block.defaultBlockState());
+                    stack.setCount(stack.getCount() - 1);
+                    onContentsChanged(slot);
                 }
             }
         }
@@ -95,20 +119,24 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     private void tryBreakBlock(ItemStack stack, BlockPos pos, Level level, Player player) {
         BlockState state = level.getBlockState(pos);
-        TagKey<Block> tag;
-        if (stack.getItem() instanceof HoeItem) {
-            tag = NiftyCarts.PLOW_BREAKABLE_HOE;
-        } else if (stack.getItem() instanceof ShovelItem) {
-            tag = NiftyCarts.PLOW_BREAKABLE_SHOVEL;
-        } else if (stack.getItem() instanceof AxeItem) {
-            tag = NiftyCarts.PLOW_BREAKABLE_AXE;
-        } else return;
-        if (state.isAir()) return;
-        if (state.is(tag)) {
-            if (level.removeBlock(pos, false)) {
-                level.destroyBlock(pos, false);
-                if (!state.requiresCorrectToolForDrops() || stack.isCorrectToolForDrops(state)) {
-                    Block.dropResources(state, level, pos, level.getBlockEntity(pos), player, stack);
+        List<TagKey<Block>> tags = new ArrayList<>();
+
+        if (NiftyCartsConfig.get().plow.harvestItems.get().contains(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) {
+            tags.add(BlockTags.CROPS);
+        } if (stack.getItem() instanceof HoeItem) {
+            tags.add(NiftyCarts.PLOW_BREAKABLE_HOE);
+        } if (stack.getItem() instanceof ShovelItem) {
+            tags.add(NiftyCarts.PLOW_BREAKABLE_SHOVEL);
+        } if (stack.getItem() instanceof AxeItem) {
+            tags.add(NiftyCarts.PLOW_BREAKABLE_AXE);
+        } if (state.isAir()) return;
+        for (TagKey<Block> tag : tags) {
+            if (state.is(tag)) {
+                if (level.removeBlock(pos, false)) {
+                    level.destroyBlock(pos, false);
+                    if (!state.requiresCorrectToolForDrops() || stack.isCorrectToolForDrops(state)) {
+                        Block.dropResources(state, level, pos, level.getBlockEntity(pos), player, stack);
+                    }
                 }
             }
         }
