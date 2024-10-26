@@ -7,14 +7,11 @@ import net.jmb19905.niftycarts.container.PlowMenu;
 import net.jmb19905.niftycarts.util.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
@@ -89,7 +86,6 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
             final boolean damageable = stack.isDamageableItem();
             final int count = stack.getCount();
             tryBreakBlock(stack, blockPos.above(), level(), player);
-            tryPlaceBlock(stack, blockPos.above(), level(), i);
             stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
             if (damageable && stack.getCount() < count) {
                 this.playSound(SoundEvents.ITEM_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
@@ -98,32 +94,11 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
         }
     }
 
-    private void tryPlaceBlock(ItemStack stack, BlockPos pos, Level level, int slot) {
-        var list = NiftyCartsConfig.get().plow.sowItems.get();
-        if (list.contains(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) {
-            int i = list.indexOf(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
-            ResourceLocation id = ResourceLocation.tryParse(NiftyCartsConfig.get().plow.sowItems.get().get(i));
-            if (id == null) return;
-            Item item = BuiltInRegistries.ITEM.get(id);
-            if (item instanceof BlockItem blockItem) {
-                Block block = blockItem.getBlock();
-                //noinspection deprecation
-                if (block.canSurvive(block.defaultBlockState(), level, pos)) {
-                    level.setBlockAndUpdate(pos, block.defaultBlockState());
-                    stack.setCount(stack.getCount() - 1);
-                    onContentsChanged(slot);
-                }
-            }
-        }
-    }
-
     private void tryBreakBlock(ItemStack stack, BlockPos pos, Level level, Player player) {
         BlockState state = level.getBlockState(pos);
         List<TagKey<Block>> tags = new ArrayList<>();
 
-        if (NiftyCartsConfig.get().plow.harvestItems.get().contains(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) {
-            tags.add(BlockTags.CROPS);
-        } if (stack.getItem() instanceof HoeItem) {
+        if (stack.getItem() instanceof HoeItem) {
             tags.add(NiftyCarts.PLOW_BREAKABLE_HOE);
         } if (stack.getItem() instanceof ShovelItem) {
             tags.add(NiftyCarts.PLOW_BREAKABLE_SHOVEL);
@@ -159,7 +134,6 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
             } else {
                 this.entityData.set(TOOLS.get(slot), this.getItemStacks().get(slot));
             }
-
         }
     }
 
@@ -169,7 +143,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public Item getCartItem() {
-        return NiftyCarts.PLOW;
+        return NiftyCarts.PLOW.get(getWoodType());
     }
 
     @Override

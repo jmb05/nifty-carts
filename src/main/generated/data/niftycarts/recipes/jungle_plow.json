@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "item": "minecraft:jungle_planks"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    },
+    "w": {
+      "item": "niftycarts:wheel"
+    }
+  },
+  "pattern": [
+    "sss",
+    "psp",
+    "wpw"
+  ],
+  "result": {
+    "item": "niftycarts:jungle_plow"
+  },
+  "show_notification": true
+}

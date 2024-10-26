@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "niftycarts:oak_supply_cart"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wheel": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "niftycarts:wheel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_wheel",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "niftycarts:oak_supply_cart"
+    ]
+  },
+  "sends_telemetry_event": false
+}

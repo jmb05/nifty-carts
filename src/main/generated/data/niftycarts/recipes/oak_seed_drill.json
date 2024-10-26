@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "minecraft:chest"
+    },
+    "h": {
+      "item": "minecraft:hopper"
+    },
+    "p": {
+      "item": "minecraft:oak_planks"
+    },
+    "w": {
+      "item": "niftycarts:wheel"
+    }
+  },
+  "pattern": [
+    "pcp",
+    "php",
+    "wpw"
+  ],
+  "result": {
+    "item": "niftycarts:oak_seed_drill"
+  },
+  "show_notification": true
+}

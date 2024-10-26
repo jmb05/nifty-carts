@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, AnimalCartModel> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/animal_cart.png");
 
     public AnimalCartRenderer(final EntityRendererProvider.Context renderManager) {
         super(renderManager, new AnimalCartModel(renderManager.bakeLayer(NiftyCartsModelLayers.ANIMAL_CART)));
@@ -38,6 +37,6 @@ public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, An
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(final AnimalCartEntity entity) {
-        return TEXTURE;
+        return new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().getId() + "_animal_cart.png");
     }
 }

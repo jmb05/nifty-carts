@@ -37,7 +37,7 @@ public class HandCartEntity extends AbstractCargoCart {
 
     @Override
     public Item getCartItem() {
-        return NiftyCarts.HAND_CART;
+        return NiftyCarts.HAND_CART.get(getWoodType());
     }
 
     @Override

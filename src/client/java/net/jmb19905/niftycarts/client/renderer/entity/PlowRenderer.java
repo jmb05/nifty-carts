@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/plow.png");
 
     public PlowRenderer(final EntityRendererProvider.Context renderManager) {
         super(renderManager, new PlowModel(renderManager.bakeLayer(NiftyCartsModelLayers.PLOW)));
@@ -26,7 +25,7 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(final PlowEntity entity) {
-        return TEXTURE;
+        return new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().getId() + "_plow.png");
     }
 
     @Override

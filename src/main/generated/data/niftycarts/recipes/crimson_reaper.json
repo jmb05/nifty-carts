@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "l": {
+      "item": "minecraft:crimson_slab"
+    },
+    "p": {
+      "item": "minecraft:crimson_planks"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    },
+    "w": {
+      "item": "niftycarts:wheel"
+    }
+  },
+  "pattern": [
+    " sl",
+    "spp",
+    "iww"
+  ],
+  "result": {
+    "item": "niftycarts:crimson_reaper"
+  },
+  "show_notification": true
+}
