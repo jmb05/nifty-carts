@@ -15,14 +15,14 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.entity.BannerPatternLayers;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.function.Consumer;
 
-public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends EntityModel<T>> extends EntityRenderer<T> {
+public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends CartRenderState, M extends EntityModel<S>> extends EntityRenderer<T, S> {
     protected M model;
 
     private final ModelPart flag;
@@ -39,38 +39,58 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends Ent
     }
 
     @Override
-    public void render(final T entity, final float yaw, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
-        stack.pushPose();
-        final AbstractDrawnEntity.RenderInfo info = entity.getInfo(delta);
-        this.setupRotation(entity, info.getYaw(), delta, stack);
+    public abstract @NotNull S createRenderState();
 
-        this.model.setupAnim(entity, delta, 0.0F, 0.0F, 0.0F, info.getPitch());
-        final VertexConsumer buf = source.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
-        this.model.renderToBuffer(stack, buf, packedLight, OverlayTexture.NO_OVERLAY);
-        this.renderContents(entity, delta, stack, source, packedLight);
-
-        stack.popPose();
-        super.render(entity, info.getYaw(), delta, stack, source, packedLight);
+    @Override
+    public void extractRenderState(T entity, S state, float delta) {
+        super.extractRenderState(entity, state, delta);
+        AbstractDrawnEntity.RenderInfo info = entity.getInfo(delta);
+        state.pitch = info.getPitch();
+        state.yaw = info.getYaw();
+        state.wheelRotation0 = entity.getWheelRotation(0);
+        state.wheelRotation1 = entity.getWheelRotation(1);
+        state.wheelRotationInc0 = entity.getWheelRotationIncrement(0);
+        state.wheelRotationInc1 = entity.getWheelRotationIncrement(1);
+        state.timeSinceHit = entity.getTimeSinceHit();
+        state.damage = entity.getDamageTaken();
+        state.forward = entity.getForwardDirection();
+        state.bannerColor = entity.getBannerColor();
+        state.bannerPattern = entity.getBannerPattern();
     }
 
-    protected abstract void renderContents(final T entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight);
+    public abstract ResourceLocation getTextureLocation(S state);
 
-    public void setupRotation(final T entity, final float entityYaw, final float delta, final PoseStack stack) {
-        stack.mulPose(Axis.YP.rotationDegrees(180.0F - entityYaw));
-        final float time = entity.getTimeSinceHit() - delta;
+    @Override
+    public void render(S state, PoseStack stack, MultiBufferSource source, int light) {
+        stack.pushPose();
+        this.setupRotation(state, stack);
+
+        this.model.setupAnim(state);
+        final VertexConsumer buf = source.getBuffer(this.model.renderType(this.getTextureLocation(state)));
+        this.model.renderToBuffer(stack, buf, light, OverlayTexture.NO_OVERLAY);
+        this.renderContents(state, stack, source, light);
+
+        stack.popPose();
+    }
+
+    protected abstract void renderContents(S state, final PoseStack stack, final MultiBufferSource source, final int packedLight);
+
+    public void setupRotation(S state, final PoseStack stack) {
+        stack.mulPose(Axis.YP.rotationDegrees(180.0F - state.yaw));
+        final float time = state.timeSinceHit - state.delta;
         if (time > 0.0F) {
             final double center = 1.2D;
             stack.translate(0.0D, center, 0.0D);
-            final float damage = Math.max(entity.getDamageTaken() - delta, 0.0F);
+            final float damage = Math.max(state.damage - state.delta, 0.0F);
             final float angle = Mth.sin(time) * time * damage / 60.0F;
-            stack.mulPose(Axis.ZP.rotationDegrees(angle * entity.getForwardDirection()));
+            stack.mulPose(Axis.ZP.rotationDegrees(angle * state.forward));
             stack.translate(0.0D, -center, 0.0D);
             stack.translate(0.0D, angle / 32.0F, 0.0D);
         }
         stack.scale(-1.0F, -1.0F, 1.0F);
     }
 
-    protected void renderBanner(final T entity, final PoseStack stack, final MultiBufferSource source, float delta, final int packedLight, final DyeColor color, final BannerPatternLayers banner) {
+    protected void renderBanner(S state, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
         stack.pushPose();
         stack.mulPose(Axis.YP.rotationDegrees(90.0F));
         final float scale = 2.0F / 3.0F;
@@ -86,13 +106,12 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends Ent
         this.flag.x = -4.0F;
         this.flag.y = -26.0F;
         this.flag.z = 1.5F;
-        float k = ((float)Math.floorMod((long)(entity.getX() * 7 + entity.getY() * 9 + entity.getZ() * 13) + entity.level().getGameTime(), 100L) + delta) / 100.0F;
+        float k = ((float)Math.floorMod((int) ((state.x * 7 + state.y * 9 + state.z * 13) + state.ageInTicks), 100) + state.delta) / 100.0F;
         this.flag.xRot = (0.01F * Mth.cos(Mth.TWO_PI * k)) * Mth.PI;
-        BannerRenderer.renderPatterns(stack, source, packedLight, OverlayTexture.NO_OVERLAY, this.flag, ModelBakery.BANNER_BASE, true, color, banner);
+        BannerRenderer.renderPatterns(stack, source, packedLight, OverlayTexture.NO_OVERLAY, this.flag, ModelBakery.BANNER_BASE, true, state.bannerColor, state.bannerPattern);
         stack.popPose();
     }
 
-    @SuppressWarnings("UnreachableCode")
     protected void attach(final ModelPart bone, final ModelPart attachment, final Consumer<PoseStack> function, final PoseStack stack) {
         stack.pushPose();
         bone.translateAndRotate(stack);

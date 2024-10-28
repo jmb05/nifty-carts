@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, AnimalCartModel> {
+public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, CartRenderState, AnimalCartModel> {
     //This texture is not a real file it is assembled during resource loading
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/animal_cart.png");
 
@@ -20,18 +20,23 @@ public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, An
     }
 
     @Override
-    protected void renderContents(final AnimalCartEntity entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
-        if (entity.getBannerColor() != null) {
+    public @NotNull CartRenderState createRenderState() {
+        return new CartRenderState();
+    }
+
+    @Override
+    protected void renderContents(CartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
+        if (state.bannerColor != null) {
             stack.pushPose();
             this.model.getBody().translateAndRotate(stack);
             stack.translate(0.0D, -0.6D, 1.56D);
-            this.renderBanner(entity, stack, source, delta, packedLight, entity.getBannerColor(), entity.getBannerPattern());
+            this.renderBanner(state, stack, source, packedLight);
             stack.popPose();
         }
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(final AnimalCartEntity entity) {
+    public @NotNull ResourceLocation getTextureLocation(CartRenderState state) {
         return TEXTURE;
     }
 }

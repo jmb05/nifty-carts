@@ -1,15 +1,21 @@
 package net.jmb19905.niftycarts.client.renderer.entity.model;
 
-import net.jmb19905.niftycarts.entity.HandCartEntity;
+import net.jmb19905.niftycarts.client.renderer.entity.CargoCartRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 
-public class HandCartModel extends CartModel<HandCartEntity> {
+public class HandCartModel extends CartModel<CargoCartRenderState> {
     private final ModelPart flowerBasket;
     public HandCartModel(ModelPart root) {
         super(root);
         this.flowerBasket = root.getChild("flowerBasket");
+        this.flowerBasket.visible = false;
+    }
+
+    @Override
+    public void setupAnim(CargoCartRenderState state) {
+        super.setupAnim(state);
     }
 
     public ModelPart getFlowerBasket() {
@@ -70,21 +76,6 @@ public class HandCartModel extends CartModel<HandCartEntity> {
         shaft.addBox(-4F, 0F, -7.0F, 20, 2, 1);
         shaft.addBox(-4F, 0F, 6.0F, 20, 2, 1);
 
-        final EasyMeshBuilder body = CartModel.createBody(7);
-        body.addChild(axis);
-        body.addChild(cartBase);
-        body.addChild(boardFront);
-        body.addChild(boardsRear[0]);
-        body.addChild(boardsRear[1]);
-        body.addChild(boardsRear[2]);
-        body.addChild(boardsRear[3]);
-        body.addChild(boardsSide[0]);
-        body.addChild(boardsSide[1]);
-        body.addChild(boardsSide[2]);
-        body.addChild(boardsSide[3]);
-        body.addChild(shaft);
-        body.build(def.getRoot());
-
         final EasyMeshBuilder flowerBasket = new EasyMeshBuilder("flowerBasket");
         flowerBasket.setTextureOffset(-17, 45).addBox(-8.0F, -6.0F, -10F, 16.0F, 1.0F, 17.0F);
         flowerBasket.setTextureOffset(16, 45).addBox(-9.0F, -7.0F, 7F, 18.0F, 5.0F, 2.0F);
@@ -102,7 +93,21 @@ public class HandCartModel extends CartModel<HandCartEntity> {
         flowerBasket.addChild(rightSide);
         flowerBasket.build(def.getRoot());
 
+        final EasyMeshBuilder body = CartModel.createBody(7);
+        body.addChild(axis);
+        body.addChild(cartBase);
+        body.addChild(boardFront);
+        body.addChild(boardsRear[0]);
+        body.addChild(boardsRear[1]);
+        body.addChild(boardsRear[2]);
+        body.addChild(boardsRear[3]);
+        body.addChild(boardsSide[0]);
+        body.addChild(boardsSide[1]);
+        body.addChild(boardsSide[2]);
+        body.addChild(boardsSide[3]);
+        body.addChild(shaft);
+        body.build(def.getRoot());
+
         return LayerDefinition.create(def, 64, 64);
     }
-
 }

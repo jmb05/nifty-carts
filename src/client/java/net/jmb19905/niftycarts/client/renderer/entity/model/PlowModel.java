@@ -1,11 +1,11 @@
 package net.jmb19905.niftycarts.client.renderer.entity.model;
 
-import net.jmb19905.niftycarts.entity.PlowEntity;
+import net.jmb19905.niftycarts.client.renderer.entity.PlowRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 
-public final class PlowModel extends CartModel<PlowEntity> {
+public final class PlowModel extends CartModel<PlowRenderState> {
     private final ModelPart[] plowShaftUpper = new ModelPart[3];
     private final ModelPart[] plowShaftLower = new ModelPart[3];
 
@@ -23,10 +23,10 @@ public final class PlowModel extends CartModel<PlowEntity> {
     }
 
     @Override
-    public void setupAnim(final PlowEntity entity, final float delta, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float pitch) {
-        super.setupAnim(entity, delta, limbSwingAmount, ageInTicks, netHeadYaw, pitch);
+    public void setupAnim(PlowRenderState state) {
+        super.setupAnim(state);
         for (final ModelPart renderer : this.plowShaftUpper) {
-            renderer.xRot = (float) (entity.getPlowing() ? Math.PI / 4.0D - Math.toRadians(pitch) : Math.PI / 2.5D);
+            renderer.xRot = (float) (state.plowing ? Math.PI / 4.0D - Math.toRadians(state.pitch) : Math.PI / 2.5D);
         }
     }
 

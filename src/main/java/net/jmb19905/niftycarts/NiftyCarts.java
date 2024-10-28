@@ -40,17 +40,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.fml.config.ModConfig;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class NiftyCarts implements ModInitializer {
 	public static final String MOD_ID = "niftycarts";
 
-	public static final Item WHEEL = new Item(new Item.Properties());
-	private static final Supplier<CartItem> CART_ITEM_SUPPLIER = () -> new CartItem(new Item.Properties().stacksTo(1));
-	public static final CartItem SUPPLY_CART = CART_ITEM_SUPPLIER.get();
-	public static final CartItem HAND_CART = CART_ITEM_SUPPLIER.get();
-	public static final CartItem PLOW = CART_ITEM_SUPPLIER.get();
-	public static final CartItem ANIMAL_CART = CART_ITEM_SUPPLIER.get();
+	public static final Item WHEEL = register("wheel", Item::new);
+	private static final Function<String, CartItem> CART_ITEM_SUPPLIER = id -> register(id, prop -> new CartItem(prop.stacksTo(1)));
+	public static final CartItem SUPPLY_CART = CART_ITEM_SUPPLIER.apply("supply_cart");
+	public static final CartItem HAND_CART = CART_ITEM_SUPPLIER.apply("hand_cart");
+	public static final CartItem PLOW = CART_ITEM_SUPPLIER.apply("plow");
+	public static final CartItem ANIMAL_CART = CART_ITEM_SUPPLIER.apply("animal_cart");
 
 	public static MinecraftServer server = null;
 
@@ -62,39 +62,23 @@ public class NiftyCarts implements ModInitializer {
 	public static SoundEvent DETACH_SOUND = SoundEvent.createVariableRangeEvent(DETACH_SOUND_ID);
 	public static SoundEvent PLACE_SOUND = SoundEvent.createVariableRangeEvent(PLACE_SOUND_ID);
 
-	public static final EntityType<SupplyCartEntity> SUPPLY_CART_ENTITY = Registry.register(
-			BuiltInRegistries.ENTITY_TYPE,
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "supply_cart"),
-			EntityType.Builder.of(SupplyCartEntity::new, MobCategory.MISC).sized(1.5f, 1.4f).build()
-	);
+	public static final EntityType<SupplyCartEntity> SUPPLY_CART_ENTITY = register("supply_cart",
+			EntityType.Builder.of(SupplyCartEntity::new, MobCategory.MISC).sized(1.5f, 1.4f));
 
-	public static final EntityType<AnimalCartEntity> ANIMAL_CART_ENTITY = Registry.register(
-			BuiltInRegistries.ENTITY_TYPE,
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "animal_cart"),
-			EntityType.Builder.of(AnimalCartEntity::new, MobCategory.MISC).sized(1.3f, 1.4f).build()
-	);
+	public static final EntityType<AnimalCartEntity> ANIMAL_CART_ENTITY = register("animal_cart",
+			EntityType.Builder.of(AnimalCartEntity::new, MobCategory.MISC).sized(1.3f, 1.4f));
 
-	public static final EntityType<PlowEntity> PLOW_ENTITY = Registry.register(
-			BuiltInRegistries.ENTITY_TYPE,
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"),
-			EntityType.Builder.of(PlowEntity::new, MobCategory.MISC).sized(1.3f, 1.4f).build()
-	);
+	public static final EntityType<PlowEntity> PLOW_ENTITY = register("plow",
+			EntityType.Builder.of(PlowEntity::new, MobCategory.MISC).sized(1.3f, 1.4f));
 
-	public static final EntityType<HandCartEntity> HAND_CART_ENTITY = Registry.register(
-			BuiltInRegistries.ENTITY_TYPE,
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "hand_cart"),
-			EntityType.Builder.of(HandCartEntity::new, MobCategory.MISC).sized(1.3f, 1.1f).build()
-	);
+	public static final EntityType<HandCartEntity> HAND_CART_ENTITY = register("hand_cart",
+			EntityType.Builder.of(HandCartEntity::new, MobCategory.MISC).sized(1.3f, 1.1f));
 
-	public static final EntityType<PostilionEntity> POSTILION_ENTITY = Registry.register(
-			BuiltInRegistries.ENTITY_TYPE,
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "postilion"),
+	public static final EntityType<PostilionEntity> POSTILION_ENTITY = register("postilion",
 			EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
 					.sized(0.25f, 0.25f)
 					.noSummon()
-					.noSave()
-					.build()
-	);
+					.noSave());
 
 	public static final GoalAdder<Mob> MOB_GOAL_ADDER = GoalAdder.mobGoal(Mob.class)
 			.add(1, PullCartGoal::new)
@@ -120,12 +104,6 @@ public class NiftyCarts implements ModInitializer {
 
 		Registry.register(BuiltInRegistries.CUSTOM_STAT, CART_ONE_CM, CART_ONE_CM);
 		Stats.CUSTOM.get(CART_ONE_CM, StatFormatter.DEFAULT);
-
-		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "wheel"), WHEEL);
-		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "supply_cart"), SUPPLY_CART);
-		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"), PLOW);
-		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "animal_cart"), ANIMAL_CART);
-		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "hand_cart"), HAND_CART);
 
 		Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"), PLOW_MENU_TYPE);
 
@@ -177,4 +155,16 @@ public class NiftyCarts implements ModInitializer {
 		//noinspection DataFlowIssue
 		FabricDefaultAttributeRegistry.register(POSTILION_ENTITY, LivingEntity.createLivingAttributes());
 	}
+
+	public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
+		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, id));
+		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
+	}
+
+	public static <I extends Item> I register(String id, Function<Item.Properties, I> function) {
+		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, id));
+		I item = function.apply(new Item.Properties().setId(key));
+		return Registry.register(BuiltInRegistries.ITEM, key, item);
+	}
+
 }

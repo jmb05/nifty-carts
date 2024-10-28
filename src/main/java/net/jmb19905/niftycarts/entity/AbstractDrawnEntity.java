@@ -49,7 +49,6 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -90,12 +89,6 @@ public abstract class AbstractDrawnEntity extends Entity {
     @Override
     public float maxUpStep() {
         return 1.2f;
-    }
-
-    //Client
-    @Override
-    public @NotNull AABB getBoundingBoxForCulling() {
-        return this.getBoundingBox().inflate(3.0D, 3.0D, 3.0D);
     }
 
     @Override
@@ -414,8 +407,8 @@ public abstract class AbstractDrawnEntity extends Entity {
     protected abstract NiftyCartsConfig.CartConfig getConfig();
 
     @Override
-    public boolean hurt(final DamageSource source, final float amount) {
-        if (this.isInvulnerableTo(source)) {
+    public boolean hurtServer(ServerLevel serverLevel, final DamageSource source, final float amount) {
+        if (this.isInvulnerableToBase(source)) {
             return false;
         } else if (!this.level().isClientSide && this.isAlive()) {
             if (source.is(DamageTypes.CACTUS)) {
@@ -454,7 +447,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 this.playSound(SoundEvents.WOOD_PLACE, 1.0F, 0.8F);
                 this.setBanner(banner);
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.SUCCESS_SERVER;
         }
         return InteractionResult.PASS;
     }
@@ -465,10 +458,11 @@ public abstract class AbstractDrawnEntity extends Entity {
      *
      */
     public void onDestroyed(final DamageSource source, final boolean byCreativePlayer) {
-        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (!(this.level() instanceof ServerLevel serverLevel)) return;
+        if (serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             if (!byCreativePlayer) {
-                this.spawnAtLocation(this.getCartItem());
-                this.spawnAtLocation(this.getBanner());
+                this.spawnAtLocation(serverLevel, this.getCartItem());
+                this.spawnAtLocation(serverLevel, this.getBanner());
             }
             this.onDestroyedAndDoDrops(source);
         }
@@ -726,7 +720,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 if (AbstractDrawnEntity.this.pulling == null) {
                     this.pitch = Mth.lerp(this.delta, AbstractDrawnEntity.this.xRotO, AbstractDrawnEntity.this.getXRot());
                 } else {
-                    this.pitch = AbstractDrawnEntity.getPitch(this.target);
+                    this.pitch = AbstractDrawnEntity.getPitch(this.getTarget());
                 }
             }
             return this.pitch;

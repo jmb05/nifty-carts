@@ -59,7 +59,7 @@ public abstract class AbstractHorseMixin extends LivingEntity {
             if (!this.isControlledByLocalInstance()) {
                 this.calculateEntityAnimation(false);
                 this.setDeltaMovement(Vec3.ZERO);
-                this.tryCheckInsideBlocks();
+                //this.tryCheckInsideBlocks();TODO: where did this method go?
             }
         } else {
             super.travel(vec3);

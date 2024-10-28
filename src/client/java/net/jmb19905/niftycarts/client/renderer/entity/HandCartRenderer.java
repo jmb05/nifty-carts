@@ -17,14 +17,13 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
@@ -35,15 +34,13 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.PaintingVariantTags;
-import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.Painting;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.equipment.EquipmentModel;
+import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -55,25 +52,48 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartModel> {
+public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRenderState, HandCartModel> {
     //This texture is not a real file it is assembled during resource loading
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/hand_cart.png");
-    private final HumanoidModel<LivingEntity> leggings, armor;
-    private final TextureAtlas armorTrimAtlas;
+    private final HumanoidModel<HumanoidRenderState> leggings, armor;
+    private final EquipmentLayerRenderer equipmentRenderer;
 
-    public HandCartRenderer(EntityRendererProvider.Context renderManager) {
-        super(renderManager, new HandCartModel(renderManager.bakeLayer(NiftyCartsModelLayers.HAND_CART)));
-        this.leggings = new HumanoidModel<>(renderManager.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR));
-        this.armor = new HumanoidModel<>(renderManager.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR));
-        this.armorTrimAtlas = renderManager.getModelManager().getAtlas(Sheets.ARMOR_TRIMS_SHEET);
+    private static final HumanoidRenderState humanoidRenderState = new HumanoidRenderState();
+
+    static {
+        humanoidRenderState.isCrouching = false;
+        humanoidRenderState.isUsingItem = false;
+        humanoidRenderState.isVisuallySwimming = false;
+    }
+
+    public HandCartRenderer(EntityRendererProvider.Context ctx) {
+        super(ctx, new HandCartModel(ctx.bakeLayer(NiftyCartsModelLayers.HAND_CART)));
+        this.leggings = new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR));
+        this.armor = new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR));
         this.shadowRadius = 1.0F;
+        this.equipmentRenderer = ctx.getEquipmentRenderer();
     }
 
     @Override
-    protected void renderContents(HandCartEntity entity, float delta, PoseStack stack, MultiBufferSource source, int packedLight) {
-        final NonNullList<ItemStack> cargo = entity.getCargo();
+    public @NotNull CargoCartRenderState createRenderState() {
+        return new CargoCartRenderState();
+    }
+
+    @Override
+    public void extractRenderState(HandCartEntity entity, CargoCartRenderState state, float delta) {
+        super.extractRenderState(entity, state, delta);
+        state.cargo = NonNullList.create();
+        for (int i = 0; i < entity.getCargo().size(); i++) {
+            state.cargo.add(i, entity.getCargo().get(i));
+        }
+        state.rngSeed = entity.getUUID().getMostSignificantBits() ^ entity.getUUID().getLeastSignificantBits();
+        state.level = entity.level();
+    }
+
+    @Override
+    protected void renderContents(CargoCartRenderState state, PoseStack stack, MultiBufferSource source, int packedLight) {
         HandCartRenderer.Contents contents = HandCartRenderer.Contents.SUPPLIES;
-        final Iterator<ItemStack> it = cargo.iterator();
+        final Iterator<ItemStack> it = state.cargo.iterator();
         outer:
         while (it.hasNext()) {
             final ItemStack s = it.next();
@@ -98,13 +118,15 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
         stack.pushPose();
         this.model.getBody().translateAndRotate(stack);
         if (contents.renderer != null) {
-            contents.renderer.render(this, entity, stack, source, packedLight, cargo);
+            contents.renderer.render(this, state, stack, source, packedLight, state.cargo);
         }
         stack.popPose();
     }
 
-    private void renderFlowers(final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
-        this.model.getFlowerBasket().render(stack, source.getBuffer(this.model.renderType(this.getTextureLocation(entity))), packedLight, OverlayTexture.NO_OVERLAY);
+    private void renderFlowers(CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
+        this.model.getFlowerBasket().visible = true;
+        this.model.getFlowerBasket().render(stack, source.getBuffer(this.model.renderType(this.getTextureLocation(state))), packedLight, OverlayTexture.NO_OVERLAY);
+        this.model.getFlowerBasket().visible = false;
         final BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
         final ModelBlockRenderer renderer = dispatcher.getModelRenderer();
         for (int i = 0; i < cargo.size(); i++) {
@@ -112,9 +134,9 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
             if (!(itemStack.getItem() instanceof BlockItem)) continue;
             final int ix = i % 2, iz = i / 2;
             final BlockState defaultState = ((BlockItem) itemStack.getItem()).getBlock().defaultBlockState();
-            final BlockState state = defaultState.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) ? defaultState.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER) : defaultState;
-            final BakedModel model = dispatcher.getBlockModel(state);
-            final int rgb = Minecraft.getInstance().getBlockColors().getColor(state, null, null, 0);
+            final BlockState blockState = defaultState.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) ? defaultState.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER) : defaultState;
+            final BakedModel model = dispatcher.getBlockModel(blockState);
+            final int rgb = Minecraft.getInstance().getBlockColors().getColor(blockState, null, null, 0);
             final float r = (float) (rgb >> 16 & 255) / 255.0F;
             final float g = (float) (rgb >> 8 & 255) / 255.0F;
             final float b = (float) (rgb & 255) / 255.0F;
@@ -123,30 +145,30 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
             stack.scale(0.65F, 0.65F, 0.65F);
             stack.translate(ix, 0.5D, iz - 1.0D);
             stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-            renderer.renderModel(stack.last(), source.getBuffer(RenderType.cutout()), state, model, r, g, b, packedLight, OverlayTexture.NO_OVERLAY);
+            renderer.renderModel(stack.last(), source.getBuffer(RenderType.cutout()), blockState, model, r, g, b, packedLight, OverlayTexture.NO_OVERLAY);
             stack.popPose();
         }
     }
 
-    private void renderWheel(final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
+    private void renderWheel(CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
         stack.pushPose();
         stack.translate(0.91D, 0.05D, -0.15D);
         final ModelPart wheel = this.model.getWheel();
         wheel.xRot = 0.9F;
         wheel.zRot = (float) Math.PI * 0.3F;
-        wheel.render(stack, source.getBuffer(this.model.renderType(this.getTextureLocation(entity))), packedLight, OverlayTexture.NO_OVERLAY);
+        wheel.render(stack, source.getBuffer(this.model.renderType(this.getTextureLocation(state))), packedLight, OverlayTexture.NO_OVERLAY);
         stack.popPose();
     }
 
-    private void renderPaintings(final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
+    private void renderPaintings(CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
         final VertexConsumer buf = source.getBuffer(RenderType.entitySolid(Minecraft.getInstance().getPaintingTextures().getBackSprite().atlasLocation()));
-        final Random rng = new Random(entity.getUUID().getMostSignificantBits() ^ entity.getUUID().getLeastSignificantBits());
+        final Random rng = new Random(state.rngSeed);
         stack.pushPose();
         stack.translate(0.0D, -2.5D / 16.0D, 0.0D);
         stack.mulPose(Axis.XP.rotationDegrees(-90.0F));
-        var registryAccess = entity.level().registryAccess();
+        var registryAccess = state.level.registryAccess();
         ObjectList<PaintingVariant> variants = new ObjectArrayList<>();
-        registryAccess.registryOrThrow(Registries.PAINTING_VARIANT).getTagOrEmpty(PaintingVariantTags.PLACEABLE).forEach(variantHolder -> {
+        registryAccess.lookupOrThrow(Registries.PAINTING_VARIANT).getTagOrEmpty(PaintingVariantTags.PLACEABLE).forEach(variantHolder -> {
             if (variantHolder.value().area() == 1) variants.add(variantHolder.value());
         });
         ObjectLists.shuffle(variants, rng);
@@ -171,7 +193,7 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
         stack.popPose();
     }
 
-    private void renderSupplies(final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
+    private void renderSupplies(CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
         final ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         final Random rng = new Random();
         for (int i = 0; i < cargo.size(); i++) {
@@ -182,7 +204,7 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
             if (i >= 2 && cargo.get(i - 2).is(ItemTags.BEDS)) continue;
             final double x = ((ix * 2 - 1) * 4) / 16.0D;
             final double z = ((iz * 2 - 1) * 5) / 16.0D;
-            final BakedModel model = renderer.getModel(itemStack, entity.level(), null, i);
+            final BakedModel model = renderer.getModel(itemStack, state.level, null, i);
             stack.pushPose();
             if (model.isGui3d() && itemStack.getItem() != Items.TRIDENT && NiftyCartsConfig.getClient().renderSupplyGear.get()) {
                 stack.translate(x, -0.46D, z);
@@ -224,27 +246,16 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
         }
     }
 
-    private EquipmentSlot getEquipmentSlotForItem(ItemStack itemStack) {
-        Equipable equipable = Equipable.get(itemStack);
-        if (equipable != null) {
-            return equipable.getEquipmentSlot();
-        }
-
-        return EquipmentSlot.MAINHAND;
-    }
-
     private void renderArmor(final PoseStack stack, final MultiBufferSource source, final int packedLight, final ItemStack itemStack, final int ix) {
         final Item item = itemStack.getItem();
         if (!(item instanceof final ArmorItem armorItem)) return;
-        final EquipmentSlot slot = getEquipmentSlotForItem(itemStack);
-        final HumanoidModel<LivingEntity> m = slot == EquipmentSlot.LEGS ? this.leggings : this.armor;
+        Equippable equippable = itemStack.get(DataComponents.EQUIPPABLE);
+        if (equippable == null) return;
+        final EquipmentSlot slot = equippable.slot();
+        final HumanoidModel<HumanoidRenderState> m = slot == EquipmentSlot.LEGS ? this.leggings : this.armor;
         stack.mulPose(Axis.YP.rotation(ix == 0 ? (float) Math.PI * 0.5F : (float) -Math.PI * 0.5F));
         m.setAllVisible(false);
-        m.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-        m.rightArmPose = HumanoidModel.ArmPose.EMPTY;
-        m.crouching = false;
-        m.swimAmount = 0.0F;
-        m.young = false;
+        m.setupAnim(humanoidRenderState);
         switch (slot) {
             case HEAD -> {
                 stack.translate(0.0D, 0.1D, 0.0D);
@@ -285,27 +296,14 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
         }
         stack.scale(0.75F, 0.75F, 0.75F);
 
-        ArmorMaterial material = armorItem.getMaterial().value();
-        final int rgb = itemStack.is(ItemTags.DYEABLE) ? FastColor.ARGB32.opaque(DyedItemColor.getOrDefault(itemStack, -6265536)) : -1;
+        ResourceLocation resourceLocation = equippable.model().orElseThrow();
         boolean usesInnerModel = slot == EquipmentSlot.LEGS;
-        for (ArmorMaterial.Layer layer : material.layers()) {
-            int k = layer.dyeable() ? rgb : -1;
-            VertexConsumer vertexConsumer = source.getBuffer(RenderType.armorCutoutNoCull(layer.texture(usesInnerModel)));
-            m.renderToBuffer(stack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, k);
-        }
-        ArmorTrim armorTrim = itemStack.get(DataComponents.TRIM);
-        if (armorTrim != null) {
-            TextureAtlasSprite textureAtlasSprite = this.armorTrimAtlas.getSprite(usesInnerModel ? armorTrim.innerTexture(armorItem.getMaterial()) : armorTrim.outerTexture(armorItem.getMaterial()));
-            VertexConsumer vertexConsumer = textureAtlasSprite.wrap(source.getBuffer(Sheets.armorTrimsSheet(armorTrim.pattern().value().decal())));
-            m.renderToBuffer(stack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, rgb);
-        }
-        if (itemStack.hasFoil()) {
-            m.renderToBuffer(stack, source.getBuffer(RenderType.armorEntityGlint()), packedLight, OverlayTexture.NO_OVERLAY, rgb);
-        }
+        EquipmentModel.LayerType layerType = usesInnerModel ? EquipmentModel.LayerType.HUMANOID_LEGGINGS : EquipmentModel.LayerType.HUMANOID;
+        equipmentRenderer.renderLayers(layerType, resourceLocation, m, itemStack, stack, source, packedLight);
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(HandCartEntity entity) {
+    public @NotNull ResourceLocation getTextureLocation(CargoCartRenderState state) {
         return TEXTURE;
     }
 
@@ -327,6 +325,6 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
 
     @FunctionalInterface
     private interface ContentsRenderer {
-        void render(final HandCartRenderer renderer, final HandCartEntity entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo);
+        void render(final HandCartRenderer renderer, CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo);
     }
 }

@@ -3,6 +3,7 @@ package net.jmb19905.niftycarts.entity;
 import net.jmb19905.niftycarts.util.NCInventory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -44,7 +45,8 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     @Override
     public void onDestroyedAndDoDrops(DamageSource source) {
-        this.chestVehicleDestroyed(source, this.level(), this);
+        if (!(this.level() instanceof ServerLevel)) return;
+        this.chestVehicleDestroyed(source, (ServerLevel) this.level(), this);
     }
 
     public void remove(Entity.RemovalReason removalReason) {
@@ -68,7 +70,9 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
             InteractionResult interactionResult = this.interactWithContainerVehicle(player);
             if (interactionResult.consumesAction()) {
                 this.gameEvent(GameEvent.CONTAINER_OPEN, player);
-                PiglinAi.angerNearbyPiglins(player, true);
+                if (this.level() instanceof ServerLevel serverLevel) {
+                    PiglinAi.angerNearbyPiglins(serverLevel, player, true);
+                }
             }
 
             return interactionResult;
@@ -79,7 +83,9 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
         player.openMenu(this);
         if (!player.level().isClientSide) {
             this.gameEvent(GameEvent.CONTAINER_OPEN, player);
-            PiglinAi.angerNearbyPiglins(player, true);
+            if (this.level() instanceof ServerLevel serverLevel) {
+                PiglinAi.angerNearbyPiglins(serverLevel, player, true);
+            }
         }
     }
 
@@ -146,19 +152,24 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
         this.unpackChestVehicleLootTable(player);
     }
 
-    public @Nullable ResourceKey<LootTable> getLootTable() {
+    @Nullable
+    @Override
+    public ResourceKey<LootTable> getContainerLootTable() {
         return this.lootTable;
     }
 
-    public void setLootTable(@Nullable ResourceKey<LootTable> resourceLocation) {
+    @Override
+    public void setContainerLootTable(@Nullable ResourceKey<LootTable> resourceLocation) {
         this.lootTable = resourceLocation;
     }
 
-    public long getLootTableSeed() {
+    @Override
+    public long getContainerLootTableSeed() {
         return this.lootTableSeed;
     }
 
-    public void setLootTableSeed(long l) {
+    @Override
+    public void setContainerLootTableSeed(long l) {
         this.lootTableSeed = l;
     }
 

@@ -1,6 +1,7 @@
 package net.jmb19905.niftycarts.entity;
 
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
@@ -98,11 +99,6 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public boolean canChangeDimensions(Level level, Level level2) {
-        return false;
-    }
-
-    @Override
     public boolean canAttackType(final EntityType<?> type) {
         return false;
     }
@@ -118,7 +114,7 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public void kill() {
+    public void kill(ServerLevel serverLevel) {
         this.discard();
     }
 

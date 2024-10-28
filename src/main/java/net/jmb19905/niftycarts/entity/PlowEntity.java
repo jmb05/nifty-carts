@@ -76,7 +76,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private void plow(final Player player) {
         for (int i = 0; i < SLOT_COUNT; i++) {
             final ItemStack stack = this.getStackInSlot(i);
-            if (stack.getItem() instanceof TieredItem) {
+            if (stack.getItem() instanceof DiggerItem) {
                 final float offset = 38.0F - i * 38.0F;
                 final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
                 final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
@@ -158,7 +158,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
         if (!this.level().isClientSide) {
             this.entityData.set(PLOWING, !this.entityData.get(PLOWING));
         }
-        return InteractionResult.sidedSuccess(this.level().isClientSide);
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override

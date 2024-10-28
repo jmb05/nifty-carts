@@ -1,11 +1,11 @@
 package net.jmb19905.niftycarts.client.renderer.entity.model;
 
-import net.jmb19905.niftycarts.entity.AnimalCartEntity;
+import net.jmb19905.niftycarts.client.renderer.entity.CartRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 
-public final class AnimalCartModel extends CartModel<AnimalCartEntity> {
+public final class AnimalCartModel extends CartModel<CartRenderState> {
     public AnimalCartModel(final ModelPart root) {
         super(root);
     }

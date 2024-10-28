@@ -5,10 +5,7 @@ import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +30,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
         final Entity coachman = this.getControllingPassenger();
         final Entity pulling = this.getPulling();
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
-            final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level());
+            final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level(), EntitySpawnReason.SPAWN_ITEM_USE);
             if (postilion != null) {
                 postilion.moveTo(pulling.getX(), pulling.getY(), pulling.getZ(), coachman.getYRot(), coachman.getXRot());
                 if (postilion.startRiding(pulling)) {
@@ -55,7 +52,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
                     }
                 }
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.SUCCESS_SERVER;
         }
         final InteractionResult bannerResult = this.useBanner(player, hand);
         if (bannerResult.consumesAction()) {
