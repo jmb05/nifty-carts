@@ -65,7 +65,9 @@ public final class NiftyCartsConfig {
         public final CartConfig supplyCart;
         public final CartConfig handCart;
         public final CartConfig animalCart;
-        public final PlowConfig plow;
+        public final CartConfig plow;
+        public final CartConfig seedDrill;
+        public final CartConfig reaper;
 
         Common(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
@@ -76,8 +78,12 @@ public final class NiftyCartsConfig {
             this.handCart.pop();
             this.animalCart = new CartConfig(builder, "animal_cart", "The Animal Cart, a type of cart to haul other animals");
             this.animalCart.pop();
-            this.plow = new PlowConfig(builder, "plow", "The Plow, an animal pulled machine for tilling soil and creating paths");
+            this.plow = new CartConfig(builder, "plow", "The Plow, an animal pulled machine for tilling soil and creating paths");
             this.plow.pop();
+            this.seedDrill = new CartConfig(builder, "seed_drill", "The Seed Drill, a cart that plants crops");
+            this.seedDrill.pop();
+            this.reaper = new CartConfig(builder, "reaper", "The Reaper, a cart that harvests crops");
+            this.reaper.pop();
             builder.pop();
         }
     }
@@ -109,24 +115,6 @@ public final class NiftyCartsConfig {
 
         protected void pop() {
             builder.pop();
-        }
-    }
-
-    public static class PlowConfig extends CartConfig {
-
-        public final ForgeConfigSpec.ConfigValue<ArrayList<String>> harvestItems;
-        public final ForgeConfigSpec.ConfigValue<ArrayList<String>> sowItems;
-
-        PlowConfig(ForgeConfigSpec.Builder builder, String name, String description) {
-            this(builder, name, description, new ArrayList<>(), -0.1, new ArrayList<>(), new ArrayList<>());
-        }
-
-        PlowConfig(ForgeConfigSpec.Builder builder, String name, String description, ArrayList<String> defaultEntityList, double defaultPullSpeed, ArrayList<String> defaultHarvestItemList, ArrayList<String> defaultSowItemsList) {
-            super(builder, name, description, defaultEntityList, defaultPullSpeed);
-            this.harvestItems = builder.comment("Items that can harvest crops. Leave empty to disable")
-                    .define("harvest_items", defaultHarvestItemList);
-            this.sowItems = builder.comment("Items that can be planted. Leave empty to disable")
-                    .define("sow_items", defaultSowItemsList);
         }
     }
 

@@ -11,14 +11,21 @@ import net.minecraft.util.Mth;
 public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityModel<T> {
     protected final ModelPart body;
 
+    protected final ModelPart wheels;
     protected final ModelPart leftWheel;
-
     protected final ModelPart rightWheel;
+    protected final ModelPart extraLeftWheel;
+    protected final ModelPart extraRightWheel;
 
     protected CartModel(final ModelPart root) {
         this.body = root.getChild("body");
-        this.leftWheel = root.getChild("leftWheel");
-        this.rightWheel = root.getChild("rightWheel");
+        this.wheels = root.getChild("wheels");
+        this.leftWheel = wheels.getChild("leftWheel");
+        this.rightWheel = wheels.getChild("rightWheel");
+        if (wheels.hasChild("extraLeftWheel")) this.extraLeftWheel = wheels.getChild("extraLeftWheel");
+        else this.extraLeftWheel = null;
+        if (wheels.hasChild("extraRightWheel")) this.extraRightWheel = wheels.getChild("extraRightWheel");
+        else this.extraRightWheel = null;
     }
 
     public ModelPart getBody() {
@@ -34,6 +41,8 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
         this.body.render(stack, buf, packedLight, packedOverlay, red, green, blue, alpha);
         this.leftWheel.render(stack, buf, packedLight, packedOverlay, red, green, blue, alpha);
         this.rightWheel.render(stack, buf, packedLight, packedOverlay, red, green, blue, alpha);
+        if (this.extraLeftWheel != null) this.extraLeftWheel.render(stack, buf, packedLight, packedOverlay, red, green, blue, alpha);
+        if (this.extraRightWheel != null) this.extraRightWheel.render(stack, buf, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     @Override
@@ -41,6 +50,8 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
         this.body.xRot = (float) Math.toRadians(pitch);
         this.rightWheel.xRot = (float) (entity.getWheelRotation(0) + entity.getWheelRotationIncrement(0) * delta);
         this.leftWheel.xRot = (float) (entity.getWheelRotation(1) + entity.getWheelRotationIncrement(1) * delta);
+        if (this.extraLeftWheel != null)  this.extraLeftWheel.xRot = (float) (entity.getWheelRotation(0) + entity.getWheelRotationIncrement(0) * delta);
+        if (this.extraRightWheel != null) this.extraRightWheel.xRot = (float) (entity.getWheelRotation(1) + entity.getWheelRotationIncrement(1) * delta);
         final float time = entity.getTimeSinceHit() - delta;
         final float rot;
         if (time > 0.0F) {
@@ -51,6 +62,8 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
         }
         this.rightWheel.zRot = rot;
         this.leftWheel.zRot = rot;
+        if (this.extraLeftWheel != null)  this.extraLeftWheel.zRot = rot;
+        if (this.extraRightWheel != null) this.extraRightWheel.zRot = rot;
     }
 
     public static MeshDefinition createDefinition(float rimLength, float axleLength) {
@@ -59,6 +72,8 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
         float angle = Mth.PI / 8f;
         float wheelRadius = (rimLength / 2f) / (Mth.sin(angle) / Mth.cos(angle));
         float f = axleLength / 2f + 2;
+
+        final EasyMeshBuilder wheels = new EasyMeshBuilder("wheels", 0, 0);
 
         final EasyMeshBuilder leftWheel = new EasyMeshBuilder("leftWheel", 46, 60);
         leftWheel.setRotationPoint(f, -wheelRadius, 1.0F);
@@ -74,7 +89,7 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
             spoke.xRot = i * (float) Math.PI / 4.0F;
             leftWheel.addChild(spoke);
         }
-        leftWheel.build(def.getRoot());
+        wheels.addChild(leftWheel);
 
         final EasyMeshBuilder rightWheel = new EasyMeshBuilder("rightWheel", 46, 60);
         rightWheel.setRotationPoint(-f, -wheelRadius, 1.0F);
@@ -90,7 +105,8 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
             spoke.xRot = i * (float) Math.PI / 4.0F;
             rightWheel.addChild(spoke);
         }
-        rightWheel.build(def.getRoot());
+        wheels.addChild(rightWheel);
+        wheels.build(def.getRoot());
 
         return def;
     }

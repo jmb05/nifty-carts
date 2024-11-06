@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
+import net.jmb19905.niftycarts.NiftyCartsWoodType;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnMessage;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.jmb19905.niftycarts.util.CartWheel;
@@ -68,6 +69,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
     private static final UUID PULL_SLOWLY_MODIFIER_UUID = UUID.fromString("49B0E52E-48F2-4D89-BED7-4F5DF26F1263");
     private static final UUID PULL_MODIFIER_UUID = UUID.fromString("BA594616-5BE3-46C6-8B40-7D0230C64B77");
     private int lerpSteps;
@@ -615,6 +617,14 @@ public abstract class AbstractDrawnEntity extends Entity {
         return this.entityData.get(BANNER);
     }
 
+    public void setWoodType(NiftyCartsWoodType type) {
+        this.entityData.set(WOOD_TYPE, type.getId());
+    }
+
+    public NiftyCartsWoodType getWoodType(){
+        return NiftyCartsWoodType.getFromId(this.entityData.get(WOOD_TYPE));
+    }
+
     public List<Pair<Holder<BannerPattern>, DyeColor>> getBannerPattern() {
         final ItemStack banner = this.getBanner();
         if (banner.getItem() instanceof BannerItem item) {
@@ -639,6 +649,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         this.entityData.define(FORWARD_DIRECTION, 1);
         this.entityData.define(DAMAGE_TAKEN, 0.0F);
         this.entityData.define(BANNER, ItemStack.EMPTY);
+        this.entityData.define(WOOD_TYPE, "oak");
     }
 
     @Override
@@ -648,6 +659,9 @@ public abstract class AbstractDrawnEntity extends Entity {
         }
         if (compound.contains("BannerItem")) {
             this.setBanner(ItemStack.of(compound.getCompound("BannerItem")));
+        }
+        if (compound.contains("WoodType")) {
+            this.setWoodType(NiftyCartsWoodType.getFromId(compound.getString("WoodType")));
         }
     }
 
@@ -660,6 +674,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (!banner.isEmpty()) {
             compound.put("BannerItem", banner.save(new CompoundTag()));
         }
+        compound.putString("WoodType", getWoodType().getId());
     }
 
     public RenderInfo getInfo(final float delta) {

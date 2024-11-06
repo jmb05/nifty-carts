@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, SupplyCartModel> implements ICargoCartRenderer {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/supply_cart.png");
     private final HumanoidModel<LivingEntity> leggings, armor;
     private final TextureAtlas armorTrimAtlas;
 
@@ -58,12 +57,12 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
 
     @Override
     public void renderFlowers(AbstractCargoCart entity, PoseStack stack, MultiBufferSource source, int packedLight, NonNullList<ItemStack> cargo) {
-        CargoRenderUtil.renderFlowers(this.model, TEXTURE, 3, stack, source, packedLight, cargo);
+        CargoRenderUtil.renderFlowers(this.model, getTextureLocation((SupplyCartEntity) entity), 3, stack, source, packedLight, cargo);
     }
 
     @Override
     public void renderWheel(final AbstractCargoCart entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
-        CargoRenderUtil.renderWheel(this.model, TEXTURE, 1.18D, 0.1D, -0.15D, stack, source, packedLight);
+        CargoRenderUtil.renderWheel(this.model, getTextureLocation((SupplyCartEntity) entity), 1.18D, 0.1D, -0.15D, stack, source, packedLight);
     }
 
     @Override
@@ -150,6 +149,6 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(final SupplyCartEntity entity) {
-        return TEXTURE;
+        return new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().getId() + "_supply_cart.png");
     }
 }

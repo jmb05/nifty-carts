@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "l": {
+      "item": "minecraft:warped_slab"
+    },
+    "p": {
+      "item": "minecraft:warped_planks"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    },
+    "w": {
+      "item": "niftycarts:wheel"
+    }
+  },
+  "pattern": [
+    " sl",
+    "spp",
+    "iww"
+  ],
+  "result": {
+    "item": "niftycarts:warped_reaper"
+  },
+  "show_notification": true
+}

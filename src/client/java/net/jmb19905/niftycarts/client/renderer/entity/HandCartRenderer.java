@@ -38,8 +38,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartModel> implements ICargoCartRenderer {
-    //This texture is not a real file it is assembled during resource loading
-    private static final ResourceLocation TEXTURE = new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/hand_cart.png");
     private final HumanoidModel<LivingEntity> leggings, armor;
     private final TextureAtlas armorTrimAtlas;
 
@@ -57,11 +55,11 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
     }
 
     public void renderFlowers(final AbstractCargoCart entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
-        CargoRenderUtil.renderFlowers(this.model, TEXTURE, 1, stack, source, packedLight, cargo);
+        CargoRenderUtil.renderFlowers(this.model, getTextureLocation((HandCartEntity) entity), 1, stack, source, packedLight, cargo);
     }
 
     public void renderWheel(final AbstractCargoCart entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
-        CargoRenderUtil.renderWheel(this.model, TEXTURE, 0.91D, 0.05D, -0.15D, stack, source, packedLight);
+        CargoRenderUtil.renderWheel(this.model, getTextureLocation((HandCartEntity) entity), 0.91D, 0.05D, -0.15D, stack, source, packedLight);
     }
 
     public void renderPaintings(final AbstractCargoCart entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
@@ -142,6 +140,6 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(HandCartEntity entity) {
-        return TEXTURE;
+        return new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().getId() + "_hand_cart.png");
     }
 }
