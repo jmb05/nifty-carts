@@ -71,7 +71,7 @@ public class CartItem extends Item {
                         stack.shrink(1);
                     }
                     player.awardStat(Stats.ITEM_USED.get(this));
-                    return InteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
                 }
             } else {
                 return InteractionResult.PASS;

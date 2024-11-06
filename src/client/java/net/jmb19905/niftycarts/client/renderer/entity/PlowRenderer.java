@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowRenderState, PlowModel> {
     //This texture is not a real file it is assembled during resource loading
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/plow.png");
+    private static final ResourceLocation TEXTURE = NiftyCarts.resLoc("textures/entity/plow.png");
     private final ItemRenderer itemRenderer;
 
     public PlowRenderer(final EntityRendererProvider.Context ctx) {

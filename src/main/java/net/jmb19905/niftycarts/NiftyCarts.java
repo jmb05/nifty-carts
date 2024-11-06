@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.jmb19905.niftycarts.container.PlowMenu;
+import net.jmb19905.niftycarts.container.SeedDrillMenu;
 import net.jmb19905.niftycarts.entity.*;
 import net.jmb19905.niftycarts.entity.ai.goal.AvoidCartGoal;
 import net.jmb19905.niftycarts.entity.ai.goal.PullCartGoal;
@@ -51,12 +52,14 @@ public class NiftyCarts implements ModInitializer {
 	public static final CartItem HAND_CART = CART_ITEM_SUPPLIER.apply("hand_cart");
 	public static final CartItem PLOW = CART_ITEM_SUPPLIER.apply("plow");
 	public static final CartItem ANIMAL_CART = CART_ITEM_SUPPLIER.apply("animal_cart");
+	public static final CartItem SEED_DRILL = CART_ITEM_SUPPLIER.apply("seed_drill");
+	public static final CartItem REAPER = CART_ITEM_SUPPLIER.apply("reaper");
 
 	public static MinecraftServer server = null;
 
-	public static final ResourceLocation ATTACH_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "entity.cart.attach");
-	public static final ResourceLocation DETACH_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "entity.cart.detach");
-	public static final ResourceLocation PLACE_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "entity.cart.place");
+	public static final ResourceLocation ATTACH_SOUND_ID = resLoc("entity.cart.attach");
+	public static final ResourceLocation DETACH_SOUND_ID = resLoc("entity.cart.detach");
+	public static final ResourceLocation PLACE_SOUND_ID = resLoc("entity.cart.place");
 
 	public static SoundEvent ATTACH_SOUND = SoundEvent.createVariableRangeEvent(ATTACH_SOUND_ID);
 	public static SoundEvent DETACH_SOUND = SoundEvent.createVariableRangeEvent(DETACH_SOUND_ID);
@@ -73,6 +76,12 @@ public class NiftyCarts implements ModInitializer {
 
 	public static final EntityType<HandCartEntity> HAND_CART_ENTITY = register("hand_cart",
 			EntityType.Builder.of(HandCartEntity::new, MobCategory.MISC).sized(1.3f, 1.1f));
+
+	public static final EntityType<SeedDrillEntity> SEED_DRILL_ENTITY = register("seed_drill",
+			EntityType.Builder.of(SeedDrillEntity::new, MobCategory.MISC).sized(1.3f, 1.4f));
+
+	public static final EntityType<ReaperCartEntity> REAPER_ENTITY = register("reaper",
+			EntityType.Builder.of(ReaperCartEntity::new, MobCategory.MISC).sized(1.3f, 1.4f));
 
 	public static final EntityType<PostilionEntity> POSTILION_ENTITY = register("postilion",
 			EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
@@ -91,12 +100,14 @@ public class NiftyCarts implements ModInitializer {
 			.build();
 
 	public static final MenuType<PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
+	public static final MenuType<SeedDrillMenu> SEED_DRILL_MENU_TYPE = new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS);
 
-	public static final ResourceLocation CART_ONE_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "cart_one_cm");
+	public static final ResourceLocation CART_ONE_CM = resLoc("cart_one_cm");
 
-	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/hoe"));
-	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/shovel"));
-	public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/axe"));
+	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/hoe"));
+	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/shovel"));
+	public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/axe"));
+	public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, NiftyCarts.resLoc("seed_drill_plantable"));
 
 	@Override
 	public void onInitialize() {
@@ -105,12 +116,15 @@ public class NiftyCarts implements ModInitializer {
 		Registry.register(BuiltInRegistries.CUSTOM_STAT, CART_ONE_CM, CART_ONE_CM);
 		Stats.CUSTOM.get(CART_ONE_CM, StatFormatter.DEFAULT);
 
-		Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"), PLOW_MENU_TYPE);
+		Registry.register(BuiltInRegistries.MENU, resLoc("plow"), PLOW_MENU_TYPE);
+		Registry.register(BuiltInRegistries.MENU, resLoc("seed_drill"), SEED_DRILL_MENU_TYPE);
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
 			content.accept(SUPPLY_CART);
 			content.accept(PLOW);
+			content.accept(SEED_DRILL);
+			content.accept(REAPER);
 			content.accept(ANIMAL_CART);
 			content.accept(HAND_CART);
 		});
@@ -123,6 +137,7 @@ public class NiftyCarts implements ModInitializer {
 		PayloadTypeRegistry.playC2S().register(OpenSupplyCartPayload.TYPE, OpenSupplyCartPayload.CODEC);
 		PayloadTypeRegistry.playC2S().register(ToggleSlowPayload.TYPE, ToggleSlowPayload.CODEC);
 		PayloadTypeRegistry.playC2S().register(RequestCartUpdatePayload.TYPE, RequestCartUpdatePayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(CoachmanMovePayload.TYPE, CoachmanMovePayload.CODEC);
 
 		PayloadTypeRegistry.playS2C().register(UpdateDrawnPayload.TYPE, UpdateDrawnPayload.CODEC);
 
@@ -130,6 +145,7 @@ public class NiftyCarts implements ModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(OpenSupplyCartPayload.TYPE, (payload, context) -> OpenSupplyCartPayload.handle(context.player()));
 		ServerPlayNetworking.registerGlobalReceiver(ToggleSlowPayload.TYPE, (payload, context) -> ToggleSlowPayload.handle(context.player()));
 		ServerPlayNetworking.registerGlobalReceiver(RequestCartUpdatePayload.TYPE, (payload, context) -> RequestCartUpdatePayload.handle(payload, context.player()));
+		ServerPlayNetworking.registerGlobalReceiver(CoachmanMovePayload.TYPE, (payload, context) -> CoachmanMovePayload.handle(payload, context.player()));
 
 		ServerLifecycleEvents.SERVER_STARTED.register(s -> server = s);
 
@@ -157,14 +173,18 @@ public class NiftyCarts implements ModInitializer {
 	}
 
 	public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
-		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, id));
+		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, resLoc(id));
 		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
 	}
 
 	public static <I extends Item> I register(String id, Function<Item.Properties, I> function) {
-		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, id));
+		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, resLoc(id));
 		I item = function.apply(new Item.Properties().setId(key));
 		return Registry.register(BuiltInRegistries.ITEM, key, item);
+	}
+
+	public static ResourceLocation resLoc(String name) {
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, name);
 	}
 
 }

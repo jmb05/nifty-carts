@@ -54,7 +54,7 @@ import java.util.function.Predicate;
 
 public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRenderState, HandCartModel> {
     //This texture is not a real file it is assembled during resource loading
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/hand_cart.png");
+    private static final ResourceLocation TEXTURE = NiftyCarts.resLoc("textures/entity/hand_cart.png");
     private final HumanoidModel<HumanoidRenderState> leggings, armor;
     private final EquipmentLayerRenderer equipmentRenderer;
 

@@ -15,5 +15,9 @@
   "subtitles.niftycarts.cart.attached": "Cart attaches",
   "subtitles.niftycarts.cart.detached": "Cart detaches",
   "subtitles.niftycarts.cart.placed": "Cart placed",
-  "stat.niftycarts.cart_one_cm": "Distance by Cart"
+  "stat.niftycarts.cart_one_cm": "Distance by Cart",
+  "tag.item.niftycarts.seed_drill_plantable": "Seed Drill Plantable",
+  "tag.block.niftycarts.plow_breakable.axe": "Plow breakable using axe",
+  "tag.block.niftycarts.plow_breakable.hoe": "Plow breakable using hoe",
+  "tag.block.niftycarts.plow_breakable.shovel": "Plow breakable using shovel"
 }

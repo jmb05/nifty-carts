@@ -52,7 +52,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, CargoCartRenderState, SupplyCartModel> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/supply_cart.png");
+    private static final ResourceLocation TEXTURE = NiftyCarts.resLoc("textures/entity/supply_cart.png");
 
     private final HumanoidModel<HumanoidRenderState> leggings, armor;
     private final EquipmentLayerRenderer equipmentRenderer;

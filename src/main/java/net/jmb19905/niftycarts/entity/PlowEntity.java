@@ -158,7 +158,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
         if (!this.level().isClientSide) {
             this.entityData.set(PLOWING, !this.entityData.get(PLOWING));
         }
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 
     @Override

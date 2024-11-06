@@ -65,8 +65,8 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
-    private static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "pull_slowly");
-    private static final ResourceLocation PULL_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "pull");
+    private static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = NiftyCarts.resLoc("pull_slowly");
+    private static final ResourceLocation PULL_MODIFIER_ID = NiftyCarts.resLoc("pull");
     private int lerpSteps;
     private double lerpX;
     private double lerpY;
@@ -79,6 +79,10 @@ public abstract class AbstractDrawnEntity extends Entity {
     protected double spacing = 1.7D;
     public Entity pulling;
     protected AbstractDrawnEntity drawn;
+    private float coachmanXxa = 0;
+    private float coachmanZza = 0;
+    private float coachmanXRot = 0;
+    private float coachmanYRot = 0;
 
     public AbstractDrawnEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
@@ -447,7 +451,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 this.playSound(SoundEvents.WOOD_PLACE, 1.0F, 0.8F);
                 this.setBanner(banner);
             }
-            return InteractionResult.SUCCESS_SERVER;
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
@@ -631,6 +635,38 @@ public abstract class AbstractDrawnEntity extends Entity {
     @Override
     public boolean isPickable() {
         return true;
+    }
+
+    public float getCoachmanXxa() {
+        return coachmanXxa;
+    }
+
+    public void setCoachmanXxa(float coachmanXxa) {
+        this.coachmanXxa = coachmanXxa;
+    }
+
+    public float getCoachmanZza() {
+        return coachmanZza;
+    }
+
+    public void setCoachmanZza(float coachmanZza) {
+        this.coachmanZza = coachmanZza;
+    }
+
+    public float getCoachmanXRot() {
+        return coachmanXRot;
+    }
+
+    public void setCoachmanXRot(float coachmanXRot) {
+        this.coachmanXRot = coachmanXRot;
+    }
+
+    public float getCoachmanYRot() {
+        return coachmanYRot;
+    }
+
+    public void setCoachmanYRot(float coachmanYRot) {
+        this.coachmanYRot = coachmanYRot;
     }
 
     @Override

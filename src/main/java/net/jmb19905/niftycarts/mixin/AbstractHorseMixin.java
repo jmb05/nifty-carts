@@ -1,6 +1,8 @@
 package net.jmb19905.niftycarts.mixin;
 
+import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
 import net.jmb19905.niftycarts.entity.PostilionEntity;
+import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,11 +29,9 @@ public abstract class AbstractHorseMixin extends LivingEntity {
     }
 
     @Unique
-    protected void customTickRidden(LivingEntity living, Vec3 vec3) {
-        Vec2 vec2 = new Vec2(living.getXRot() * 0.5f, living.getYRot());
-        this.setRot(vec2.y, vec2.x);
-        this.yBodyRot = this.yHeadRot = this.getYRot();
-        this.yRotO = this.yHeadRot;
+    protected void customTickRidden(Vec2 rot, Vec3 vec3) {
+        this.setRot(rot.y, rot.x);
+        this.yRotO = this.yBodyRot = this.yHeadRot = this.getYRot();
         if (this.isControlledByLocalInstance()) {
             if (vec3.z <= 0.0) {
                 ((AbstractHorse) (Object) this).gallopSoundCounter = 0;
@@ -42,28 +42,30 @@ public abstract class AbstractHorseMixin extends LivingEntity {
         }
     }
 
-    @SuppressWarnings("UnreachableCode")
     @Override
-    public void travel(Vec3 vec3) {
-        var living = ((AbstractHorse) (Object) this).getControllingPassenger();
-        if (living instanceof PostilionEntity) {
-            float xxa = living.xxa * 0.5f;
-            float zza = living.zza;
-            if (zza <= 0.0f) {
-                zza *= 0.25f;
+    public void travel(Vec3 travelVec) {
+        /*Optional<AbstractDrawnEntity> drawnOpt = NiftyWorld.get(this.level()).getDrawn(this);
+        if (drawnOpt.isPresent()) {
+            AbstractDrawnEntity drawn = drawnOpt.get();
+            if (drawn.hasControllingPassenger()) {
+                float xxa = drawn.getCoachmanXxa() * 0.5f;
+                float zza = drawn.getCoachmanZza();
+                if (zza <= 0.0f) {
+                    zza *= 0.25f;
+                }
+                Vec3 vec32 = new Vec3(xxa, 0.0, zza);
+                this.customTickRidden(new Vec2(drawn.getCoachmanXRot() * 0.5f, drawn.getCoachmanYRot()), vec32);
+                this.setSpeed((float)this.getAttributeValue(Attributes.MOVEMENT_SPEED));
+                super.travel(vec32);
+                if (!this.isControlledByLocalInstance()) {
+                    this.calculateEntityAnimation(false);
+                    this.setDeltaMovement(Vec3.ZERO);
+                    //this.tryCheckInsideBlocks();TODO: where did this method go?
+                }
+                return;
             }
-            Vec3 vec32 = new Vec3(xxa, 0.0, zza);
-            this.customTickRidden(living, vec32);
-            this.setSpeed((float)this.getAttributeValue(Attributes.MOVEMENT_SPEED));
-            super.travel(vec32);
-            if (!this.isControlledByLocalInstance()) {
-                this.calculateEntityAnimation(false);
-                this.setDeltaMovement(Vec3.ZERO);
-                //this.tryCheckInsideBlocks();TODO: where did this method go?
-            }
-        } else {
-            super.travel(vec3);
-        }
+        }*/
+        super.travel(travelVec);
     }
 
     @Inject(method = "getControllingPassenger", at = @At("HEAD"), cancellable = true)
