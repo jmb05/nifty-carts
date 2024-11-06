@@ -170,6 +170,7 @@ public class NiftyCarts implements ModInitializer {
 		}
 
 		Registry.register(BuiltInRegistries.MENU, new ResourceLocation(MOD_ID, "plow"), PLOW_MENU_TYPE);
+		Registry.register(BuiltInRegistries.MENU, new ResourceLocation(MOD_ID, "seed_drill"), SEED_DRILL_MENU_TYPE);
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
