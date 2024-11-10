@@ -21,6 +21,8 @@
 		],
 		"client": [
           "net.jmb19905.niftycarts.client.NiftyCartsClient"
+		], "fabric-datagen": [
+			"net.jmb19905.niftycarts.datagen.NiftyCartsDatagen"
 		]
 	},
 	"mixins": [

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": "minecraft:chest",
+    "p": "minecraft:spruce_planks",
+    "w": "niftycarts:wheel"
+  },
+  "pattern": [
+    "pcp",
+    "pcp",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:spruce_supply_cart"
+  }
+}

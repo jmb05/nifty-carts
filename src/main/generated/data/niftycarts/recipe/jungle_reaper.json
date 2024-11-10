@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": "minecraft:iron_ingot",
+    "l": "minecraft:jungle_slab",
+    "p": "minecraft:jungle_planks",
+    "s": "minecraft:stick",
+    "w": "niftycarts:wheel"
+  },
+  "pattern": [
+    " sl",
+    "spp",
+    "iww"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:jungle_reaper"
+  }
+}

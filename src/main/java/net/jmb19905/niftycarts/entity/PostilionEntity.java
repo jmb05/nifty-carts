@@ -1,12 +1,10 @@
 package net.jmb19905.niftycarts.entity;
 
 import net.jmb19905.niftycarts.util.NiftyWorld;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class PostilionEntity extends DummyLivingEntity {

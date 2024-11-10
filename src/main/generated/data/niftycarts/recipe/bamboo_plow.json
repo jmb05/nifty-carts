@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": "minecraft:bamboo_planks",
+    "s": "minecraft:stick",
+    "w": "niftycarts:wheel"
+  },
+  "pattern": [
+    "sss",
+    "psp",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:bamboo_plow"
+  }
+}

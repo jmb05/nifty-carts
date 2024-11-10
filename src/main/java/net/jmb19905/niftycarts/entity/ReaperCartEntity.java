@@ -10,7 +10,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -120,7 +119,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
 
     @Override
     public Item getCartItem() {
-        return NiftyCarts.REAPER;
+        return NiftyCarts.REAPER.get(getWoodType());
     }
 
     @Override

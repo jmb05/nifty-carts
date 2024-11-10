@@ -696,6 +696,9 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (compound.contains("BannerItem")) {
             this.setBanner(ItemStack.parseOptional(this.registryAccess(), compound.getCompound("BannerItem")));
         }
+        String woodTypeString = compound.getString("WoodType");
+        WoodType woodType = WoodType.values().filter(type -> type.name().equals(woodTypeString)).findFirst().orElse(WoodType.OAK);
+        setWoodType(woodType);
     }
 
     @Override
@@ -707,6 +710,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (!banner.isEmpty()) {
             compound.put("BannerItem", banner.saveOptional(this.registryAccess()));
         }
+        compound.putString("WoodType", getWoodType().name());
     }
 
     public RenderInfo getInfo(final float delta) {

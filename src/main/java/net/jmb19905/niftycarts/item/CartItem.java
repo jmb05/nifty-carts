@@ -4,6 +4,8 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -38,10 +40,6 @@ public class CartItem extends Item {
         this.cartType = cartType;
     }
 
-    public WoodType getWoodType() {
-        return woodType;
-    }
-
     @Override
     public @NotNull InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
         final ItemStack stack = player.getItemInHand(interactionHand);
@@ -62,14 +60,12 @@ public class CartItem extends Item {
             }
 
             if (result.getType() == HitResult.Type.BLOCK) {
-                final Optional<Holder.Reference<EntityType<?>>> type = BuiltInRegistries.ENTITY_TYPE.get(NiftyCarts.resLoc(cartType));
+                ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, NiftyCarts.resLoc(cartType));
+                final Optional<Holder.Reference<EntityType<?>>> type = BuiltInRegistries.ENTITY_TYPE.get(key);
                 if (type.isEmpty()) return InteractionResult.PASS;
                 final Entity cart = type.get().value().create(level, EntitySpawnReason.SPAWN_ITEM_USE);
-                if (cart == null) {
-                    return InteractionResult.PASS;
-                }
-                if (cart instanceof AbstractDrawnEntity drawn)
-                    drawn.setWoodType(woodType);
+                if (cart == null) return InteractionResult.PASS;
+                if (cart instanceof AbstractDrawnEntity drawn) drawn.setWoodType(woodType);
                 cart.moveTo(result.getLocation().x, result.getLocation().y, result.getLocation().z);
                 cart.setYRot((player.getYRot() + 180) % 360);
                 if (!level.noCollision(cart, cart.getBoundingBox().inflate(0.1F, -0.1F, 0.1F))) {

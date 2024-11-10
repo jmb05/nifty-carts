@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": "minecraft:iron_ingot",
+    "l": "minecraft:pale_oak_slab",
+    "p": "minecraft:pale_oak_planks",
+    "s": "minecraft:stick",
+    "w": "niftycarts:wheel"
+  },
+  "pattern": [
+    " sl",
+    "spp",
+    "iww"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:pale_oak_reaper"
+  }
+}

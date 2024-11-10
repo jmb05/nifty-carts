@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": "minecraft:pale_oak_planks",
+    "s": "minecraft:stick",
+    "w": "niftycarts:wheel"
+  },
+  "pattern": [
+    "sss",
+    "psp",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:pale_oak_plow"
+  }
+}

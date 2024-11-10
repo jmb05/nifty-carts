@@ -124,6 +124,6 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
 
     @Override
     public Item getCartItem() {
-        return NiftyCarts.ANIMAL_CART;
+        return NiftyCarts.ANIMAL_CART.get(getWoodType());
     }
 }

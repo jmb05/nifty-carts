@@ -123,7 +123,7 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public Item getCartItem() {
-        return NiftyCarts.SEED_DRILL;
+        return NiftyCarts.SEED_DRILL.get(getWoodType());
     }
 
     @Override

@@ -25,7 +25,7 @@ public class SupplyCartEntity extends AbstractCargoCart {
 
     @Override
     public Item getCartItem() {
-        return NiftyCarts.SUPPLY_CART;
+        return NiftyCarts.SUPPLY_CART.get(getWoodType());
     }
 
     @Override

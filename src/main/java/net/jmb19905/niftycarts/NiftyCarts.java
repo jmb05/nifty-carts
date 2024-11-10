@@ -33,6 +33,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.flag.FeatureFlag;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -41,17 +42,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.fml.config.ModConfig;
+import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class NiftyCarts implements ModInitializer {
 	public static final String MOD_ID = "niftycarts";
 
 	public static final Item WHEEL = register("wheel", Item::new);
-	private static final BiFunction<WoodType, String, CartItem> CART_ITEM_SUPPLIER = (wood, type) -> register(wood.name() + "_" + type, prop -> new CartItem(wood, type, prop.stacksTo(1)));
+	private static final TriFunction<WoodType, String, FeatureFlag[], CartItem> CART_ITEM_SUPPLIER = (wood, type, flags) -> register(wood.name() + "_" + type, prop -> new CartItem(wood, type, prop.stacksTo(1).requiredFeatures(flags)));
 	public static final Map<WoodType, CartItem> SUPPLY_CART = new HashMap<>();
 	public static final Map<WoodType, CartItem> HAND_CART = new HashMap<>();
 	public static final Map<WoodType, CartItem> PLOW = new HashMap<>();
@@ -61,12 +62,18 @@ public class NiftyCarts implements ModInitializer {
 
 	static {
 		WoodType.values().forEach(woodType -> {
-			SUPPLY_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "supply_cart"));
-			HAND_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "hand_cart"));
-			PLOW.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "plow"));
-			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "seed_drill"));
-			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "reaper"));
-			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "animal_cart"));
+			FeatureFlag[] flags;
+			if (woodType == WoodType.PALE_OAK) {
+				flags = new FeatureFlag[]{FeatureFlags.WINTER_DROP};
+			} else {
+				flags = new FeatureFlag[0];
+			}
+			SUPPLY_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "supply_cart", flags));
+			HAND_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "hand_cart", flags));
+			PLOW.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "plow", flags));
+			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "seed_drill", flags));
+			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "reaper", flags));
+			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "animal_cart", flags));
 		});
 	}
 
@@ -135,16 +142,14 @@ public class NiftyCarts implements ModInitializer {
 		Registry.register(BuiltInRegistries.MENU, resLoc("seed_drill"), SEED_DRILL_MENU_TYPE);
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
-			WoodType.values().forEach(woodType -> {
-				content.accept(SUPPLY_CART.get(woodType));
-				content.accept(PLOW.get(woodType));
-				content.accept(SEED_DRILL.get(woodType));
-				content.accept(REAPER.get(woodType));
-				content.accept(ANIMAL_CART.get(woodType));
-				content.accept(HAND_CART.get(woodType));
-			});
-		});
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> WoodType.values().forEach(woodType -> {
+            content.accept(SUPPLY_CART.get(woodType));
+            content.accept(PLOW.get(woodType));
+            content.accept(SEED_DRILL.get(woodType));
+            content.accept(REAPER.get(woodType));
+            content.accept(ANIMAL_CART.get(woodType));
+            content.accept(HAND_CART.get(woodType));
+        }));
 
 		Registry.register(BuiltInRegistries.SOUND_EVENT, ATTACH_SOUND_ID, ATTACH_SOUND);
 		Registry.register(BuiltInRegistries.SOUND_EVENT, DETACH_SOUND_ID, DETACH_SOUND);

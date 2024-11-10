@@ -83,6 +83,10 @@ processResources {
 	}
 }
 
+fabricApi {
+	configureDataGeneration()
+}
+
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 17
 }

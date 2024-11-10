@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": "minecraft:chest",
+    "h": "minecraft:hopper",
+    "p": "minecraft:warped_planks",
+    "w": "niftycarts:wheel"
+  },
+  "pattern": [
+    "pcp",
+    "php",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:warped_seed_drill"
+  }
+}
