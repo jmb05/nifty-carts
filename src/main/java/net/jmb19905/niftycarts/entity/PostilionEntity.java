@@ -23,7 +23,6 @@ public class PostilionEntity extends DummyLivingEntity {
                 this.setYRot(coachman.getYRot());
                 this.yRotO = this.getYRot();
                 this.setXRot(coachman.getXRot() * 0.5F);
-                System.out.println("Local Instance: " + coachman.isControlledByOrIsLocalPlayer());
                 this.zza = coachman.zza;
                 this.xxa = 0.0F;
             } else {

@@ -52,7 +52,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, CargoCartRenderState, SupplyCartModel> {
-    private static final ResourceLocation TEXTURE = NiftyCarts.resLoc("textures/entity/supply_cart.png");
 
     private final HumanoidModel<HumanoidRenderState> leggings, armor;
     private final EquipmentLayerRenderer equipmentRenderer;
@@ -313,7 +312,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Ca
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(CargoCartRenderState state) {
-        return TEXTURE;
+        return NiftyCarts.resLoc("textures/entity/" + state.woodType.name() + "_supply_cart.png");
     }
 
     private enum Contents {

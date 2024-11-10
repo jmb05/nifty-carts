@@ -53,8 +53,6 @@ import java.util.Random;
 import java.util.function.Predicate;
 
 public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRenderState, HandCartModel> {
-    //This texture is not a real file it is assembled during resource loading
-    private static final ResourceLocation TEXTURE = NiftyCarts.resLoc("textures/entity/hand_cart.png");
     private final HumanoidModel<HumanoidRenderState> leggings, armor;
     private final EquipmentLayerRenderer equipmentRenderer;
 
@@ -304,7 +302,7 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRen
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(CargoCartRenderState state) {
-        return TEXTURE;
+        return NiftyCarts.resLoc("textures/entity/" + state.woodType.name() + "_hand_cart.png");
     }
 
     private enum Contents {

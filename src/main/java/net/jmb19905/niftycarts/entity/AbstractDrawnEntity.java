@@ -49,6 +49,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -65,6 +66,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
     private static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = NiftyCarts.resLoc("pull_slowly");
     private static final ResourceLocation PULL_MODIFIER_ID = NiftyCarts.resLoc("pull");
     private int lerpSteps;
@@ -669,12 +671,21 @@ public abstract class AbstractDrawnEntity extends Entity {
         this.coachmanYRot = coachmanYRot;
     }
 
+    public void setWoodType(WoodType type) {
+        this.entityData.set(WOOD_TYPE, type.name());
+    }
+
+    public WoodType getWoodType(){
+        return WoodType.values().filter(type -> type.name().equals(this.entityData.get(WOOD_TYPE))).findFirst().orElse(null);
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(TIME_SINCE_HIT, 0);
         builder.define(FORWARD_DIRECTION, 1);
         builder.define(DAMAGE_TAKEN, 0.0F);
         builder.define(BANNER, ItemStack.EMPTY);
+        builder.define(WOOD_TYPE, "oak");
     }
 
     @Override

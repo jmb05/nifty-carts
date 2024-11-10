@@ -11,8 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, CartRenderState, AnimalCartModel> {
-    //This texture is not a real file it is assembled during resource loading
-    private static final ResourceLocation TEXTURE = NiftyCarts.resLoc("textures/entity/animal_cart.png");
 
     public AnimalCartRenderer(final EntityRendererProvider.Context renderManager) {
         super(renderManager, new AnimalCartModel(renderManager.bakeLayer(NiftyCartsModelLayers.ANIMAL_CART)));
@@ -37,6 +35,6 @@ public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, Ca
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(CartRenderState state) {
-        return TEXTURE;
+        return NiftyCarts.resLoc("textures/entity/" + state.woodType.name() + "_animal_cart.png");
     }
 }

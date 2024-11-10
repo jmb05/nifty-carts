@@ -40,7 +40,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;travel(Lnet/minecraft/world/phys/Vec3;)V"))
     public void travelRedirect(LivingEntity instance, Vec3 vec3) {
-        /*Optional<AbstractDrawnEntity> drawnOpt = NiftyWorld.get(instance.level()).getDrawn(instance);
+        Optional<AbstractDrawnEntity> drawnOpt = NiftyWorld.get(instance.level()).getDrawn(instance);
         if (drawnOpt.isPresent()) {
             var drawn = drawnOpt.get();
             if (drawn.getControllingPassenger() instanceof Player player) {
@@ -50,7 +50,7 @@ public abstract class LivingEntityMixin extends Entity {
                 this.travelCoachman(player, vec3);
                 return;
             }
-        }*/
+        }
         this.travel(vec3);
     }
 
@@ -67,11 +67,9 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private void travelCoachman(Player player, Vec3 vec) {
-        //System.out.println(player.level().isClientSide() + " " + vec);
         Vec3 vec32 = this.getRiddenInput(player, vec);
         customTickRidden(player, vec32);
         if (this.isControlledByLocalInstance()) {
-            //System.out.println("travel");
             this.setSpeed(this.getRiddenSpeed(player));
             this.travel(vec32);
         } else {
@@ -100,7 +98,6 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "tickRidden", at = @At("HEAD"))
     public void tickRidden(Player player, Vec3 vec3, CallbackInfo ci) {
-        System.out.println("travelRidden: " + player.level().isClientSide + " " + vec3);
     }
 
 }

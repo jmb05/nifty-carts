@@ -3,6 +3,7 @@ package net.jmb19905.niftycarts.client.renderer.entity;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
+import net.minecraft.world.level.block.state.properties.WoodType;
 
 public class CartRenderState extends EntityRenderState {
     public float pitch;
@@ -17,4 +18,5 @@ public class CartRenderState extends EntityRenderState {
     public int forward;
     public DyeColor bannerColor;
     public BannerPatternLayers bannerPattern;
+    public WoodType woodType;
 }

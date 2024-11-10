@@ -1,24 +1,11 @@
 package net.jmb19905.niftycarts.network.serverbound;
 
 import net.jmb19905.niftycarts.NiftyCarts;
-import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
-import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
-import java.util.Optional;
 
 public record CoachmanMovePayload(float x, float y, float z, float xRot, float yRot) implements CustomPacketPayload {
 
@@ -52,7 +39,7 @@ public record CoachmanMovePayload(float x, float y, float z, float xRot, float y
         return Mth.clamp(d, -2.0E7, 2.0E7);
     }
 
-    public static void handle(CoachmanMovePayload msg, ServerPlayer player) {
+    /*public static void handle(CoachmanMovePayload msg, ServerPlayer player, ServerGamePacketListenerImpl listener) {
         Entity vehicle = player.getVehicle();
         if (vehicle instanceof AbstractDrawnEntity drawn) {
             Optional<Entity> entityOpt = NiftyWorld.get(player.level()).getCurrentlyPulling(drawn);
@@ -68,20 +55,20 @@ public record CoachmanMovePayload(float x, float y, float z, float xRot, float y
                 double i = clampHorizontal(msg.z());
                 float j = Mth.wrapDegrees(msg.yRot());
                 float k = Mth.wrapDegrees(msg.xRot());
-                double l = g - this.vehicleFirstGoodX;
-                double m = h - this.vehicleFirstGoodY;
-                double n = i - this.vehicleFirstGoodZ;
+                double l = g - player.getX();
+                double m = h - player.getY();
+                double n = i - player.getZ();
                 double p = l * l + m * m + n * n;
                 double o = entity.getDeltaMovement().lengthSqr();
-                if (p - o > 100.0 && !Objects.requireNonNull(player.getServer()).isSingleplayerOwner(this.playerProfile())) {
-                    LOGGER.warn("{} (vehicle of {}) moved too quickly! {},{},{}", entity.getName().getString(), player.getName().getString(), l, m, n);
-                    this.send(new ClientboundMoveVehiclePacket(entity));
+                if (p - o > 100.0 && !Objects.requireNonNull(player.getServer()).isSingleplayerOwner(player.getGameProfile())) {
+                    //LOGGER.warn("{} (vehicle of {}) moved too quickly! {},{},{}", entity.getName().getString(), player.getName().getString(), l, m, n);
+                    listener.send(new ClientboundMoveVehiclePacket(entity));
                     return;
                 }
                 boolean bl = serverLevel.noCollision(entity, entity.getBoundingBox().deflate(0.0625));
-                l = g - this.vehicleLastGoodX;
-                m = h - this.vehicleLastGoodY - 1.0E-6;
-                n = i - this.vehicleLastGoodZ;
+                l = g - player.getX();
+                m = h - player.getY() - 1.0E-6;
+                n = i - player.getZ();
                 boolean bl2 = entity.verticalCollisionBelow;
                 if (entity instanceof LivingEntity && (livingEntity = (LivingEntity)entity).onClimbable()) {
                     livingEntity.resetFallDistance();
@@ -98,13 +85,13 @@ public record CoachmanMovePayload(float x, float y, float z, float xRot, float y
                 boolean bl3 = false;
                 if (p > 0.0625) {
                     bl3 = true;
-                    LOGGER.warn("{} (vehicle of {}) moved wrongly! {}", entity.getName().getString(), player.getName().getString(), Math.sqrt(p));
+                    //LOGGER.warn("{} (vehicle of {}) moved wrongly! {}", entity.getName().getString(), player.getName().getString(), Math.sqrt(p));
                 }
                 entity.absMoveTo(g, h, i, j, k);
                 boolean bl4 = serverLevel.noCollision(entity, entity.getBoundingBox().deflate(0.0625));
                 if (bl && (bl3 || !bl4)) {
                     entity.absMoveTo(d, e, f, j, k);
-                    this.send(new ClientboundMoveVehiclePacket(entity));
+                    listener.send(new ClientboundMoveVehiclePacket(entity));
                     return;
                 }
                 player.serverLevel().getChunkSource().move(player);
@@ -112,10 +99,6 @@ public record CoachmanMovePayload(float x, float y, float z, float xRot, float y
                 Vec3 vec3 = new Vec3(entity.getX() - d, entity.getY() - e, entity.getZ() - f);
                 handlePlayerKnownMovement(player, vec3);
                 player.checkMovementStatistics(vec3.x, vec3.y, vec3.z);
-                this.clientVehicleIsFloating = q >= -0.03125 && !bl2 && !Objects.requireNonNull(player.getServer()).isFlightAllowed() && !entity.isNoGravity() && this.noBlocksAround(entity);
-                this.vehicleLastGoodX = entity.getX();
-                this.vehicleLastGoodY = entity.getY();
-                this.vehicleLastGoodZ = entity.getZ();
             }
         }
     }
@@ -126,5 +109,5 @@ public record CoachmanMovePayload(float x, float y, float z, float xRot, float y
         }
         player.setKnownMovement(vec3);
         receivedMovementThisTick = true;
-    }
+    }*/
 }

@@ -2,6 +2,7 @@ package net.jmb19905.niftycarts.entity;
 
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
+import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -20,6 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public class ReaperCartEntity extends AbstractDrawnEntity {
 
     public ReaperCartEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
@@ -30,7 +33,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
     @Override
     public void tick() {
         super.tick();
-        final Entity coachman = this.getControllingPassenger();
+        /*final Entity coachman = this.getControllingPassenger();
         final Entity pulling = this.getPulling();
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
             final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level(), EntitySpawnReason.SPAWN_ITEM_USE);
@@ -42,7 +45,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
                     postilion.discard();
                 }
             }
-        }
+        }*/
     }
 
     public float getPassengersRidingOffsetY(EntityDimensions entityDimensions, float f) {
@@ -88,7 +91,8 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
             return;
         }
         if (!this.level().isClientSide) {
-            if (this.getFirstPassenger() instanceof Player pl) {
+            Optional<Entity> pulling = NiftyWorld.get(this.level()).getCurrentlyPulling(this);
+            if (pulling.isPresent() && pulling.get().getFirstPassenger() instanceof Player pl) {
                 if (this.xo != this.getX() || this.zo != this.getZ()) {
                     this.harvest(pl);
                 }
@@ -104,7 +108,6 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
             BlockPos pos = blockPos.above();
             BlockState state = level().getBlockState(pos);
             if (state.is(BlockTags.CROPS)) {
-                System.out.println("Found Crop");
                 if (level().removeBlock(pos, false)) {
                     level().destroyBlock(pos, false);
                     if (!state.requiresCorrectToolForDrops()) {

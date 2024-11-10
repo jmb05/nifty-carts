@@ -31,12 +31,9 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
         final Entity pulling = this.getPulling();
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
             final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level(), EntitySpawnReason.SPAWN_ITEM_USE);
-            System.out.println("Ticking");
             if (postilion != null) {
-                System.out.println("Postilion exists");
                 postilion.moveTo(pulling.getX(), pulling.getY(), pulling.getZ(), coachman.getYRot(), coachman.getXRot());
                 if (postilion.startRiding(pulling)) {
-                    System.out.println("Postilion riding");
                     this.level().addFreshEntity(postilion);
                 } else {
                     postilion.discard();

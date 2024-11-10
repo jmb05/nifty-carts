@@ -62,7 +62,7 @@ public class NiftyWorld extends SavedData {
 
     public Optional<Entity> getCurrentlyPulling(AbstractDrawnEntity drawn) {
         OptionalInt id = pulling.keySet().intStream()
-                .filter(pullID -> drawn.level().getEntity(pullID) == drawn)
+                .filter(pullID -> pulling.get(pullID) == drawn)
                 .findFirst();
         if (id.isEmpty()) return Optional.empty();
         return Optional.ofNullable(drawn.level().getEntity(id.getAsInt()));

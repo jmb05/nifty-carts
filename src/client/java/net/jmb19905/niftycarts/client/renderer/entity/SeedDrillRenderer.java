@@ -47,7 +47,7 @@ public class SeedDrillRenderer extends DrawnRenderer<SeedDrillEntity, SeedDrillR
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(final SeedDrillRenderState state) {
-        return NiftyCarts.resLoc("textures/entity/seed_drill.png");
+        return NiftyCarts.resLoc("textures/entity/" + state.woodType.name() + "_seed_drill.png");
     }
 
     @Override

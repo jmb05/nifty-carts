@@ -34,8 +34,6 @@ public class SeedDrillMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(container, i, 8 + 18 * i, 28) {
                 @Override
                 public boolean mayPlace(ItemStack itemStack) {
-                    System.out.println(NiftyCarts.SEED_DRILL_PLANTABLE);
-                    System.out.println("May place: " + itemStack + " " + itemStack.is(NiftyCarts.SEED_DRILL_PLANTABLE));
                     //return itemStack.is(NiftyCarts.SEED_DRILL_PLANTABLE);
                     return true;
                 }

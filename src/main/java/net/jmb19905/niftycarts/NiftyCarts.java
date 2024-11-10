@@ -39,21 +39,36 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.fml.config.ModConfig;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class NiftyCarts implements ModInitializer {
 	public static final String MOD_ID = "niftycarts";
 
 	public static final Item WHEEL = register("wheel", Item::new);
-	private static final Function<String, CartItem> CART_ITEM_SUPPLIER = id -> register(id, prop -> new CartItem(prop.stacksTo(1)));
-	public static final CartItem SUPPLY_CART = CART_ITEM_SUPPLIER.apply("supply_cart");
-	public static final CartItem HAND_CART = CART_ITEM_SUPPLIER.apply("hand_cart");
-	public static final CartItem PLOW = CART_ITEM_SUPPLIER.apply("plow");
-	public static final CartItem ANIMAL_CART = CART_ITEM_SUPPLIER.apply("animal_cart");
-	public static final CartItem SEED_DRILL = CART_ITEM_SUPPLIER.apply("seed_drill");
-	public static final CartItem REAPER = CART_ITEM_SUPPLIER.apply("reaper");
+	private static final BiFunction<WoodType, String, CartItem> CART_ITEM_SUPPLIER = (wood, type) -> register(wood.name() + "_" + type, prop -> new CartItem(wood, type, prop.stacksTo(1)));
+	public static final Map<WoodType, CartItem> SUPPLY_CART = new HashMap<>();
+	public static final Map<WoodType, CartItem> HAND_CART = new HashMap<>();
+	public static final Map<WoodType, CartItem> PLOW = new HashMap<>();
+	public static final Map<WoodType, CartItem> ANIMAL_CART = new HashMap<>();
+	public static final Map<WoodType, CartItem> SEED_DRILL = new HashMap<>();
+	public static final Map<WoodType, CartItem> REAPER = new HashMap<>();
+
+	static {
+		WoodType.values().forEach(woodType -> {
+			SUPPLY_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "supply_cart"));
+			HAND_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "hand_cart"));
+			PLOW.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "plow"));
+			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "seed_drill"));
+			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "reaper"));
+			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "animal_cart"));
+		});
+	}
 
 	public static MinecraftServer server = null;
 
@@ -121,12 +136,14 @@ public class NiftyCarts implements ModInitializer {
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
-			content.accept(SUPPLY_CART);
-			content.accept(PLOW);
-			content.accept(SEED_DRILL);
-			content.accept(REAPER);
-			content.accept(ANIMAL_CART);
-			content.accept(HAND_CART);
+			WoodType.values().forEach(woodType -> {
+				content.accept(SUPPLY_CART.get(woodType));
+				content.accept(PLOW.get(woodType));
+				content.accept(SEED_DRILL.get(woodType));
+				content.accept(REAPER.get(woodType));
+				content.accept(ANIMAL_CART.get(woodType));
+				content.accept(HAND_CART.get(woodType));
+			});
 		});
 
 		Registry.register(BuiltInRegistries.SOUND_EVENT, ATTACH_SOUND_ID, ATTACH_SOUND);
@@ -145,7 +162,7 @@ public class NiftyCarts implements ModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(OpenSupplyCartPayload.TYPE, (payload, context) -> OpenSupplyCartPayload.handle(context.player()));
 		ServerPlayNetworking.registerGlobalReceiver(ToggleSlowPayload.TYPE, (payload, context) -> ToggleSlowPayload.handle(context.player()));
 		ServerPlayNetworking.registerGlobalReceiver(RequestCartUpdatePayload.TYPE, (payload, context) -> RequestCartUpdatePayload.handle(payload, context.player()));
-		ServerPlayNetworking.registerGlobalReceiver(CoachmanMovePayload.TYPE, (payload, context) -> CoachmanMovePayload.handle(payload, context.player()));
+		ServerPlayNetworking.registerGlobalReceiver(CoachmanMovePayload.TYPE, (payload, context) -> {});
 
 		ServerLifecycleEvents.SERVER_STARTED.register(s -> server = s);
 

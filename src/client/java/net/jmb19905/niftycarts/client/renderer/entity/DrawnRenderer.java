@@ -56,6 +56,7 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends Car
         state.forward = entity.getForwardDirection();
         state.bannerColor = entity.getBannerColor();
         state.bannerPattern = entity.getBannerPattern();
+        state.woodType = entity.getWoodType();
     }
 
     public abstract ResourceLocation getTextureLocation(S state);

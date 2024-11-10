@@ -24,7 +24,7 @@ public final class ReaperRenderer extends DrawnRenderer<ReaperCartEntity, CartRe
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(CartRenderState state) {
-        return NiftyCarts.resLoc("textures/entity/reaper.png");
+        return NiftyCarts.resLoc("textures/entity/" + state.woodType.name() + "_reaper.png");
     }
 
     @Override

@@ -18,8 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowRenderState, PlowModel> {
-    //This texture is not a real file it is assembled during resource loading
-    private static final ResourceLocation TEXTURE = NiftyCarts.resLoc("textures/entity/plow.png");
     private final ItemRenderer itemRenderer;
 
     public PlowRenderer(final EntityRendererProvider.Context ctx) {
@@ -46,7 +44,7 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowRenderStat
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(PlowRenderState state) {
-        return TEXTURE;
+        return NiftyCarts.resLoc("textures/entity/" + state.woodType.name() + "_plow.png");
     }
 
     @Override
