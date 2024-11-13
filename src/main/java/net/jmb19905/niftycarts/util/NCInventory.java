@@ -1,13 +1,11 @@
 package net.jmb19905.niftycarts.util;
 
-import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -16,18 +14,22 @@ public class NCInventory extends NonNullList<ItemStack> {
     private Consumer<Integer> onContentsChanged;
 
     public static NCInventory create() {
-        return new NCInventory(Lists.newArrayList(), null);
+        return new NCInventory(new ArrayList<>(), null);
     }
 
     public static NCInventory createWithCapacity(int i) {
-        return new NCInventory(Lists.newArrayListWithCapacity(i), null);
+        return new NCInventory(new ArrayList<>(i), null);
     }
 
     public static NCInventory withSize(int i, ItemStack object) {
-        Validate.notNull(object, "ItemStack is null");
-        ItemStack[] objects = new ItemStack[i];
-        Arrays.fill(objects, object);
-        return new NCInventory(Arrays.asList(objects), object);
+        if (object == null) {
+            object = ItemStack.EMPTY;
+        }
+        List<ItemStack> list = new ArrayList<>();
+        for (int j = 0; j < i; j++) {
+            list.add(object);
+        }
+        return new NCInventory(list, object);
     }
 
     public NCInventory(List<ItemStack> list, @Nullable ItemStack object) {
