@@ -25,7 +25,7 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(final PlowEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().name() + "plow.png");
+        return ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().name() + "_plow.png");
     }
 
     @Override

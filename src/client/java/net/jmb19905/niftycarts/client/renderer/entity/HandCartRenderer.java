@@ -304,7 +304,7 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(HandCartEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().name() + "hand_cart.png");
+        return ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().name() + "_hand_cart.png");
     }
 
     private enum Contents {

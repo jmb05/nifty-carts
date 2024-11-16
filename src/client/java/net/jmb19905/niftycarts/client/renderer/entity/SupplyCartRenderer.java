@@ -312,7 +312,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(final SupplyCartEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().name() + "supply_cart.png");
+        return ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().name() + "_supply_cart.png");
     }
 
     private enum Contents {
