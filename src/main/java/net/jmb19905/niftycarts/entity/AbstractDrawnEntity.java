@@ -50,6 +50,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -67,6 +68,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
     private static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "pull_slowly");
     private static final ResourceLocation PULL_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "pull");
     private int lerpSteps;
@@ -611,6 +613,14 @@ public abstract class AbstractDrawnEntity extends Entity {
         return this.entityData.get(BANNER);
     }
 
+    public void setWoodType(WoodType woodType) {
+        this.entityData.set(WOOD_TYPE, woodType.name());
+    }
+
+    public WoodType getWoodType(){
+        return WoodType.values().filter(type -> type.name().equals(this.entityData.get(WOOD_TYPE))).findFirst().orElse(null);
+    }
+
     public DyeColor getBannerColor() {
         final ItemStack banner = this.getBanner();
         if (banner.getItem() instanceof BannerItem bannerItem) {
@@ -646,6 +656,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         builder.define(FORWARD_DIRECTION, 1);
         builder.define(DAMAGE_TAKEN, 0.0F);
         builder.define(BANNER, ItemStack.EMPTY);
+        builder.define(WOOD_TYPE, "oak");
     }
 
     @Override

@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.jmb19905.niftycarts.container.PlowMenu;
+import net.jmb19905.niftycarts.container.SeedDrillMenu;
 import net.jmb19905.niftycarts.entity.*;
 import net.jmb19905.niftycarts.entity.ai.goal.AvoidCartGoal;
 import net.jmb19905.niftycarts.entity.ai.goal.PullCartGoal;
@@ -38,18 +39,34 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.WoodType;
 
-import java.util.function.Supplier;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 public class NiftyCarts implements ModInitializer {
 	public static final String MOD_ID = "niftycarts";
 
 	public static final Item WHEEL = new Item(new Item.Properties());
-	private static final Supplier<CartItem> CART_ITEM_SUPPLIER = () -> new CartItem(new Item.Properties().stacksTo(1));
-	public static final CartItem SUPPLY_CART = CART_ITEM_SUPPLIER.get();
-	public static final CartItem HAND_CART = CART_ITEM_SUPPLIER.get();
-	public static final CartItem PLOW = CART_ITEM_SUPPLIER.get();
-	public static final CartItem ANIMAL_CART = CART_ITEM_SUPPLIER.get();
+	private static final BiFunction<WoodType, String, CartItem> CART_ITEM_SUPPLIER = (woodType, cartType) -> new CartItem(new Item.Properties().stacksTo(1), woodType, cartType);
+	public static final Map<WoodType, CartItem> SUPPLY_CART = new HashMap<>();
+	public static final Map<WoodType, CartItem> HAND_CART = new HashMap<>();
+	public static final Map<WoodType, CartItem> PLOW = new HashMap<>();
+	public static final Map<WoodType, CartItem> ANIMAL_CART = new HashMap<>();
+	public static final Map<WoodType, CartItem> REAPER = new HashMap<>();
+	public static final Map<WoodType, CartItem> SEED_DRILL = new HashMap<>();
+
+	static {
+		WoodType.values().forEach(woodType -> {
+			SUPPLY_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "supply_cart"));
+			HAND_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "hand_cart"));
+			PLOW.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "plow"));
+			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "seed_drill"));
+			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "reaper"));
+			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "animal_cart"));
+		});
+	}
 
 	public static MinecraftServer server = null;
 
@@ -87,6 +104,18 @@ public class NiftyCarts implements ModInitializer {
 			EntityType.Builder.of(HandCartEntity::new, MobCategory.MISC).sized(1.3f, 1.1f).build()
 	);
 
+	public static final EntityType<ReaperEntity> REAPER_ENTITY = Registry.register(
+			BuiltInRegistries.ENTITY_TYPE,
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "reaper"),
+			EntityType.Builder.of(ReaperEntity::new, MobCategory.MISC).sized(1.3f, 1.1f).build()
+	);
+
+	public static final EntityType<SeedDrillEntity> SEED_DRILL_ENTITY = Registry.register(
+			BuiltInRegistries.ENTITY_TYPE,
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "seed_drill"),
+			EntityType.Builder.of(SeedDrillEntity::new, MobCategory.MISC).sized(1.3f, 1.1f).build()
+	);
+
 	public static final EntityType<PostilionEntity> POSTILION_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
 			ResourceLocation.fromNamespaceAndPath(MOD_ID, "postilion"),
@@ -108,12 +137,14 @@ public class NiftyCarts implements ModInitializer {
 			.build();
 
 	public static final MenuType<PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
+	public static final MenuType<SeedDrillMenu> SEED_DRILL_MENU_TYPE = new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS);
 
 	public static final ResourceLocation CART_ONE_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "cart_one_cm");
 
 	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/hoe"));
 	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/shovel"));
 	public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/axe"));
+	public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "seed_drill_breakable"));
 
 	@Override
 	public void onInitialize() {
@@ -125,20 +156,27 @@ public class NiftyCarts implements ModInitializer {
 		Stats.CUSTOM.get(CART_ONE_CM, StatFormatter.DEFAULT);
 
 		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "wheel"), WHEEL);
-		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "supply_cart"), SUPPLY_CART);
-		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"), PLOW);
-		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "animal_cart"), ANIMAL_CART);
-		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "hand_cart"), HAND_CART);
+		WoodType.values().forEach(woodType -> {
+			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_supply_cart"), SUPPLY_CART.get(woodType));
+			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_plow"), PLOW.get(woodType));
+			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_animal_cart"), ANIMAL_CART.get(woodType));
+			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_hand_cart"), HAND_CART.get(woodType));
+			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_reaper"), REAPER.get(woodType));
+			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_seed_drill"), SEED_DRILL.get(woodType));
+			ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
+				content.accept(SUPPLY_CART.get(woodType));
+				content.accept(PLOW.get(woodType));
+				content.accept(ANIMAL_CART.get(woodType));
+				content.accept(HAND_CART.get(woodType));
+				content.accept(REAPER.get(woodType));
+				content.accept(SEED_DRILL.get(woodType));
+			});
+		});
 
 		Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"), PLOW_MENU_TYPE);
+		Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "seed_drill"), SEED_DRILL_MENU_TYPE);
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
-			content.accept(SUPPLY_CART);
-			content.accept(PLOW);
-			content.accept(ANIMAL_CART);
-			content.accept(HAND_CART);
-		});
 
 		Registry.register(BuiltInRegistries.SOUND_EVENT, ATTACH_SOUND_ID, ATTACH_SOUND);
 		Registry.register(BuiltInRegistries.SOUND_EVENT, DETACH_SOUND_ID, DETACH_SOUND);

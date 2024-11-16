@@ -12,11 +12,9 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
 import net.jmb19905.niftycarts.client.renderer.entity.*;
-import net.jmb19905.niftycarts.client.renderer.entity.model.AnimalCartModel;
-import net.jmb19905.niftycarts.client.renderer.entity.model.HandCartModel;
-import net.jmb19905.niftycarts.client.renderer.entity.model.PlowModel;
-import net.jmb19905.niftycarts.client.renderer.entity.model.SupplyCartModel;
+import net.jmb19905.niftycarts.client.renderer.entity.model.*;
 import net.jmb19905.niftycarts.client.screen.PlowScreen;
+import net.jmb19905.niftycarts.client.screen.SeedDrillScreen;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnPayload;
 import net.jmb19905.niftycarts.network.serverbound.ActionKeyPayload;
 import net.jmb19905.niftycarts.network.serverbound.ToggleSlowPayload;
@@ -44,13 +42,18 @@ public class NiftyCartsClient implements ClientModInitializer {
 		EntityRendererRegistry.register(NiftyCarts.PLOW_ENTITY, PlowRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.HAND_CART_ENTITY, HandCartRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.POSTILION_ENTITY, PostilionRenderer::new);
+		EntityRendererRegistry.register(NiftyCarts.REAPER_ENTITY, ReaperRenderer::new);
+		EntityRendererRegistry.register(NiftyCarts.SEED_DRILL_ENTITY, SeedDrillRenderer::new);
 
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.SUPPLY_CART, SupplyCartModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.ANIMAL_CART, AnimalCartModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.PLOW, PlowModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.HAND_CART, HandCartModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.REAPER, ReaperModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.SEED_DRILL, SeedDrillModel::createLayer);
 
 		MenuScreens.register(NiftyCarts.PLOW_MENU_TYPE, PlowScreen::new);
+		MenuScreens.register(NiftyCarts.SEED_DRILL_MENU_TYPE, SeedDrillScreen::new);
 
 		actionKeyMapping = KeyBindingHelper.registerKeyBinding(new KeyMapping(
 				"key.niftycarts.action",

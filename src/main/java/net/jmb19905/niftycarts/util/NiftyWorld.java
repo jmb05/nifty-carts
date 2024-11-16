@@ -15,10 +15,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class NiftyWorld extends SavedData {
 
@@ -62,6 +59,14 @@ public class NiftyWorld extends SavedData {
                 }
             }
         }
+    }
+
+    public Optional<Entity> getCurrentlyPulling(AbstractDrawnEntity drawn) {
+        OptionalInt id = pulling.keySet().intStream()
+                .filter(pullID -> pulling.get(pullID) == drawn)
+                .findFirst();
+        if (id.isEmpty()) return Optional.empty();
+        return Optional.ofNullable(drawn.level().getEntity(id.getAsInt()));
     }
 
     public Int2ObjectMap<AbstractDrawnEntity> getPulling() {

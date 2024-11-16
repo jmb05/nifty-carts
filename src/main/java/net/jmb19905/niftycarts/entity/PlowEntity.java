@@ -141,7 +141,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public Item getCartItem() {
-        return NiftyCarts.PLOW;
+        return NiftyCarts.PLOW.get(getWoodType());
     }
 
     @Override

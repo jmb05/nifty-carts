@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "item": "minecraft:dark_oak_planks"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    },
+    "w": {
+      "item": "niftycarts:wheel"
+    }
+  },
+  "pattern": [
+    "sss",
+    "psp",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:dark_oak_plow"
+  }
+}

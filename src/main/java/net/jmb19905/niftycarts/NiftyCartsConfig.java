@@ -66,6 +66,8 @@ public final class NiftyCartsConfig {
         public final CartConfig animalCart;
         public final CartConfig plow;
         public final CartConfig handCart;
+        public final CartConfig reaper;
+        public final CartConfig seedDrill;
 
         Common(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
@@ -74,7 +76,9 @@ public final class NiftyCartsConfig {
             this.plow = new CartConfig(builder, "plow", "The Plow, an animal pulled machine for tilling soil and creating paths");
             ArrayList<String> list = new ArrayList<>();
             list.add("minecraft:player");
-            this.handCart = new CartConfig(builder, "handCart", "The Hand Cart, a player pulled cart that stores items", list, 0);
+            this.handCart = new CartConfig(builder, "hand_cart", "The Hand Cart, a player pulled cart that stores items", list, 0);
+            this.reaper = new CartConfig(builder, "reaper", "The Reaper, a cart that harvests crops");
+            this.seedDrill = new CartConfig(builder, "seed_drill", "The Seed Drill, a cart that plants crops");
             builder.pop();
         }
     }

@@ -39,3 +39,4 @@ replay_*.log
 *.hprof
 *.jfr
 /hand_cart_recipe.webp
+/src/main/generated/.cache/

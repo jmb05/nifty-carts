@@ -9,6 +9,8 @@ public class NiftyCartsModelLayers {
     public static final ModelLayerLocation PLOW = main("plow");
     public static final ModelLayerLocation SUPPLY_CART = main("supply_cart");
     public static final ModelLayerLocation HAND_CART = main("hand_cart");
+    public static final ModelLayerLocation REAPER = main("reaper");
+    public static final ModelLayerLocation SEED_DRILL = main("seed_drill");
 
     @SuppressWarnings("ConfusingMainMethod")
     private static ModelLayerLocation main(String name) {

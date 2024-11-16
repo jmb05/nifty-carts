@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "minecraft:chest"
+    },
+    "p": {
+      "item": "minecraft:bamboo_planks"
+    },
+    "w": {
+      "item": "niftycarts:wheel"
+    }
+  },
+  "pattern": [
+    "pcp",
+    "pcp",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:bamboo_supply_cart"
+  }
+}
