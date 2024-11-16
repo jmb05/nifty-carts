@@ -435,7 +435,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             this.setTimeSinceHit(10);
             this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
             final boolean flag = source.getEntity() instanceof Player && ((Player) source.getEntity()).getAbilities().instabuild;
-            if (flag || this.getDamageTaken() > 40.0F) {
+            if (flag || this.getDamageTaken() > getConfig().destroyDamage.get() * 10) {
                 this.onDestroyed(source, flag);
                 this.setPulling(null);
                 this.discard();

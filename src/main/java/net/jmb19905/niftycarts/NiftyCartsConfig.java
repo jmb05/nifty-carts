@@ -92,6 +92,7 @@ public final class NiftyCartsConfig {
         public final ForgeConfigSpec.ConfigValue<ArrayList<String>> pullEntities;
         public final ForgeConfigSpec.DoubleValue slowSpeed;
         public final ForgeConfigSpec.DoubleValue pullSpeed;
+        public final ForgeConfigSpec.IntValue destroyDamage;
         private final ForgeConfigSpec.Builder builder;
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description) {
@@ -111,6 +112,8 @@ public final class NiftyCartsConfig {
                     .defineInRange("slow_speed", -0.65D, -1.0D, 0.0D);
             this.pullSpeed = builder.comment("Base speed modifier applied to animals (-0.5 = half normal speed)")
                     .defineInRange("pull_speed", 0.0D, -1.0D, defaultPullSpeed);
+            this.destroyDamage = builder.comment("Damage needed to destroy the cart. Damage accumulates over time but decays at a rate of 2 damage per second.")
+                    .defineInRange("destroy_damage", 4, 1, 100);
         }
 
         protected void pop() {
