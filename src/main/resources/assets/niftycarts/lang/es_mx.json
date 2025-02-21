@@ -1,0 +1,19 @@
+{
+  "item.niftycarts.supply_cart": "Carro de Suministros",
+  "item.niftycarts.plow": "Arado",
+  "item.niftycarts.animal_cart": "Carro de Animales",
+  "item.niftycarts.hand_cart": "Carretilla",
+  "item.niftycarts.wheel": "Rueda",
+  "entity.niftycarts.supply_cart": "Carro de Suministros",
+  "entity.niftycarts.plow": "Arado",
+  "entity.niftycarts.animal_cart": "Carro de Animales",
+  "entity.niftycarts.hand_cart": "Carretilla",
+  "entity.niftycarts.postilion": "Postillón",
+  "key.categories.niftycarts": "NiftyCarts",
+  "key.niftycarts.action": "Adjuntar/Desprender Carro",
+  "key.niftycarts.slow": "Alternar Lento",
+  "subtitles.niftycarts.cart.attached": "Carro adjunto",
+  "subtitles.niftycarts.cart.detached": "Carro desprendido",
+  "subtitles.niftycarts.cart.placed": "Carro colocado",
+  "stat.niftycarts.cart_one_cm": "Distancia por Carro"
+}
