@@ -195,6 +195,7 @@ public class NiftyCarts implements ModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(RequestCartUpdatePayload.TYPE, (payload, context) -> RequestCartUpdatePayload.handle(payload, context.player()));
 
 		ServerLifecycleEvents.SERVER_STARTED.register(s -> server = s);
+		ServerLifecycleEvents.SERVER_STOPPED.register(s -> server = null);
 
 		ServerTickEvents.END_SERVER_TICK.register(e -> {
 			for (ResourceKey<Level> levelKey : e.levelKeys()) {
