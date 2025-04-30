@@ -7,11 +7,14 @@
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "has_wheel": {
+    "has_wheel_and_planks": {
       "conditions": {
         "items": [
           {
             "items": "niftycarts:wheel"
+          },
+          {
+            "items": "minecraft:oak_planks"
           }
         ]
       },
@@ -21,7 +24,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_wheel"
+      "has_wheel_and_planks"
     ]
   ],
   "rewards": {
