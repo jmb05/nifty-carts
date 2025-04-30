@@ -78,5 +78,6 @@
   "niftycarts.cart_one_cm": "Strecke auf Karren gefahren",
   "subtitles.niftycarts.cart.attached": "Karren wird angehängt",
   "subtitles.niftycarts.cart.detached": "Karren wird abgehängt",
-  "subtitles.niftycarts.cart.placed": "Karren wird platziert"
+  "subtitles.niftycarts.cart.placed": "Karren wird platziert",
+  "tutorial.slow.message": "Drücke %1$s um den Langsammodus zu aktivieren"
 }

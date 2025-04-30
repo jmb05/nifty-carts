@@ -38,6 +38,7 @@ public class NiftyCartsEnUsLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("subtitles.niftycarts.cart.attached", "Cart attaches");
         translationBuilder.add("subtitles.niftycarts.cart.detached", "Cart detaches");
         translationBuilder.add("subtitles.niftycarts.cart.placed", "Cart placed");
+        translationBuilder.add("tutorial.slow.message", "Press %1$s to toggle slow mode");
     }
 
     private static String capitalizeWordStart(String s) {

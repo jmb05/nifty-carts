@@ -96,13 +96,14 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private void tryBreakBlock(ItemStack stack, BlockPos pos, Level level, Player player) {
         BlockState state = level.getBlockState(pos);
         TagKey<Block> tag;
-        if (stack.getItem() instanceof HoeItem) {
-            tag = NiftyCarts.PLOW_BREAKABLE_HOE;
-        } else if (stack.getItem() instanceof ShovelItem) {
-            tag = NiftyCarts.PLOW_BREAKABLE_SHOVEL;
-        } else if (stack.getItem() instanceof AxeItem) {
-            tag = NiftyCarts.PLOW_BREAKABLE_AXE;
-        } else return;
+        switch (stack.getItem()) {
+            case HoeItem ignored -> tag = NiftyCarts.PLOW_BREAKABLE_HOE;
+            case ShovelItem ignored -> tag = NiftyCarts.PLOW_BREAKABLE_SHOVEL;
+            case AxeItem ignored -> tag = NiftyCarts.PLOW_BREAKABLE_AXE;
+            default -> {
+                return;
+            }
+        }
         if (state.isAir()) return;
         if (state.is(tag)) {
             if (level.removeBlock(pos, false)) {
@@ -162,16 +163,24 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
+    protected void saveInventory(CompoundTag tag) {
+        ContainerHelper.saveAllItems(tag, this.getItemStacks(), this.registryAccess());
+    }
+
+    @Override
+    protected void readInventory(CompoundTag tag) {
+        ContainerHelper.loadAllItems(tag, this.getItemStacks(), this.registryAccess());
+    }
+
+    @Override
     protected void addAdditionalSaveData(final CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        ContainerHelper.saveAllItems(compound, this.getItemStacks(), this.registryAccess());
         compound.putBoolean("Plowing", this.entityData.get(PLOWING));
     }
 
     @Override
     protected void readAdditionalSaveData(final CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        ContainerHelper.loadAllItems(compound, this.getItemStacks(), this.registryAccess());
         this.entityData.set(PLOWING, compound.getBoolean("Plowing"));
     }
 

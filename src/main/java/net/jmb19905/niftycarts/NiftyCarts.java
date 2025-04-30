@@ -144,7 +144,7 @@ public class NiftyCarts implements ModInitializer {
 	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/hoe"));
 	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/shovel"));
 	public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/axe"));
-	public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "seed_drill_breakable"));
+	public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "seed_drill_plantable"));
 
 	@Override
 	public void onInitialize() {

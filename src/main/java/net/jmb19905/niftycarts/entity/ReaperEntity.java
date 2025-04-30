@@ -4,6 +4,7 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -30,7 +31,7 @@ public class ReaperEntity extends AbstractDrawnEntity {
     }
 
     public float getPassengersRidingOffsetY(EntityDimensions entityDimensions, float f) {
-        return (entityDimensions.height() - 3f / 16f) * f;
+        return (entityDimensions.height() + 2f / 16f) * f;
     }
 
     @Override
@@ -72,7 +73,8 @@ public class ReaperEntity extends AbstractDrawnEntity {
         }
         if (!this.level().isClientSide) {
             Optional<Entity> pulling = NiftyWorld.get(this.level()).getCurrentlyPulling(this);
-            if (pulling.isPresent() && pulling.get().getFirstPassenger() instanceof Player pl) {
+            if (pulling.isPresent() && this.getFirstPassenger() instanceof Player pl) {
+
                 if (this.xo != this.getX() || this.zo != this.getZ()) {
                     this.harvest(pl);
                 }
@@ -81,10 +83,10 @@ public class ReaperEntity extends AbstractDrawnEntity {
     }
 
     private void harvest(Player player) {
-        for (float f = 1.2f; f < 2; f += 0.6f) {
+        for (float f = 0.9f; f <= 2; f += 0.1f) {
             final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
             final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
-            final BlockPos blockPos = new BlockPos((int) blockPosX, (int) Math.round(this.getY() - 0.75D), (int) blockPosZ);
+            final BlockPos blockPos = new BlockPos((int) Math.round(blockPosX), (int) Math.round(this.getY() - 0.75D), (int) Math.round(blockPosZ));
             BlockPos pos = blockPos.above();
             BlockState state = level().getBlockState(pos);
             if (state.is(BlockTags.CROPS)) {

@@ -28,8 +28,8 @@ import java.util.Objects;
 
 public class NiftyCartsClient implements ClientModInitializer {
 
-	private static KeyMapping actionKeyMapping;
-	private static KeyMapping toggleSlowMapping;
+	public static KeyMapping actionKeyMapping;
+	public static KeyMapping toggleSlowMapping;
 
 	@Override
 	public void onInitializeClient() {

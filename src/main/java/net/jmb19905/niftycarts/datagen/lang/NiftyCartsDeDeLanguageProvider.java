@@ -54,5 +54,6 @@ public class NiftyCartsDeDeLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("subtitles.niftycarts.cart.attached", "Karren wird angehängt");
         translationBuilder.add("subtitles.niftycarts.cart.detached", "Karren wird abgehängt");
         translationBuilder.add("subtitles.niftycarts.cart.placed", "Karren wird platziert");
+        translationBuilder.add("tutorial.slow.message", "Drücke %1$s um den Langsammodus zu aktivieren");
     }
 }

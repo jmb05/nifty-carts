@@ -78,5 +78,6 @@
   "niftycarts.cart_one_cm": "Distance by Cart",
   "subtitles.niftycarts.cart.attached": "Cart attaches",
   "subtitles.niftycarts.cart.detached": "Cart detaches",
-  "subtitles.niftycarts.cart.placed": "Cart placed"
+  "subtitles.niftycarts.cart.placed": "Cart placed",
+  "tutorial.slow.message": "Press %1$s to toggle slow mode"
 }
