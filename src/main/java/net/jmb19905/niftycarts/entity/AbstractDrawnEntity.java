@@ -536,7 +536,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (passengers.isEmpty()) {
             return null;
         }
-        final Entity first = passengers.get(0);
+        final Entity first = passengers.getFirst();
         if (first instanceof Animal || !(first instanceof LivingEntity)) {
             return null;
         }
@@ -707,8 +707,8 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     @Override
     protected void playStepSound(BlockPos blockPos, BlockState blockState) {
-        if (!NiftyCartsConfig.getClient().creakingSounds.get() || random.nextFloat() < 0.7f) return;
-        this.playSound(NiftyCarts.CREAK_SOUND, 0.75f + random.nextFloat() * 0.25f, 1);
+        //if (level().isClientSide && !NiftyCartsConfig.getClient().creakingSounds.get() || random.nextFloat() < 0.7f) return;
+        //this.playSound(NiftyCarts.CREAK_SOUND, 0.75f + random.nextFloat() * 0.25f, 1);
     }
 
     @Override

@@ -41,7 +41,6 @@ public final class NiftyCartsConfig {
     }
 
     public static class Client {
-        public final ForgeConfigSpec.BooleanValue creakingSounds;
         public final ForgeConfigSpec.BooleanValue renderSupplies;
         public final ForgeConfigSpec.BooleanValue renderSupplyGear;
         public final ForgeConfigSpec.BooleanValue renderSupplyFlowers;
@@ -50,7 +49,6 @@ public final class NiftyCartsConfig {
 
         Client(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration to disable the rendering of certain supplies in the supply cart");
-            this.creakingSounds = builder.comment("Experimental: Cart Creaking sounds").define("creaking_sounds", false);
             this.renderSupplies = builder.comment("Enables/Disables the rendering of all supplies")
                     .define("render_supplies", true);
             this.renderSupplyGear = builder.comment("Falls back to rendering as items if false").define("render_supply_gear", true);
