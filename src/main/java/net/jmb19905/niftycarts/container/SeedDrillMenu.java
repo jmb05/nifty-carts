@@ -57,8 +57,6 @@ public class SeedDrillMenu extends AbstractContainerMenu {
         final Slot slot = this.slots.get(index);
         if (slot.hasItem()) {
             final ItemStack itemstack1 = slot.getItem();
-            System.out.println(itemstack1);
-            System.out.println(itemstack1.is(NiftyCarts.SEED_DRILL_PLANTABLE));
             if (index < this.container.getContainerSize()) {
                 if (!this.moveItemStackTo(itemstack1, this.container.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;

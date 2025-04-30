@@ -65,10 +65,8 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
 
     private boolean tryPlaceCrop(ItemStack stack, BlockPos pos, Level level, int slot) {
         if (stack.is(NiftyCarts.SEED_DRILL_PLANTABLE)) {
-            System.out.println("Found seeds");
             if (stack.getItem() instanceof BlockItem item) {
                 Block block = item.getBlock();
-                System.out.println(block.defaultBlockState().canSurvive(level, pos));
                 if (level.getBlockState(pos).isAir() && block.defaultBlockState().canSurvive(level, pos)) {
                     level.setBlockAndUpdate(pos, block.defaultBlockState());
                     stack.shrink(1);

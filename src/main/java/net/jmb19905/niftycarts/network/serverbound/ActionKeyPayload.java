@@ -40,7 +40,6 @@ public record ActionKeyPayload() implements CustomPacketPayload {
         } else {
             pulling = player.getVehicle();
         }
-        System.out.println(pulling);
         var drawn = NiftyWorld.getServer(NiftyCarts.server, level.dimension()).getDrawn(pulling);
         drawn.map(c -> Pair.of(c, (Entity) null))
                 .or(() -> level.getEntitiesOfClass(AbstractDrawnEntity.class, pulling.getBoundingBox().inflate(2.0d), entity -> entity != pulling).stream()

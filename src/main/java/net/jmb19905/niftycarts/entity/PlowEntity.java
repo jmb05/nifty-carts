@@ -96,14 +96,13 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private void tryBreakBlock(ItemStack stack, BlockPos pos, Level level, Player player) {
         BlockState state = level.getBlockState(pos);
         TagKey<Block> tag;
-        switch (stack.getItem()) {
-            case HoeItem ignored -> tag = NiftyCarts.PLOW_BREAKABLE_HOE;
-            case ShovelItem ignored -> tag = NiftyCarts.PLOW_BREAKABLE_SHOVEL;
-            case AxeItem ignored -> tag = NiftyCarts.PLOW_BREAKABLE_AXE;
-            default -> {
-                return;
-            }
-        }
+        if (stack.getItem() instanceof HoeItem) {
+            tag = NiftyCarts.PLOW_BREAKABLE_HOE;
+        } else if (stack.getItem() instanceof ShovelItem) {
+            tag = NiftyCarts.PLOW_BREAKABLE_SHOVEL;
+        } else if (stack.getItem() instanceof AxeItem) {
+            tag = NiftyCarts.PLOW_BREAKABLE_AXE;
+        } else return;
         if (state.isAir()) return;
         if (state.is(tag)) {
             if (level.removeBlock(pos, false)) {
