@@ -23,14 +23,18 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.PaintingVariantTags;
@@ -39,7 +43,7 @@ import net.minecraft.world.entity.decoration.Painting;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.equipment.EquipmentModel;
+import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -55,6 +59,7 @@ import java.util.function.Predicate;
 public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRenderState, HandCartModel> {
     private final HumanoidModel<HumanoidRenderState> leggings, armor;
     private final EquipmentLayerRenderer equipmentRenderer;
+    private final ItemModelResolver itemModelResolver;
 
     private static final HumanoidRenderState humanoidRenderState = new HumanoidRenderState();
 
@@ -70,6 +75,7 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRen
         this.armor = new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR));
         this.shadowRadius = 1.0F;
         this.equipmentRenderer = ctx.getEquipmentRenderer();
+        itemModelResolver = ctx.getItemModelResolver();
     }
 
     @Override
@@ -83,6 +89,9 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRen
         state.cargo = NonNullList.create();
         for (int i = 0; i < entity.getCargo().size(); i++) {
             state.cargo.add(i, entity.getCargo().get(i));
+            ItemStackRenderState cargoState = new ItemStackRenderState();
+            this.itemModelResolver.updateForNonLiving(cargoState, entity.getCargo().get(i), ItemDisplayContext.FIXED, entity);
+            state.cargoStates.add(i, cargoState);
         }
         state.rngSeed = entity.getUUID().getMostSignificantBits() ^ entity.getUUID().getLeastSignificantBits();
         state.level = entity.level();
@@ -202,9 +211,9 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRen
             if (i >= 2 && cargo.get(i - 2).is(ItemTags.BEDS)) continue;
             final double x = ((ix * 2 - 1) * 4) / 16.0D;
             final double z = ((iz * 2 - 1) * 5) / 16.0D;
-            final BakedModel model = renderer.getModel(itemStack, state.level, null, i);
+            ItemStackRenderState cargoState = state.cargoStates.get(i);
             stack.pushPose();
-            if (model.isGui3d() && itemStack.getItem() != Items.TRIDENT && NiftyCartsConfig.getClient().renderSupplyGear.get()) {
+            if (cargoState.isGui3d() && itemStack.getItem() != Items.TRIDENT && NiftyCartsConfig.getClient().renderSupplyGear.get()) {
                 stack.translate(x, -0.46D, z);
                 stack.scale(0.5F, 0.5F, 0.5F);
                 stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
@@ -215,10 +224,8 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRen
                     stack.mulPose(Axis.XP.rotationDegrees(-22.5F));
                 } else if (iz < 1 && itemStack.is(ItemTags.BEDS)) {
                     stack.translate(0.0D, 0.0D, 1.0D);
-                } else if (!model.isCustomRenderer()) {
-                    stack.mulPose(Axis.YP.rotationDegrees(180.0F));
                 }
-                renderer.render(itemStack, ItemDisplayContext.NONE, false, stack, source, packedLight, OverlayTexture.NO_OVERLAY, model);
+                cargoState.render(stack, source, packedLight, OverlayTexture.NO_OVERLAY);
             } else {
                 rng.setSeed(32L * i + Objects.hashCode(BuiltInRegistries.ITEM.getKey(itemStack.getItem())));
                 stack.translate(x, -0.15D + ((ix + iz) % 2 == 0 ? 0.0D : 1.0e-4D), z);
@@ -230,12 +237,12 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRen
                     stack.mulPose(Axis.YP.rotation(rng.nextFloat() * (float) Math.PI));
                     stack.mulPose(Axis.XP.rotationDegrees(-90.0F));
                     final int copies = Math.min(itemStack.getCount(), (itemStack.getCount() - 1) / 16 + 2);
-                    renderer.render(itemStack, ItemDisplayContext.FIXED, false, stack, source, packedLight, OverlayTexture.NO_OVERLAY, model);
+                    cargoState.render(stack, source, packedLight, OverlayTexture.NO_OVERLAY);
                     for (int n = 1; n < copies; n++) {
                         stack.pushPose();
                         stack.mulPose(Axis.ZP.rotation(rng.nextFloat() * (float) Math.PI));
                         stack.translate((rng.nextFloat() * 2.0F - 1.0F) * 0.05F, (rng.nextFloat() * 2.0F - 1.0F) * 0.05F, -0.1D * n);
-                        renderer.render(itemStack, ItemDisplayContext.FIXED, false, stack, source, packedLight, OverlayTexture.NO_OVERLAY, model);
+                        cargoState.render(stack, source, packedLight, OverlayTexture.NO_OVERLAY);
                         stack.popPose();
                     }
                 }
@@ -294,9 +301,9 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRen
         }
         stack.scale(0.75F, 0.75F, 0.75F);
 
-        ResourceLocation resourceLocation = equippable.model().orElseThrow();
+        ResourceKey<EquipmentAsset> resourceLocation = equippable.assetId().orElseThrow();
         boolean usesInnerModel = slot == EquipmentSlot.LEGS;
-        EquipmentModel.LayerType layerType = usesInnerModel ? EquipmentModel.LayerType.HUMANOID_LEGGINGS : EquipmentModel.LayerType.HUMANOID;
+        EquipmentClientInfo.LayerType layerType = usesInnerModel ? EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS : EquipmentClientInfo.LayerType.HUMANOID;
         equipmentRenderer.renderLayers(layerType, resourceLocation, m, itemStack, stack, source, packedLight);
     }
 
@@ -306,7 +313,7 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRen
     }
 
     private enum Contents {
-        FLOWERS(s -> s.getItem() instanceof BlockItem && s.is(ItemTags.FLOWERS) && NiftyCartsConfig.getClient().renderSupplyFlowers.get(), HandCartRenderer::renderFlowers),
+        FLOWERS(s -> s.getItem() instanceof BlockItem && s.is(ItemTags.SMALL_FLOWERS) && NiftyCartsConfig.getClient().renderSupplyFlowers.get(), HandCartRenderer::renderFlowers),
         PAINTINGS(s -> s.getItem() == Items.PAINTING && NiftyCartsConfig.getClient().renderSupplyPaintings.get(), HandCartRenderer::renderPaintings),
         WHEEL(s -> s.getItem() == NiftyCarts.WHEEL && NiftyCartsConfig.getClient().renderSupplyWheel.get(), HandCartRenderer::renderWheel),
         SUPPLIES(s -> NiftyCartsConfig.getClient().renderSupplies.get(), HandCartRenderer::renderSupplies),

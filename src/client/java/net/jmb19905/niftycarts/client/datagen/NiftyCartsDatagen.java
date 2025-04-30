@@ -1,9 +1,9 @@
-package net.jmb19905.niftycarts.datagen;
+package net.jmb19905.niftycarts.client.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.jmb19905.niftycarts.datagen.lang.NiftyCartsDeDeLanguageProvider;
-import net.jmb19905.niftycarts.datagen.lang.NiftyCartsEnUsLanguageProvider;
+import net.jmb19905.niftycarts.client.datagen.lang.NiftyCartsDeDeLanguageProvider;
+import net.jmb19905.niftycarts.client.datagen.lang.NiftyCartsEnUsLanguageProvider;
 
 public class NiftyCartsDatagen implements DataGeneratorEntrypoint {
     @Override

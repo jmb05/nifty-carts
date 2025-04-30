@@ -1,4 +1,4 @@
-package net.jmb19905.niftycarts.datagen.lang;
+package net.jmb19905.niftycarts.client.datagen.lang;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;

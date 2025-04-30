@@ -32,7 +32,7 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends Car
     protected DrawnRenderer(final EntityRendererProvider.Context renderManager, final M model) {
         super(renderManager);
         this.model = model;
-        ModelPart banner = renderManager.bakeLayer(ModelLayers.BANNER);
+        ModelPart banner = renderManager.bakeLayer(ModelLayers.STANDING_BANNER);
         this.flag = banner.getChild("flag");
         this.pole = banner.getChild("pole");
         this.bar = banner.getChild("bar");

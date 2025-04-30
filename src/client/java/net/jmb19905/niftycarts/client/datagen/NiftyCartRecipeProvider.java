@@ -1,4 +1,4 @@
-package net.jmb19905.niftycarts.datagen;
+package net.jmb19905.niftycarts.client.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;

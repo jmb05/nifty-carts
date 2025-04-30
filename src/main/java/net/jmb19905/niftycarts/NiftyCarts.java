@@ -62,12 +62,7 @@ public class NiftyCarts implements ModInitializer {
 
 	static {
 		WoodType.values().forEach(woodType -> {
-			FeatureFlag[] flags;
-			if (woodType == WoodType.PALE_OAK) {
-				flags = new FeatureFlag[]{FeatureFlags.WINTER_DROP};
-			} else {
-				flags = new FeatureFlag[0];
-			}
+			FeatureFlag[] flags = {};
 			SUPPLY_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "supply_cart", flags));
 			HAND_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "hand_cart", flags));
 			PLOW.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "plow", flags));
