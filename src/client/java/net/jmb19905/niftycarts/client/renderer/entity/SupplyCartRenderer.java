@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -91,7 +90,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Ca
         for (int i = 0; i < entity.getCargo().size(); i++) {
             state.cargo.add(i, entity.getCargo().get(i));
             ItemStackRenderState cargoState = new ItemStackRenderState();
-            this.itemModelResolver.updateForNonLiving(cargoState, entity.getCargo().get(i), ItemDisplayContext.FIXED, entity);
+            this.itemModelResolver.updateForNonLiving(cargoState, entity.getCargo().get(i), ItemDisplayContext.NONE, entity);
             state.cargoStates.add(i, cargoState);
         }
         state.rngSeed = entity.getUUID().getMostSignificantBits() ^ entity.getUUID().getLeastSignificantBits();
@@ -211,7 +210,6 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Ca
     }
 
     private void renderSupplies(CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
-        final ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         final Random rng = new Random();
         for (int i = 0; i < cargo.size(); i++) {
             final ItemStack itemStack = cargo.get(i);

@@ -27,7 +27,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     @Override
     public void tick() {
         super.tick();
-        /*final Entity coachman = this.getControllingPassenger();
+        final Entity coachman = this.getControllingPassenger();
         final Entity pulling = this.getPulling();
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
             final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level(), EntitySpawnReason.SPAWN_ITEM_USE);
@@ -39,7 +39,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
                     postilion.discard();
                 }
             }
-        }*/
+        }
     }
 
     @Override

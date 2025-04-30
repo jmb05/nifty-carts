@@ -7,17 +7,17 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-public record CoachmanMovePayload(float x, float y, float z, float xRot, float yRot) implements CustomPacketPayload {
+public record CoachmanMovePayloadOld(float x, float y, float z, float xRot, float yRot) implements CustomPacketPayload {
 
-    public static final Type<CoachmanMovePayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_coachman_move");
-    public static final StreamCodec<FriendlyByteBuf, CoachmanMovePayload> CODEC = new StreamCodec<>() {
+    public static final Type<CoachmanMovePayloadOld> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_coachman_move_old");
+    public static final StreamCodec<FriendlyByteBuf, CoachmanMovePayloadOld> CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull CoachmanMovePayload decode(FriendlyByteBuf buf) {
-            return new CoachmanMovePayload(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
+        public @NotNull CoachmanMovePayloadOld decode(FriendlyByteBuf buf) {
+            return new CoachmanMovePayloadOld(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
         }
 
         @Override
-        public void encode(FriendlyByteBuf buf, CoachmanMovePayload payload) {
+        public void encode(FriendlyByteBuf buf, CoachmanMovePayloadOld payload) {
             buf.writeFloat(payload.x);
             buf.writeFloat(payload.y);
             buf.writeFloat(payload.z);

@@ -3,6 +3,7 @@ package net.jmb19905.niftycarts.client.renderer.texture;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +26,7 @@ public class Material {
     private final ObjectList<Fill> fills = new ObjectArrayList<>();
 
     public Material(ResourceLocation sprite, final int size) {
-        this(Pair.of(InventoryMenu.BLOCK_ATLAS, sprite), size);
+        this(Pair.of(TextureAtlas.LOCATION_BLOCKS, sprite), size);
     }
 
     public Material(final Pair<ResourceLocation, ResourceLocation> sprite, final int size) {
