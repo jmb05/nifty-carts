@@ -11,7 +11,6 @@ import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 
 public class DummyLivingEntity extends LivingEntity {
 
@@ -26,12 +25,6 @@ public class DummyLivingEntity extends LivingEntity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-    }
-
-    @Override
-    public @NotNull Iterable<ItemStack> getArmorSlots() {
-        return Collections.emptyList();
-
     }
 
     @Override

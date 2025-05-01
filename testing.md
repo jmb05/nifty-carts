@@ -34,6 +34,7 @@
   - Pulling
   - Animal Pickup
   - Coachman functionality
+  - Banner
 - Seed Drill
   - Pulling
   - Inventory (correct saving, correct slot filtering)
@@ -43,5 +44,6 @@
   - Pulling
   - Coachman functionality
   - Breaking crops
+- Crafting Recipes (Crafting & Unlocking)
 - Dedicated Server & Multiplayer
 - Version interoperability

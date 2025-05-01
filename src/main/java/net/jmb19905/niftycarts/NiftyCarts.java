@@ -1,6 +1,6 @@
 package net.jmb19905.niftycarts;
 
-import fuzs.forgeconfigapiport.fabric.api.forge.v4.ForgeConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -20,7 +20,7 @@ import net.jmb19905.niftycarts.item.CartItem;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnPayload;
 import net.jmb19905.niftycarts.network.serverbound.*;
 import net.jmb19905.niftycarts.util.NiftyWorld;
-import net.jmb19905.niftycarts.util.GoalAdder;
+import net.jmb19905.niftycarts.util.NiftyGoalAdder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -106,12 +106,12 @@ public class NiftyCarts implements ModInitializer {
 					.noSummon()
 					.noSave());
 
-	public static final GoalAdder<Mob> MOB_GOAL_ADDER = GoalAdder.mobGoal(Mob.class)
+	public static final NiftyGoalAdder<Mob> MOB_GOAL_ADDER = NiftyGoalAdder.mobGoal(Mob.class)
 			.add(1, PullCartGoal::new)
 			.add(1, RideCartGoal::new)
 			.build();
 
-	public static final GoalAdder<PathfinderMob> PATHFINDER_GOAL_ADDER = GoalAdder.mobGoal(PathfinderMob.class)
+	public static final NiftyGoalAdder<PathfinderMob> PATHFINDER_GOAL_ADDER = NiftyGoalAdder.mobGoal(PathfinderMob.class)
 			.add(3, mob -> new AvoidCartGoal<>(mob, SupplyCartEntity.class, 3.0f, 0.5f))
 			.add(3, mob -> new AvoidCartGoal<>(mob, PlowEntity.class, 3.0f, 0.5f))
 			.build();
@@ -128,7 +128,7 @@ public class NiftyCarts implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ForgeConfigRegistry.INSTANCE.register(MOD_ID, ModConfig.Type.COMMON, NiftyCartsConfig.spec());
+		ConfigRegistry.INSTANCE.register(MOD_ID, ModConfig.Type.COMMON, NiftyCartsConfig.spec());
 
 		Registry.register(BuiltInRegistries.CUSTOM_STAT, CART_ONE_CM, CART_ONE_CM);
 		Stats.CUSTOM.get(CART_ONE_CM, StatFormatter.DEFAULT);
@@ -168,7 +168,7 @@ public class NiftyCarts implements ModInitializer {
 
 		ServerTickEvents.END_SERVER_TICK.register(e -> {
 			for (ResourceKey<Level> levelKey : e.levelKeys()) {
-				NiftyWorld.getServer(server, levelKey).tick();
+				NiftyWorld.getServer(server, levelKey).tick(server.getLevel(levelKey));
 			}
 		});
 

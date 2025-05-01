@@ -1,6 +1,6 @@
 package net.jmb19905.niftycarts.entity;
 
-import net.jmb19905.niftycarts.util.NCInventory;
+import net.jmb19905.niftycarts.util.NiftyInventory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity implements HasCustomInventoryScreen, ContainerEntity {
 
-    private NCInventory itemStacks;
+    private NiftyInventory itemStacks;
     private final int containerSize;
     @Nullable
     private ResourceKey<LootTable> lootTable;
@@ -34,7 +34,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     public AbstractDrawnInventoryEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn, int containerSize) {
         super(entityTypeIn, worldIn);
-        this.itemStacks = NCInventory.withSize(containerSize, ItemStack.EMPTY);
+        this.itemStacks = NiftyInventory.withSize(containerSize, ItemStack.EMPTY);
         this.containerSize = containerSize;
         this.itemStacks.setOnContentsChanged(this::onContentsChanged);
     }
@@ -138,7 +138,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
     }
 
     public void clearItemStacks() {
-        this.itemStacks = NCInventory.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        this.itemStacks = NiftyInventory.withSize(this.getContainerSize(), ItemStack.EMPTY);
         this.itemStacks.setOnContentsChanged(this::onContentsChanged);
     }
 

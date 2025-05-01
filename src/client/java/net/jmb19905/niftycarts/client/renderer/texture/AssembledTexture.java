@@ -7,13 +7,17 @@ import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.resources.ResourceLocation;
 
 public class AssembledTexture {
-    private final int width, height;
+    private final ResourceLocation id;
+    private final int width;
+    private final int height;
 
     private final ObjectList<Material> materials = new ObjectArrayList<>();
 
-    public AssembledTexture(final int width, final int height) {
+    public AssembledTexture(ResourceLocation id, final int width, final int height) {
+        this.id = id;
         this.width = width;
         this.height = height;
     }
@@ -21,6 +25,10 @@ public class AssembledTexture {
     public AssembledTexture add(final Material material) {
         this.materials.add(material);
         return this;
+    }
+
+    public ResourceLocation getId() {
+        return id;
     }
 
     AbstractTexture assemble(final ModelManager sprites) {
@@ -34,6 +42,6 @@ public class AssembledTexture {
         }
         final NativeImage image = new NativeImage(this.width * resolution, this.height * resolution, true);
         for (final PreparedMaterial p : prepared) p.draw(image, resolution);
-        return new DynamicTexture(image);
+        return new DynamicTexture(id::toString, image);
     }
 }

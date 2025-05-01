@@ -8,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 public record RequestCartUpdatePayload(int cartId) implements CustomPacketPayload {
@@ -33,8 +34,9 @@ public record RequestCartUpdatePayload(int cartId) implements CustomPacketPayloa
     public static void handle(RequestCartUpdatePayload msg, ServerPlayer player) {
         var level = player.level();
         var pulling = NiftyWorld.get(level).getPulling();
+
         pulling.keySet().intStream()
-                .filter(pullId -> pulling.get(pullId).getId() == msg.cartId)
+                .filter(pullId -> NiftyWorld.get(level).getDrawn(level.getEntity(pullId)).map(Entity::getId).orElse(-1) == msg.cartId)
                 .findFirst().ifPresent(pullId -> ServerPlayNetworking.send(player, new UpdateDrawnPayload(pullId, msg.cartId)));
     }
 }

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.container.PlowMenu;
+import net.jmb19905.niftycarts.util.NiftyItemUtil;
 import net.jmb19905.niftycarts.util.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -76,7 +77,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private void plow(final Player player) {
         for (int i = 0; i < SLOT_COUNT; i++) {
             final ItemStack stack = this.getStackInSlot(i);
-            if (stack.getItem() instanceof DiggerItem) {
+            if (NiftyItemUtil.isTool(stack)) {
                 final float offset = 38.0F - i * 38.0F;
                 final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
                 final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
@@ -86,7 +87,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
                 tryBreakBlock(stack, blockPos.above(), level(), player);
                 stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
                 if (damageable && stack.getCount() < count) {
-                    this.playSound(SoundEvents.ITEM_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
+                    this.playSound(SoundEvents.ITEM_BREAK.value(), 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
                     this.updateSlot(i);
                 }
             }
@@ -172,7 +173,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     protected void readAdditionalSaveData(final CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         ContainerHelper.loadAllItems(compound, this.getItemStacks(), this.registryAccess());
-        this.entityData.set(PLOWING, compound.getBoolean("Plowing"));
+        this.entityData.set(PLOWING, compound.getBooleanOr("Plowing", false));
     }
 
 }

@@ -9,19 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class NCInventory extends NonNullList<ItemStack> {
+public class NiftyInventory extends NonNullList<ItemStack> {
 
     private Consumer<Integer> onContentsChanged;
 
-    public static NCInventory create() {
-        return new NCInventory(new ArrayList<>(), null);
+    public static NiftyInventory create() {
+        return new NiftyInventory(new ArrayList<>(), null);
     }
 
-    public static NCInventory createWithCapacity(int i) {
-        return new NCInventory(new ArrayList<>(i), null);
+    public static NiftyInventory createWithCapacity(int i) {
+        return new NiftyInventory(new ArrayList<>(i), null);
     }
 
-    public static NCInventory withSize(int i, ItemStack object) {
+    public static NiftyInventory withSize(int i, ItemStack object) {
         if (object == null) {
             object = ItemStack.EMPTY;
         }
@@ -29,10 +29,10 @@ public class NCInventory extends NonNullList<ItemStack> {
         for (int j = 0; j < i; j++) {
             list.add(object);
         }
-        return new NCInventory(list, object);
+        return new NiftyInventory(list, object);
     }
 
-    public NCInventory(List<ItemStack> list, @Nullable ItemStack object) {
+    public NiftyInventory(List<ItemStack> list, @Nullable ItemStack object) {
         super(list, object);
     }
 

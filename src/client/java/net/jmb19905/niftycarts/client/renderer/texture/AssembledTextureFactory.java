@@ -12,8 +12,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 public class AssembledTextureFactory {
     private final Object2ObjectMap<ResourceLocation, AssembledTexture> textures = new Object2ObjectOpenHashMap<>();
 
-    public AssembledTextureFactory add(final ResourceLocation texture, final AssembledTexture assembled) {
-        this.textures.put(texture, assembled);
+    public AssembledTextureFactory add(AssembledTexture texture) {
+        this.textures.put(texture.getId(), texture);
         return this;
     }
 

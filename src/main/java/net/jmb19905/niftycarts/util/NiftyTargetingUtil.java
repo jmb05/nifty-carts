@@ -8,10 +8,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class TargetingUtil {
+public class NiftyTargetingUtil {
 
     @Nullable
-    public static  <T extends Entity> T getNearestEntity(List<? extends T> list, TargetingUtil.Conditions<T> targetingConditions, @Nullable Entity entity, double d, double e, double f) {
+    public static  <T extends Entity> T getNearestEntity(List<? extends T> list, NiftyTargetingUtil.Conditions<T> targetingConditions, @Nullable Entity entity, double d, double e, double f) {
         double g = -1.0;
         T livingEntity2 = null;
         for (T livingEntity3 : list) {

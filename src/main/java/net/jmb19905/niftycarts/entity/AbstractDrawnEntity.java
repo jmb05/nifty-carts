@@ -9,6 +9,7 @@ import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.jmb19905.niftycarts.util.CartWheel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -24,17 +25,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.ItemSteerable;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.Saddleable;
-import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -56,10 +47,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
@@ -69,26 +57,18 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
     private static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = NiftyCarts.resLoc("pull_slowly");
     private static final ResourceLocation PULL_MODIFIER_ID = NiftyCarts.resLoc("pull");
-    private int lerpSteps;
-    private double lerpX;
-    private double lerpY;
-    private double lerpZ;
-    private double lerpYaw;
-    private double lerpPitch;
+    private final InterpolationHandler interpolationHandler;
     protected List<CartWheel> wheels;
     private int pullingId = -1;
     private UUID pullingUUID = null;
     protected double spacing = 1.7D;
     public Entity pulling;
     protected AbstractDrawnEntity drawn;
-    private float coachmanXxa = 0;
-    private float coachmanZza = 0;
-    private float coachmanXRot = 0;
-    private float coachmanYRot = 0;
 
     public AbstractDrawnEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
         this.blocksBuilding = true;
+        this.interpolationHandler = new InterpolationHandler(this);
         this.initWheels();
     }
 
@@ -396,18 +376,15 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (entityIn == null) {
             return true;
         }
+        System.out.println(this.pulling);
         return (this.pulling == null || !this.pulling.isAlive()) && !this.hasPassenger(entityIn) && this.canPull(entityIn);
     }
 
     private boolean canPull(final Entity entity) {
-        if (entity instanceof Saddleable && !((Saddleable) entity).isSaddleable()) return false;
-        if (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) return false;
         final ArrayList<String> allowed = this.getConfig().pullEntities.get();
         if (allowed.isEmpty()) {
-            return entity instanceof Player ||
-                    entity instanceof Saddleable && !(entity instanceof ItemSteerable);
-        }
-        return allowed.contains(EntityType.getKey(entity.getType()).toString());
+            return entity instanceof Player || (entity instanceof TamableAnimal tamable && tamable.isTame());
+        } else return allowed.contains(EntityType.getKey(entity.getType()).toString());
     }
 
     protected abstract NiftyCartsConfig.CartConfig getConfig();
@@ -483,7 +460,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     private void tickLerp() {
-        if (this.lerpSteps > 0) {
+        /*if (this.lerpSteps > 0) {
             final double dx = (this.lerpX - this.getX()) / this.lerpSteps;
             final double dy = (this.lerpY - this.getY()) / this.lerpSteps;
             final double dz = (this.lerpZ - this.getZ()) / this.lerpSteps;
@@ -493,7 +470,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             this.setOnGround(true);
             this.move(MoverType.SELF, new Vec3(dx, dy, dz));
             this.setRot(this.getYRot(), this.getXRot());
-        }
+        }*/
     }
 
     @Override
@@ -507,23 +484,8 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     @Override
-    //Client
-    public void lerpTo(final double x, final double y, final double z, final float yaw, final float pitch, final int posRotationIncrements) {
-        this.lerpX = x;
-        this.lerpY = y;
-        this.lerpZ = z;
-        this.lerpYaw = yaw;
-        this.lerpPitch = pitch;
-        this.lerpSteps = posRotationIncrements;
-    }
-
-    @Override
-    protected void addPassenger(final Entity passenger) {
-        super.addPassenger(passenger);
-        if (this.isControlledByLocalInstance() && this.lerpSteps > 0) {
-            this.lerpSteps = 0;
-            this.moveTo(this.lerpX, this.lerpY, this.lerpZ, (float) this.lerpYaw, (float) this.lerpPitch);
-        }
+    public @Nullable InterpolationHandler getInterpolation() {
+        return interpolationHandler;
     }
 
     @Override
@@ -541,7 +503,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     @Override
-    public boolean isControlledByLocalInstance() {
+    protected boolean isLocalClientAuthoritative() {
         return false;
     }
 
@@ -639,38 +601,6 @@ public abstract class AbstractDrawnEntity extends Entity {
         return true;
     }
 
-    public float getCoachmanXxa() {
-        return coachmanXxa;
-    }
-
-    public void setCoachmanXxa(float coachmanXxa) {
-        this.coachmanXxa = coachmanXxa;
-    }
-
-    public float getCoachmanZza() {
-        return coachmanZza;
-    }
-
-    public void setCoachmanZza(float coachmanZza) {
-        this.coachmanZza = coachmanZza;
-    }
-
-    public float getCoachmanXRot() {
-        return coachmanXRot;
-    }
-
-    public void setCoachmanXRot(float coachmanXRot) {
-        this.coachmanXRot = coachmanXRot;
-    }
-
-    public float getCoachmanYRot() {
-        return coachmanYRot;
-    }
-
-    public void setCoachmanYRot(float coachmanYRot) {
-        this.coachmanYRot = coachmanYRot;
-    }
-
     public void setWoodType(WoodType type) {
         this.entityData.set(WOOD_TYPE, type.name());
     }
@@ -690,25 +620,23 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(final CompoundTag compound) {
-        if (compound.hasUUID("PullingUUID")) {
-            this.pullingUUID = compound.getUUID("PullingUUID");
-        }
-        if (compound.contains("BannerItem")) {
-            this.setBanner(ItemStack.parseOptional(this.registryAccess(), compound.getCompound("BannerItem")));
-        }
-        String woodTypeString = compound.getString("WoodType");
-        WoodType woodType = WoodType.values().filter(type -> type.name().equals(woodTypeString)).findFirst().orElse(WoodType.OAK);
+        Optional<UUID> optId = compound.read("PullingUUID", UUIDUtil.CODEC);
+        optId.ifPresent(value -> this.pullingUUID = value);
+        Optional<ItemStack> optItem = compound.read("BannerItem", ItemStack.OPTIONAL_CODEC);
+        optItem.ifPresent(this::setBanner);
+        Optional<String> woodTypeString = compound.getString("WoodType");
+        WoodType woodType = WoodType.values().filter(type -> type.name().equals(woodTypeString.orElse(null))).findFirst().orElse(WoodType.OAK);
         setWoodType(woodType);
     }
 
     @Override
     protected void addAdditionalSaveData(final CompoundTag compound) {
-        if (this.pulling != null) {
-            compound.putUUID("PullingUUID", this.pullingUUID);
+        if (this.pullingUUID != null) {
+            compound.store("PullingUUID", UUIDUtil.CODEC, this.pullingUUID);
         }
         final ItemStack banner = this.getBanner();
         if (!banner.isEmpty()) {
-            compound.put("BannerItem", banner.saveOptional(this.registryAccess()));
+            compound.store("BannerItem", ItemStack.OPTIONAL_CODEC, banner);
         }
         compound.putString("WoodType", getWoodType().name());
     }

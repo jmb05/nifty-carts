@@ -13,14 +13,14 @@ import java.util.Set;
 import java.util.function.Function;
 
 @SuppressWarnings("resource")
-public final class GoalAdder<T extends Entity> {
+public final class NiftyGoalAdder<T extends Entity> {
     private final Class<T> type;
 
     private final Function<T, GoalSelector> selector;
 
     private final ImmutableList<GoalEntry<T>> goals;
 
-    private GoalAdder(final Builder<T> builder) {
+    private NiftyGoalAdder(final Builder<T> builder) {
         this.type = builder.type;
         this.selector = builder.selector;
         this.goals = builder.goals.build();
@@ -44,15 +44,15 @@ public final class GoalAdder<T extends Entity> {
     }
 
     public static <T extends Mob> Builder<T> mobGoal(final Class<T> type) {
-        return GoalAdder.builder(type, m -> m.goalSelector);
+        return NiftyGoalAdder.builder(type, m -> m.goalSelector);
     }
 
     public static <T extends Mob> Builder<T> mobTarget(final Class<T> type) {
-        return GoalAdder.builder(type, m -> m.targetSelector);
+        return NiftyGoalAdder.builder(type, m -> m.targetSelector);
     }
 
     public static <T extends Entity> Builder<T> builder(final Class<T> type, final Function<T, GoalSelector> selector) {
-        return new GoalAdder.Builder<>(type, selector);
+        return new NiftyGoalAdder.Builder<>(type, selector);
     }
 
     public static final class Builder<T extends Entity> {
@@ -72,8 +72,8 @@ public final class GoalAdder<T extends Entity> {
             return this;
         }
 
-        public GoalAdder<T> build() {
-            return new GoalAdder<>(this);
+        public NiftyGoalAdder<T> build() {
+            return new NiftyGoalAdder<>(this);
         }
     }
 

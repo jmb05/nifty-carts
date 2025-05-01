@@ -1,7 +1,7 @@
 package net.jmb19905.niftycarts.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import fuzs.forgeconfigapiport.fabric.api.forge.v4.ForgeConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -33,7 +33,7 @@ public class NiftyCartsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ForgeConfigRegistry.INSTANCE.register(NiftyCarts.MOD_ID, ModConfig.Type.CLIENT, NiftyCartsConfig.clientSpec());
+		ConfigRegistry.INSTANCE.register(NiftyCarts.MOD_ID, ModConfig.Type.CLIENT, NiftyCartsConfig.clientSpec());
 
 		ClientPlayNetworking.registerGlobalReceiver(UpdateDrawnPayload.TYPE, (payload, ctx) -> ctx.client().execute(() -> UpdateDrawnPayload.handle(payload, Objects.requireNonNull(ctx.client().level))));
 		EntityRendererRegistry.register(NiftyCarts.SUPPLY_CART_ENTITY, SupplyCartRenderer::new);
@@ -80,7 +80,7 @@ public class NiftyCartsClient implements ClientModInitializer {
 				}
 			}
 			if (!client.isPaused() && client.level != null) {
-				NiftyWorld.getClient().tick();
+				NiftyWorld.getClient().tick(client.level);
 			}
 		});
 	}

@@ -99,11 +99,12 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends Car
         stack.scale(scale, scale, scale);
         VertexConsumer consumer = ModelBakery.BANNER_BASE.buffer(source, RenderType::entitySolid);
         this.pole.zRot = -0.3f;
-        this.pole.x = 14.0f;
+        this.pole.x = 17.48f;
+        this.pole.y = 12.43f;
         this.pole.render(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
         this.bar.x = -4.0F;
-        this.bar.y = 4.0F;
-        this.bar.z = 0.1F;
+        this.bar.y = 16.01F;
+        this.bar.z = 0.01F;
         this.bar.render(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
         this.flag.x = -4.0F;
         this.flag.y = -26.0F;

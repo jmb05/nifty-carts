@@ -32,7 +32,7 @@ public abstract class AbstractHorseMixin extends LivingEntity {
         this.setRot(vec2.y, vec2.x);
         this.yBodyRot = this.yHeadRot = this.getYRot();
         this.yRotO = this.yHeadRot;
-        if (this.isControlledByLocalInstance()) {
+        if (this.isLocalInstanceAuthoritative()) {
             if (vec3.z <= 0.0) {
                 ((AbstractHorse) (Object) this).gallopSoundCounter = 0;
             }
@@ -56,7 +56,7 @@ public abstract class AbstractHorseMixin extends LivingEntity {
             this.customTickRidden(living, vec32);
             this.setSpeed((float)this.getAttributeValue(Attributes.MOVEMENT_SPEED));
             super.travel(vec32);
-            if (!this.isControlledByLocalInstance()) {
+            if (!this.isLocalInstanceAuthoritative()) {
                 this.calculateEntityAnimation(false);
                 this.setDeltaMovement(Vec3.ZERO);
                 //this.tryCheckInsideBlocks();

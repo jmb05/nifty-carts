@@ -1,7 +1,7 @@
 package net.jmb19905.niftycarts.entity.ai.goal;
 
 import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
-import net.jmb19905.niftycarts.util.TargetingUtil;
+import net.jmb19905.niftycarts.util.NiftyTargetingUtil;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -28,7 +28,7 @@ public class AvoidCartGoal<T extends AbstractDrawnEntity>
     protected final Class<T> avoidClass;
     protected final Predicate<AbstractDrawnEntity> avoidPredicate;
     protected final Predicate<AbstractDrawnEntity> predicateOnAvoidEntity;
-    private TargetingUtil.Conditions<AbstractDrawnEntity> avoidEntityTargeting;
+    private NiftyTargetingUtil.Conditions<AbstractDrawnEntity> avoidEntityTargeting;
 
     public AvoidCartGoal(PathfinderMob pathfinderMob, Class<T> class_, float f, double d) {
         this(pathfinderMob, class_, livingEntity -> true, f, d, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
@@ -43,7 +43,7 @@ public class AvoidCartGoal<T extends AbstractDrawnEntity>
         this.predicateOnAvoidEntity = predicate2;
         this.pathNav = pathfinderMob.getNavigation();
         this.setFlags(EnumSet.of(Goal.Flag.MOVE));
-        this.avoidEntityTargeting = new TargetingUtil.Conditions<>();
+        this.avoidEntityTargeting = new NiftyTargetingUtil.Conditions<>();
         this.avoidEntityTargeting = this.avoidEntityTargeting.range(f).selector(predicate2.and(predicate));
     }
 
@@ -54,7 +54,7 @@ public class AvoidCartGoal<T extends AbstractDrawnEntity>
     @Override
     public boolean canUse() {
         List<? extends AbstractDrawnEntity> entityList = this.mob.level().getEntitiesOfClass(this.avoidClass, this.mob.getBoundingBox().inflate(this.maxDist, 3.0, this.maxDist), entity -> true);
-        this.toAvoid = TargetingUtil.getNearestEntity(entityList, this.avoidEntityTargeting, this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ());
+        this.toAvoid = NiftyTargetingUtil.getNearestEntity(entityList, this.avoidEntityTargeting, this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ());
         if (this.toAvoid == null) {
             return false;
         }

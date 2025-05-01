@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
+import net.jmb19905.niftycarts.util.NiftyItemUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -15,29 +16,26 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.PaintingVariantTags;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.decoration.Painting;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.state.BlockState;
@@ -146,7 +144,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Ca
             final int ix = i % 2, iz = i / 2;
             final BlockState defaultState = ((BlockItem) itemStack.getItem()).getBlock().defaultBlockState();
             final BlockState blockState = defaultState.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) ? defaultState.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER) : defaultState;
-            final BakedModel model = dispatcher.getBlockModel(blockState);
+            final BlockStateModel model = dispatcher.getBlockModel(blockState);
             final int rgb = Minecraft.getInstance().getBlockColors().getColor(blockState, null, null, 0);
             final float r = (float) (rgb >> 16 & 255) / 255.0F;
             final float g = (float) (rgb >> 8 & 255) / 255.0F;
@@ -156,7 +154,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Ca
             stack.scale(0.65F, 0.65F, 0.65F);
             stack.translate(ix, 0.5D, iz - 1.0D);
             stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-            renderer.renderModel(stack.last(), source.getBuffer(RenderType.cutout()), blockState, model, r, g, b, packedLight, OverlayTexture.NO_OVERLAY);
+            ModelBlockRenderer.renderModel(stack.last(), source.getBuffer(RenderType.cutout()), model, r, g, b, packedLight, OverlayTexture.NO_OVERLAY);
             stack.popPose();
         }
     }
@@ -191,19 +189,18 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Ca
         for (int i = 0, n = 0; i < cargo.size(); i++) {
             final ItemStack itemStack = cargo.get(i);
             if (itemStack.isEmpty()) continue;
-            CustomData customData = itemStack.getOrDefault(DataComponents.ENTITY_DATA, CustomData.EMPTY);
-            Optional<PaintingVariant> paintingVariant = Optional.empty();
-            if (!customData.isEmpty()) {
-                paintingVariant = customData.read(registryAccess.createSerializationContext(NbtOps.INSTANCE), Painting.VARIANT_MAP_CODEC).result().map(Holder::value);
-            }
-            if (paintingVariant.isEmpty() || paintingVariant.get().area() > 1) {
+
+            Holder<PaintingVariant> holder = itemStack.get(DataComponents.PAINTING_VARIANT);
+            PaintingVariant paintingVariant = null;
+            if (holder != null) paintingVariant = holder.value();
+            if (paintingVariant == null || paintingVariant.area() > 1) {
                 if (variants.isEmpty()) continue;
-                paintingVariant = Optional.of(variants.get(i % variants.size()));
+                paintingVariant = variants.get(i % variants.size());
             }
             stack.pushPose();
             stack.translate(0.0D, (n++ - (count - 1) * 0.5D) / count, -1.0D / 16.0D * i);
             stack.mulPose(Axis.ZP.rotation(rng.nextFloat() * (float) Math.PI));
-            CargoRenderUtil.renderPainting(paintingVariant.get(), stack, buf, packedLight);
+            CargoRenderUtil.renderPainting(paintingVariant, stack, buf, packedLight);
             stack.popPose();
         }
         stack.popPose();
@@ -221,28 +218,33 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Ca
             final double z = (iz * 11.0D - 9.0D) / 16.0D;
             stack.pushPose();
             ItemStackRenderState cargoState = state.cargoStates.get(i);
-            if (cargoState.isGui3d() && itemStack.getItem() != Items.TRIDENT && NiftyCartsConfig.getClient().renderSupplyGear.get()) {
+            if (cargoState.usesBlockLight() && itemStack.getItem() != Items.TRIDENT && NiftyCartsConfig.getClient().renderSupplyGear.get()) {
                 stack.translate(x, -0.46D, z);
                 stack.scale(0.65F, 0.65F, 0.65F);
                 stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-                if (itemStack.getItem() == Items.SHIELD) {
-                    stack.scale(1.2F, 1.2F, 1.2F);
-                    stack.mulPose(Axis.YP.rotationDegrees(ix == 0 ? -90.0F : 90.0F));
-                    stack.translate(0.5D, 0.8D, -0.05D);
-                    stack.mulPose(Axis.XP.rotationDegrees(-22.5F));
-                } else if (iz < 1 && itemStack.is(ItemTags.BEDS)) {
+                if (iz < 1 && itemStack.is(ItemTags.BEDS)) {
                     stack.translate(0.0D, 0.0D, 1.0D);
                 }
                 cargoState.render(stack, source, packedLight, OverlayTexture.NO_OVERLAY);
             } else {
                 rng.setSeed(32L * i + Objects.hashCode(BuiltInRegistries.ITEM.getKey(itemStack.getItem())));
                 stack.translate(x, -0.15D + ((ix + iz) % 2 == 0 ? 0.0D : 1.0e-4D), z);
-                if (ArmorItem.class.equals(itemStack.getItem().getClass()) && NiftyCartsConfig.getClient().renderSupplyGear.get()) {
+                if (NiftyItemUtil.isHumanoidArmor(itemStack) && NiftyCartsConfig.getClient().renderSupplyGear.get()) {
                     this.renderArmor(stack, source, packedLight, itemStack, ix);
                 } else {
-                    stack.scale(0.7F, 0.7F, 0.7F);
-                    stack.mulPose(Axis.YP.rotation(rng.nextFloat() * (float) Math.PI));
-                    stack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                    if (itemStack.getItem() == Items.SHIELD) {
+                        //stack.translate(x, -0.46D, z);
+                        stack.scale(0.65F, 0.65F, 0.65F);
+                        stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+                        stack.scale(1.2F, 1.2F, 1.2F);
+                        stack.mulPose(Axis.YP.rotationDegrees(ix == 0 ? -90.0F : 90.0F));
+                        stack.translate(0.5D, 1.0D, -0.05D);
+                        stack.mulPose(Axis.XP.rotationDegrees(-22.5F));
+                    } else {
+                        stack.scale(0.7F, 0.7F, 0.7F);
+                        stack.mulPose(Axis.YP.rotation(rng.nextFloat() * (float) Math.PI));
+                        stack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                    }
                     final int copies = Math.min(itemStack.getCount(), (itemStack.getCount() - 1) / 16 + 2);
                     cargoState.render(stack, source, packedLight, OverlayTexture.NO_OVERLAY);
                     for (int n = 1; n < copies; n++) {
@@ -324,7 +326,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Ca
     private enum Contents {
         FLOWERS(s -> s.getItem() instanceof BlockItem && s.is(ItemTags.SMALL_FLOWERS) && NiftyCartsConfig.getClient().renderSupplyFlowers.get(), SupplyCartRenderer::renderFlowers),
         PAINTINGS(s -> s.getItem() == Items.PAINTING && NiftyCartsConfig.getClient().renderSupplyPaintings.get(), SupplyCartRenderer::renderPaintings),
-        WHEEL(s -> s.getItem() == NiftyCarts.WHEEL && NiftyCartsConfig.getClient().renderSupplyWheel.get(), SupplyCartRenderer::renderWheel),
+        WHEEL(s -> s.getItem() == NiftyCarts.WHEEL && NiftyCartsConfig.getClient().renderSupplyWheel.get() && NiftyCartsConfig.getClient().renderSupplies.get(), SupplyCartRenderer::renderWheel),
         SUPPLIES(s -> NiftyCartsConfig.getClient().renderSupplies.get(), SupplyCartRenderer::renderSupplies),
         NONE(s -> true, null);
 
