@@ -89,7 +89,6 @@ public abstract class AbstractDrawnEntity extends Entity {
             this.setDamageTaken(this.getDamageTaken() - 1.0F);
         }
         super.tick();
-        this.tickLerp();
         if (this.pulling == null) {
             this.setXRot(25.0F);
             this.move(MoverType.SELF, this.getDeltaMovement());
@@ -383,7 +382,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     private boolean canPull(final Entity entity) {
         final ArrayList<String> allowed = this.getConfig().pullEntities.get();
         if (allowed.isEmpty()) {
-            return entity instanceof Player || (entity instanceof TamableAnimal tamable && tamable.isTame());
+            return entity instanceof Player || entity instanceof PlayerRideable;
         } else return allowed.contains(EntityType.getKey(entity.getType()).toString());
     }
 
@@ -459,20 +458,6 @@ public abstract class AbstractDrawnEntity extends Entity {
     public void onDestroyedAndDoDrops(final DamageSource source) {
     }
 
-    private void tickLerp() {
-        /*if (this.lerpSteps > 0) {
-            final double dx = (this.lerpX - this.getX()) / this.lerpSteps;
-            final double dy = (this.lerpY - this.getY()) / this.lerpSteps;
-            final double dz = (this.lerpZ - this.getZ()) / this.lerpSteps;
-            this.setYRot((float) (this.getYRot() + Mth.wrapDegrees(this.lerpYaw - this.getYRot()) / this.lerpSteps));
-            this.setXRot((float) (this.getXRot() + (this.lerpPitch - this.getXRot()) / this.lerpSteps));
-            this.lerpSteps--;
-            this.setOnGround(true);
-            this.move(MoverType.SELF, new Vec3(dx, dy, dz));
-            this.setRot(this.getYRot(), this.getXRot());
-        }*/
-    }
-
     @Override
     public boolean isPushedByFluid() {
         return false;
@@ -495,7 +480,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (passengers.isEmpty()) {
             return null;
         }
-        final Entity first = passengers.get(0);
+        final Entity first = passengers.getFirst();
         if (first instanceof Animal || !(first instanceof LivingEntity)) {
             return null;
         }
