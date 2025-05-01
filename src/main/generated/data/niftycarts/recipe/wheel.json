@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": "#minecraft:planks",
+    "s": "minecraft:stick"
+  },
+  "pattern": [
+    "sss",
+    "sps",
+    "sss"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:wheel"
+  }
+}

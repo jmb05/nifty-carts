@@ -3,8 +3,7 @@ package net.jmb19905.niftycarts.client.datagen;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.jmb19905.niftycarts.NiftyCarts;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,8 +12,8 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -26,29 +25,36 @@ import java.util.concurrent.CompletableFuture;
 
 public class NiftyCartRecipeProvider extends FabricRecipeProvider {
 
-    private static Criterion<?> hasWheel() {
-        return RecipeUnlockedTrigger.unlocked(ResourceKey.create(Registries.RECIPE, BuiltInRegistries.ITEM.getKey(NiftyCarts.WHEEL)));
-    }
-
     public NiftyCartRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+    protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
         return new RecipeProvider(provider, recipeOutput) {
             @SuppressWarnings("OptionalGetWithoutIsPresent")
             @Override
             public void buildRecipes() {
                 var items = provider.lookupOrThrow(Registries.ITEM);
+                ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, NiftyCarts.WHEEL)
+                        .define('p', ItemTags.PLANKS)
+                        .define('s', Items.STICK)
+                        .unlockedBy(RecipeProvider.getHasName(Items.STICK), RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, Items.STICK)))
+                        .pattern("sss")
+                        .pattern("sps")
+                        .pattern("sss")
+                        .save(recipeOutput);
+
                 WoodType.values().forEach(woodType -> {
                     ResourceLocation supplyCartId = NiftyCarts.resLoc(woodType.name() + "_supply_cart");
                     Optional<Holder.Reference<Item>> supplyCart = BuiltInRegistries.ITEM.get(supplyCartId);
+                    Item planks = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks"));
+                    var recipeTrigger = RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, NiftyCarts.WHEEL), ItemPredicate.Builder.item().of(items, planks));
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, supplyCart.get().value())
                             .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
                             .define('w', NiftyCarts.WHEEL)
                             .define('c', Blocks.CHEST)
-                            .unlockedBy("has_wheel", hasWheel())
+                            .unlockedBy("has_wheel_and_planks", recipeTrigger)
                             .pattern("pcp")
                             .pattern("pcp")
                             .pattern("wpw")
@@ -59,7 +65,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, animalCart.get().value())
                             .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
                             .define('w', NiftyCarts.WHEEL)
-                            .unlockedBy("has_wheel", hasWheel())
+                            .unlockedBy("has_wheel_and_planks", recipeTrigger)
                             .pattern("ppp")
                             .pattern("ppp")
                             .pattern("wpw")
@@ -71,7 +77,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
                             .define('w', NiftyCarts.WHEEL)
                             .define('c', Blocks.CHEST)
-                            .unlockedBy("has_wheel", hasWheel())
+                            .unlockedBy("has_wheel_and_planks", recipeTrigger)
                             .pattern("pcp")
                             .pattern("wpw")
                             .save(recipeOutput);
@@ -82,7 +88,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
                             .define('w', NiftyCarts.WHEEL)
                             .define('s', Items.STICK)
-                            .unlockedBy("has_wheel", hasWheel())
+                            .unlockedBy("has_wheel_and_planks", recipeTrigger)
                             .pattern("sss")
                             .pattern("psp")
                             .pattern("wpw")
@@ -96,7 +102,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             .define('w', NiftyCarts.WHEEL)
                             .define('s', Items.STICK)
                             .define('i', Items.IRON_INGOT)
-                            .unlockedBy("has_wheel", hasWheel())
+                            .unlockedBy("has_wheel_and_planks", recipeTrigger)
                             .pattern(" sl")
                             .pattern("spp")
                             .pattern("iww")
@@ -109,7 +115,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             .define('w', NiftyCarts.WHEEL)
                             .define('c', Blocks.CHEST)
                             .define('h', Blocks.HOPPER)
-                            .unlockedBy("has_wheel", hasWheel())
+                            .unlockedBy("has_wheel_and_planks", recipeTrigger)
                             .pattern("pcp")
                             .pattern("php")
                             .pattern("wpw")
