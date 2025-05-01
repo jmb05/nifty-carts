@@ -46,6 +46,7 @@ public final class NiftyCartsConfig {
         public final ForgeConfigSpec.BooleanValue renderSupplyFlowers;
         public final ForgeConfigSpec.BooleanValue renderSupplyPaintings;
         public final ForgeConfigSpec.BooleanValue renderSupplyWheel;
+        public final ForgeConfigSpec.ConfigValue<ArrayList<String>> renderBlacklist;
 
         Client(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration to disable the rendering of certain supplies in the supply cart");
@@ -55,6 +56,12 @@ public final class NiftyCartsConfig {
             this.renderSupplyFlowers = builder.comment("Falls back to rendering as items if false").define("render_supply_flowers", true);
             this.renderSupplyPaintings = builder.comment("Falls back to rendering as items if false").define("render_supply_paintings", true);
             this.renderSupplyWheel = builder.comment("Falls back to rendering as items if false").define("render_supply_wheel", true);
+            ArrayList<String> blacklist = new ArrayList<>();
+            blacklist.add("minecraft:trident");
+            blacklist.add("minecraft:decorated_pot");
+            blacklist.add("#minecraft:buttons");
+            blacklist.add("#minecraft:banners");
+            this.renderBlacklist = builder.comment("Disables rendering for these blocks and items").define("render_item_blacklist", blacklist);
         }
 
     }

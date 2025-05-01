@@ -5,22 +5,15 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 
-public final class SupplyCartModel extends CartModel<CargoCartRenderState> {
-    private final ModelPart flowerBasket;
+public final class SupplyCartModel extends CargoCartModel<CargoCartRenderState> {
 
     public SupplyCartModel(final ModelPart root) {
         super(root);
-        this.flowerBasket = root.getChild("flowerBasket");
-        this.flowerBasket.visible = false;
     }
 
     @Override
     public void setupAnim(CargoCartRenderState state) {
         super.setupAnim(state);
-    }
-
-    public ModelPart getFlowerBasket() {
-        return this.flowerBasket;
     }
 
     public static LayerDefinition createLayer() {
