@@ -33,6 +33,10 @@ public class NiftyCartsEnUsLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(NiftyCarts.SEED_DRILL_ENTITY, "Seed Drill");
         translationBuilder.add(NiftyCarts.REAPER_ENTITY, "Reaper");
         translationBuilder.add(NiftyCarts.CART_ONE_CM, "Distance by Cart");
+        translationBuilder.add(NiftyCarts.SEED_DRILL_PLANTABLE, "Plantable by Seed Drill");
+        translationBuilder.add(NiftyCarts.PLOW_BREAKABLE_AXE, "Can be broken by plow using axe");
+        translationBuilder.add(NiftyCarts.PLOW_BREAKABLE_HOE, "Can be broken by plow using hoe");
+        translationBuilder.add(NiftyCarts.PLOW_BREAKABLE_SHOVEL, "Can be broken by plow using shovel");
         translationBuilder.add("key.categories.niftycarts", "NiftyCarts");
         translationBuilder.add("key.niftycarts.action", "Attach/Detach Cart");
         translationBuilder.add("key.niftycarts.slow", "Toggle Slow");

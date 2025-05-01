@@ -7,17 +7,24 @@
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "has_wheel": {
+    "has_wheel_and_planks": {
       "conditions": {
-        "recipe": "niftycarts:wheel"
+        "items": [
+          {
+            "items": "niftycarts:wheel"
+          },
+          {
+            "items": "minecraft:crimson_planks"
+          }
+        ]
       },
-      "trigger": "minecraft:recipe_unlocked"
+      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "has_wheel"
+      "has_wheel_and_planks"
     ]
   ],
   "rewards": {
