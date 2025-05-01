@@ -2,7 +2,6 @@ package net.jmb19905.niftycarts.entity;
 
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
-import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -10,6 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -19,8 +19,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
 
 public class ReaperCartEntity extends AbstractDrawnEntity {
 
@@ -32,7 +30,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
     @Override
     public void tick() {
         super.tick();
-        /*final Entity coachman = this.getControllingPassenger();
+        final Entity coachman = this.getControllingPassenger();
         final Entity pulling = this.getPulling();
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
             final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level(), EntitySpawnReason.SPAWN_ITEM_USE);
@@ -44,7 +42,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
                     postilion.discard();
                 }
             }
-        }*/
+        }
     }
 
     public float getPassengersRidingOffsetY(EntityDimensions entityDimensions, float f) {
@@ -90,8 +88,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
             return;
         }
         if (!this.level().isClientSide) {
-            Optional<Entity> pulling = NiftyWorld.get(this.level()).getCurrentlyPulling(this);
-            if (pulling.isPresent() && pulling.get().getFirstPassenger() instanceof Player pl) {
+            if (this.getFirstPassenger() instanceof Player pl) {
                 if (this.xo != this.getX() || this.zo != this.getZ()) {
                     this.harvest(pl);
                 }
@@ -100,7 +97,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
     }
 
     private void harvest(Player player) {
-        for (float f = 1.2f; f < 2; f += 0.6f) {
+        for (float f = 0.9f; f <= 2; f += 0.1f) {
             final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
             final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
             final BlockPos blockPos = new BlockPos((int) blockPosX, (int) Math.round(this.getY() - 0.75D), (int) blockPosZ);

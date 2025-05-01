@@ -87,6 +87,7 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, CargoCartRen
     public void extractRenderState(HandCartEntity entity, CargoCartRenderState state, float delta) {
         super.extractRenderState(entity, state, delta);
         state.cargo = NonNullList.create();
+        state.cargoStates = NonNullList.create();
         for (int i = 0; i < entity.getCargo().size(); i++) {
             state.cargo.add(i, entity.getCargo().get(i));
             ItemStackRenderState cargoState = new ItemStackRenderState();

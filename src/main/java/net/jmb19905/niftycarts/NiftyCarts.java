@@ -154,7 +154,7 @@ public class NiftyCarts implements ModInitializer {
 		PayloadTypeRegistry.playC2S().register(OpenSupplyCartPayload.TYPE, OpenSupplyCartPayload.CODEC);
 		PayloadTypeRegistry.playC2S().register(ToggleSlowPayload.TYPE, ToggleSlowPayload.CODEC);
 		PayloadTypeRegistry.playC2S().register(RequestCartUpdatePayload.TYPE, RequestCartUpdatePayload.CODEC);
-		PayloadTypeRegistry.playC2S().register(CoachmanMovePayloadOld.TYPE, CoachmanMovePayloadOld.CODEC);
+		PayloadTypeRegistry.playC2S().register(CoachmanMovePayload.TYPE, CoachmanMovePayload.CODEC);
 
 		PayloadTypeRegistry.playS2C().register(UpdateDrawnPayload.TYPE, UpdateDrawnPayload.CODEC);
 
@@ -162,7 +162,7 @@ public class NiftyCarts implements ModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(OpenSupplyCartPayload.TYPE, (payload, context) -> OpenSupplyCartPayload.handle(context.player()));
 		ServerPlayNetworking.registerGlobalReceiver(ToggleSlowPayload.TYPE, (payload, context) -> ToggleSlowPayload.handle(context.player()));
 		ServerPlayNetworking.registerGlobalReceiver(RequestCartUpdatePayload.TYPE, (payload, context) -> RequestCartUpdatePayload.handle(payload, context.player()));
-		ServerPlayNetworking.registerGlobalReceiver(CoachmanMovePayloadOld.TYPE, (payload, context) -> {});
+		ServerPlayNetworking.registerGlobalReceiver(CoachmanMovePayload.TYPE, (payload, context) -> CoachmanMovePayload.handle(payload, context.player()));
 
 		ServerLifecycleEvents.SERVER_STARTED.register(s -> server = s);
 

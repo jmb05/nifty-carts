@@ -1,0 +1,47 @@
+### Different things to test
+- Supply Cart
+  - Pulling
+  - Sitting on
+  - Banner
+  - Inventory (correct saving)
+  - Supply Rendering
+    - Items
+    - Blocks
+    - Flowers
+    - Armor/Shield (Trims, Glint)
+    - Paintings
+    - Wheel
+    - Disabling Rendering
+- Hand Cart
+  - Pulling
+  - Inventory (correct saving)
+  - Supply Rendering
+      - Items
+      - Blocks
+      - Flowers
+      - Armor/Shield (Trims, Glint)
+      - Paintings
+      - Wheel
+      - Disabling Rendering
+- Plow
+  - Inventory (correct saving)
+  - En-/Disabling functionality
+  - Pulling
+    - Tilling
+    - Stripping
+    - Creating paths
+- Animal cart
+  - Pulling
+  - Animal Pickup
+  - Coachman functionality
+- Seed Drill
+  - Pulling
+  - Inventory (correct saving, correct slot filtering)
+  - Rendering Seeds
+  - Planting Seeds
+- Reaper
+  - Pulling
+  - Coachman functionality
+  - Breaking crops
+- Dedicated Server & Multiplayer
+- Version interoperability

@@ -44,15 +44,21 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
     }
 
     private void plant() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < SLOT_COUNT; j++) {
-                final ItemStack stack = this.getStackInSlot(j);
-                final float offset = 90 - i * 90;
-                final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * 0.75;
-                final double z = this.getZ() + Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * 0.75;
-                final BlockPos blockPos = new BlockPos((int) x, (int) Math.round(this.getY() - 0.75D), (int) z);
-                if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
-            }
+        for (int j = 0; j < SLOT_COUNT; j++) {final ItemStack stack = this.getStackInSlot(j);
+            double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - 90));
+            double z = this.getZ() + Mth.cos((float) Math.toRadians(this.getYRot() - 90));
+            BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
+            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
+
+            x = this.getX();
+            z = this.getZ();
+            blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
+            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
+
+            x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90));
+            z = this.getZ() + Mth.cos((float) Math.toRadians(this.getYRot() + 90));
+            blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
+            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
         }
     }
 

@@ -33,6 +33,7 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowRenderStat
         state.plowing = entity.getPlowing();
         state.level = entity.level();
         state.items = NonNullList.create();
+        state.itemStates = NonNullList.create();
         for (int i = 0; i < entity.getItemStacks().size(); i++) {
             state.items.add(i, entity.getStackInSlot(i));
             ItemStackRenderState itemStackRenderState = new ItemStackRenderState();

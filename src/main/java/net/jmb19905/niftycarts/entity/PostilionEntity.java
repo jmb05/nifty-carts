@@ -16,15 +16,7 @@ public class PostilionEntity extends DummyLivingEntity {
     public void tick() {
         super.tick();
         if (!this.level().isClientSide) {
-            final LivingEntity coachman = this.getCoachman();
-            if (coachman != null) {
-                this.setYRot(coachman.getYRot());
-                this.yRotO = this.getYRot();
-                this.setXRot(coachman.getXRot() * 0.5F);
-                this.zza = coachman.zza;
-                System.out.println(coachman.zza);
-                this.xxa = 0.0F;
-            } else {
+            if (this.getCoachman() == null) {
                 this.discard();
             }
         }
