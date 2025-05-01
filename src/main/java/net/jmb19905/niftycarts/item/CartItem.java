@@ -2,7 +2,9 @@ package net.jmb19905.niftycarts.item;
 
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.WoodType;
@@ -34,6 +37,14 @@ public class CartItem extends Item {
         super(settings);
         this.woodType = type;
         this.cartType = cartType;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
+        list.add(Component.empty());
+        list.add(Component.translatable("item." + this.cartType + ".tooltip1").withStyle(ChatFormatting.GRAY));
+        list.add(Component.translatable("item." + this.cartType + ".tooltip2").withStyle(ChatFormatting.GRAY));
+        super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
     }
 
     @Override

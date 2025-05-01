@@ -536,7 +536,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (passengers.isEmpty()) {
             return null;
         }
-        final Entity first = passengers.getFirst();
+        final Entity first = passengers.get(0);
         if (first instanceof Animal || !(first instanceof LivingEntity)) {
             return null;
         }
