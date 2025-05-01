@@ -39,6 +39,18 @@ public class NiftyCartsEnUsLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("subtitles.niftycarts.cart.attached", "Cart attaches");
         translationBuilder.add("subtitles.niftycarts.cart.detached", "Cart detaches");
         translationBuilder.add("subtitles.niftycarts.cart.placed", "Cart placed");
+        translationBuilder.add("item.supply_cart.tooltip1", "This cart can hold up to 54 stacks of items");
+        translationBuilder.add("item.supply_cart.tooltip2", "It has one seat and can be decorated with a banner");
+        translationBuilder.add("item.hand_cart.tooltip1", "This cart can hold up to 27 stacks of items");
+        translationBuilder.add("item.hand_cart.tooltip2", "It can only be pulled by the player");
+        translationBuilder.add("item.animal_cart.tooltip1", "This cart has two seats for animals or players and can be decorated with a banner");
+        translationBuilder.add("item.animal_cart.tooltip2", "It can be also controlled from the front seat");
+        translationBuilder.add("item.plow.tooltip1", "This contraption can till the ground, make dirt paths or strip logs");
+        translationBuilder.add("item.plow.tooltip2", "It needs the respective tools to work and can be toggled by right-clicking");
+        translationBuilder.add("item.seed_drill.tooltip1", "This contraption plants seeds on farmland");
+        translationBuilder.add("item.seed_drill.tooltip2", "It has room for 9 stacks of seeds");
+        translationBuilder.add("item.reaper.tooltip1", "This contraption can harvest crops");
+        translationBuilder.add("item.reaper.tooltip2", "Only works if the player is sitting on it");
     }
 
     private static String capitalizeWordStart(String s) {

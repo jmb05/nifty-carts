@@ -39,3 +39,4 @@ replay_*.log
 *.hprof
 *.jfr
 /src/main/resources/assets/niftycarts/textures/entity/
+/src/main/generated/.cache/
