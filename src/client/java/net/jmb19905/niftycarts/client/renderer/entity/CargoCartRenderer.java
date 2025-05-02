@@ -206,8 +206,8 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
                 paintingVariant = Optional.of(variants.get(i % variants.size()));
             }
             stack.pushPose();
-            n++;
             stack.translate(getPaintingOffset(i, n, count));
+            n++;
             stack.mulPose(Axis.ZP.rotation(rng.nextFloat() * (float) Math.PI * getPaintingAngleFactor()));
             CargoRenderUtil.renderPainting(paintingVariant.get(), stack, buf, packedLight);
             stack.popPose();
