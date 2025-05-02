@@ -57,15 +57,29 @@ public class NiftyCarts implements ModInitializer {
 	public static final Map<WoodType, CartItem> REAPER = new HashMap<>();
 	public static final Map<WoodType, CartItem> SEED_DRILL = new HashMap<>();
 
+	public static final WoodType[] VANILLA_WOOD_TYPES = {
+			WoodType.OAK,
+			WoodType.SPRUCE,
+			WoodType.BIRCH,
+			WoodType.ACACIA,
+			WoodType.CHERRY,
+			WoodType.JUNGLE,
+			WoodType.DARK_OAK,
+			WoodType.CRIMSON,
+			WoodType.WARPED,
+			WoodType.MANGROVE,
+			WoodType.BAMBOO
+	};
+
 	static {
-		WoodType.values().forEach(woodType -> {
+		for (WoodType woodType : VANILLA_WOOD_TYPES) {
 			SUPPLY_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "supply_cart"));
 			HAND_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "hand_cart"));
 			PLOW.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "plow"));
 			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "seed_drill"));
 			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "reaper"));
 			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "animal_cart"));
-		});
+		}
 	}
 
 	public static MinecraftServer server = null;
@@ -156,7 +170,7 @@ public class NiftyCarts implements ModInitializer {
 		Stats.CUSTOM.get(CART_ONE_CM, StatFormatter.DEFAULT);
 
 		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "wheel"), WHEEL);
-		WoodType.values().forEach(woodType -> {
+		for (WoodType woodType : VANILLA_WOOD_TYPES) {
 			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_supply_cart"), SUPPLY_CART.get(woodType));
 			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_plow"), PLOW.get(woodType));
 			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_animal_cart"), ANIMAL_CART.get(woodType));
@@ -171,7 +185,7 @@ public class NiftyCarts implements ModInitializer {
 				content.accept(REAPER.get(woodType));
 				content.accept(SEED_DRILL.get(woodType));
 			});
-		});
+		}
 
 		Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"), PLOW_MENU_TYPE);
 		Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "seed_drill"), SEED_DRILL_MENU_TYPE);

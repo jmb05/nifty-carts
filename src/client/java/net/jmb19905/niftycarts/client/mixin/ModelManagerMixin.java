@@ -28,7 +28,7 @@ public abstract class ModelManagerMixin {
     @Inject(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V"))
     private void apply(ModelManager.ReloadState reloadState, ProfilerFiller profilerFiller, CallbackInfo ci){
         AssembledTextureFactory factory = new AssembledTextureFactory();
-        WoodType.values().forEach(woodType -> {
+        for (WoodType woodType : NiftyCarts.VANILLA_WOOD_TYPES) {
             String logName = LOG_NAME_OVERRIDE.getOrDefault(woodType, "log");
             factory.add(ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/" + woodType.name() + "_animal_cart.png"), new AssembledTexture(64, 64)
                             .add(new Material(ResourceLocation.withDefaultNamespace("block/" + woodType.name() + "_planks"), 16)
@@ -158,7 +158,7 @@ public abstract class ModelManagerMixin {
                                     .fill(0, 45, 16, 17)
                             )
                     );
-        });
+        }
         factory.bake();
     }
 
