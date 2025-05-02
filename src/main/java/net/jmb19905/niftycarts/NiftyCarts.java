@@ -44,6 +44,7 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.fml.config.ModConfig;
 import org.apache.commons.lang3.function.TriFunction;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -60,8 +61,23 @@ public class NiftyCarts implements ModInitializer {
 	public static final Map<WoodType, CartItem> SEED_DRILL = new HashMap<>();
 	public static final Map<WoodType, CartItem> REAPER = new HashMap<>();
 
+	public static final WoodType[] VANILLA_WOOD_TYPES = {
+			WoodType.OAK,
+			WoodType.SPRUCE,
+			WoodType.BIRCH,
+			WoodType.ACACIA,
+			WoodType.CHERRY,
+			WoodType.JUNGLE,
+			WoodType.DARK_OAK,
+			WoodType.PALE_OAK,
+			WoodType.CRIMSON,
+			WoodType.WARPED,
+			WoodType.MANGROVE,
+			WoodType.BAMBOO
+	};
+
 	static {
-		WoodType.values().forEach(woodType -> {
+		for (WoodType woodType : VANILLA_WOOD_TYPES) {
 			FeatureFlag[] flags = {};
 			SUPPLY_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "supply_cart", flags));
 			HAND_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "hand_cart", flags));
@@ -69,7 +85,7 @@ public class NiftyCarts implements ModInitializer {
 			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "seed_drill", flags));
 			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "reaper", flags));
 			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "animal_cart", flags));
-		});
+		}
 	}
 
 	public static MinecraftServer server = null;
@@ -137,7 +153,7 @@ public class NiftyCarts implements ModInitializer {
 		Registry.register(BuiltInRegistries.MENU, resLoc("seed_drill"), SEED_DRILL_MENU_TYPE);
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> WoodType.values().forEach(woodType -> {
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> Arrays.stream(VANILLA_WOOD_TYPES).forEach(woodType -> {
             content.accept(SUPPLY_CART.get(woodType));
             content.accept(PLOW.get(woodType));
             content.accept(SEED_DRILL.get(woodType));
