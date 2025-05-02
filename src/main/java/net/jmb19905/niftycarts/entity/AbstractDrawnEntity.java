@@ -89,6 +89,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             this.setDamageTaken(this.getDamageTaken() - 1.0F);
         }
         super.tick();
+        this.interpolationHandler.interpolate();
         if (this.pulling == null) {
             this.setXRot(25.0F);
             this.move(MoverType.SELF, this.getDeltaMovement());
