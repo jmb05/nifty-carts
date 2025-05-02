@@ -40,7 +40,7 @@ public abstract class ModelManagerMixin {
                 .fill(62, 55, 2, 9);
         Material dirt = new Material(ResourceLocation.withDefaultNamespace("block/dirt"), 16)
                 .fill(0, 45, 16, 17);
-        WoodType.values().forEach(type -> {
+        for (WoodType type : NiftyCarts.VANILLA_WOOD_TYPES) {
             String logName = LOG_NAME_OVERRIDE.getOrDefault(type, "log");
             factory.add(NiftyCarts.resLoc("textures/entity/" + type.name() + "_animal_cart.png"), new AssembledTexture(64, 64)
                 .add(new Material(ResourceLocation.withDefaultNamespace("block/" + type.name() + "_planks"), 16)
@@ -142,8 +142,8 @@ public abstract class ModelManagerMixin {
                         .add(composterSide)
                         .add(composterTop)
                         .add(dirt)
-        );
-        });
+            );
+        }
         factory.bake();
     }
 

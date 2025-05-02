@@ -28,7 +28,7 @@ public final class SupplyCartRenderer extends CargoCartRenderer<SupplyCartEntity
 
     @Override
     protected Vec3 getPaintingOffset(int i, int n, int count) {
-        return new Vec3(0.0D, (n - (count - 1) * 0.5D) / count, -1.0D / 16.0D * i);
+        return new Vec3(0.0D, 0.5 * (n - (count - 1) * 0.1D) / count, -1.0D / 16.0D * i);
     }
 
     @Override
