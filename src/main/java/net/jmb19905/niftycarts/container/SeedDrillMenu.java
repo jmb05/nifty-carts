@@ -17,15 +17,15 @@ public class SeedDrillMenu extends AbstractContainerMenu {
 
     private final Container container;
 
-    public SeedDrillMenu(int i, Inventory inv) {
-        this(i, inv, new SimpleContainer(SLOT_COUNT));
+    public SeedDrillMenu(int id, Inventory inv) {
+        this(id, inv, new SimpleContainer(SLOT_COUNT));
     }
 
-    public SeedDrillMenu(int i, Inventory inv, Container container) {
-        this(NiftyCarts.SEED_DRILL_MENU_TYPE, i, inv, container);
+    public SeedDrillMenu(int id, Inventory inv, Container container) {
+        this(NiftyCarts.SEED_DRILL_MENU_TYPE, id, inv, container);
     }
 
-    protected SeedDrillMenu(MenuType<?> menuType, int id, Inventory inventory, Container container) {
+    public SeedDrillMenu(MenuType<?> menuType, int id, Inventory inventory, Container container) {
         super(menuType, id);
         checkContainerSize(container, SLOT_COUNT);
         this.container = container;
@@ -50,8 +50,12 @@ public class SeedDrillMenu extends AbstractContainerMenu {
         }
     }
 
+    public boolean stillValid(Player player) {
+        return this.container.stillValid(player);
+    }
+
     @Override
-    public @NotNull ItemStack quickMoveStack(Player player, int index) {
+    public @NotNull ItemStack quickMoveStack(final Player playerIn, final int index) {
         final ItemStack itemstack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
         if (slot.hasItem()) {
@@ -80,10 +84,4 @@ public class SeedDrillMenu extends AbstractContainerMenu {
     public Container getContainer() {
         return this.container;
     }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return this.container.stillValid(player);
-    }
-
 }
