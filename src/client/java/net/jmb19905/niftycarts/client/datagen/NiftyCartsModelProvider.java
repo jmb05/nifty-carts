@@ -21,6 +21,7 @@ public class NiftyCartsModelProvider extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerators) {
+        itemModelGenerators.generateFlatItem(NiftyCarts.WHEEL, ModelTemplates.FLAT_ITEM);
         WoodType.values().forEach(woodType -> {
             itemModelGenerators.generateFlatItem(NiftyCarts.SUPPLY_CART.get(woodType), ModelTemplates.FLAT_ITEM);
             itemModelGenerators.generateFlatItem(NiftyCarts.HAND_CART.get(woodType), ModelTemplates.FLAT_ITEM);
