@@ -57,7 +57,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
     private static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = NiftyCarts.resLoc("pull_slowly");
     private static final ResourceLocation PULL_MODIFIER_ID = NiftyCarts.resLoc("pull");
-    private final InterpolationHandler interpolationHandler;
+    private final CartInterpolationHandler interpolation = new CartInterpolationHandler(this);
     protected List<CartWheel> wheels;
     private int pullingId = -1;
     private UUID pullingUUID = null;
@@ -68,7 +68,6 @@ public abstract class AbstractDrawnEntity extends Entity {
     public AbstractDrawnEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
         this.blocksBuilding = true;
-        this.interpolationHandler = new InterpolationHandler(this);
         this.initWheels();
     }
 
@@ -89,7 +88,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             this.setDamageTaken(this.getDamageTaken() - 1.0F);
         }
         super.tick();
-        this.interpolationHandler.interpolate();
+        this.interpolation.interpolate();
         if (this.pulling == null) {
             this.setXRot(25.0F);
             this.move(MoverType.SELF, this.getDeltaMovement());
@@ -471,7 +470,7 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     @Override
     public @Nullable InterpolationHandler getInterpolation() {
-        return interpolationHandler;
+        return interpolation;
     }
 
     @Override
