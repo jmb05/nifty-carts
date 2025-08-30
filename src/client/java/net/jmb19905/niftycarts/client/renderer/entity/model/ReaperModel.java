@@ -5,16 +5,25 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 
 public class ReaperModel extends CartModel<ReaperEntity> {
 
+    private final ModelPart blades;
+
     public ReaperModel(final ModelPart root) {
         super(root);
+        this.blades = root.getChild("body").getChild("parts").getChild("blades");
     }
 
     @Override
     public void setupAnim(final ReaperEntity entity, final float delta, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float pitch) {
         super.setupAnim(entity, delta, limbSwingAmount, ageInTicks, netHeadYaw, pitch);
+        if (!(entity.getControllingPassenger() instanceof Player)) {
+            blades.xRot = -Mth.HALF_PI;
+        } else {
+            blades.xRot = 0;
+        }
     }
 
     public static LayerDefinition createLayer() {
@@ -65,13 +74,13 @@ public class ReaperModel extends CartModel<ReaperEntity> {
         shafts.addChild(shaftConnector0);
 
         final EasyMeshBuilder blades = new EasyMeshBuilder("blades", 0, 32);
-        blades.setRotationPoint(27, 0, 0);
-        blades.addBox(12,8,-6, 0.01f, 5, 8);
-        blades.addBox(-12,8,-6, 0.01f, 5, 8);
-        blades.addBox(-12, 11, -1, 24, 1, 1);
+        blades.setRotationPoint(27, 11, 0);
+        blades.addBox(12,-3,-6, 0.01f, 5, 8);
+        blades.addBox(-12,-3,-6, 0.01f, 5, 8);
+        blades.addBox(-12, 0, -1, 24, 1, 1);
         for (int i = 0; i < 12; i++) {
             int offset = (i * 2) - 11;
-            blades.addBox(offset - 0.5f, 12, -4, 1, 0.01f, 3);
+            blades.addBox(offset - 0.5f, 1, -4, 1, 0.01f, 3);
         }
 
         float rimLength = 4;

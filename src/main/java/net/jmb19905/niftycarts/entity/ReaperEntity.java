@@ -4,7 +4,6 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -92,7 +91,7 @@ public class ReaperEntity extends AbstractDrawnEntity {
             final BlockPos blockPos = new BlockPos((int) Math.round(blockPosX), (int) Math.round(this.getY() - 0.75D), (int) Math.round(blockPosZ));
             BlockPos pos = blockPos.above();
             BlockState state = level().getBlockState(pos);
-            if (state.is(BlockTags.CROPS)) {
+            if (state.is(NiftyCarts.REAPER_HARVESTABLE)) {
                 if (level().removeBlock(pos, false)) {
                     level().destroyBlock(pos, false);
                     if (!state.requiresCorrectToolForDrops()) {
