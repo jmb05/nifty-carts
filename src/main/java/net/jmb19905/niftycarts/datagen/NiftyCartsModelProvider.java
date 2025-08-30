@@ -26,6 +26,7 @@ public class NiftyCartsModelProvider extends FabricModelProvider {
             itemModelGenerator.generateFlatItem(NiftyCarts.PLOW.get(woodType), ModelTemplates.FLAT_ITEM);
             itemModelGenerator.generateFlatItem(NiftyCarts.SEED_DRILL.get(woodType), ModelTemplates.FLAT_ITEM);
             itemModelGenerator.generateFlatItem(NiftyCarts.REAPER.get(woodType), ModelTemplates.FLAT_ITEM);
+            itemModelGenerator.generateFlatItem(NiftyCarts.WAGON.get(woodType), ModelTemplates.FLAT_ITEM);
         });
     }
 }

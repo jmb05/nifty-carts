@@ -56,6 +56,7 @@ public class NiftyCarts implements ModInitializer {
 	public static final Map<WoodType, CartItem> ANIMAL_CART = new HashMap<>();
 	public static final Map<WoodType, CartItem> REAPER = new HashMap<>();
 	public static final Map<WoodType, CartItem> SEED_DRILL = new HashMap<>();
+    public static final Map<WoodType, CartItem> WAGON = new HashMap<>();
 
 	public static final WoodType[] VANILLA_WOOD_TYPES = {
 			WoodType.OAK,
@@ -68,7 +69,7 @@ public class NiftyCarts implements ModInitializer {
 			WoodType.CRIMSON,
 			WoodType.WARPED,
 			WoodType.MANGROVE,
-			WoodType.BAMBOO
+			WoodType.BAMBOO,
 	};
 
 	static {
@@ -79,6 +80,7 @@ public class NiftyCarts implements ModInitializer {
 			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "seed_drill"));
 			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "reaper"));
 			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "animal_cart"));
+            WAGON.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "wagon"));
 		}
 	}
 
@@ -130,6 +132,12 @@ public class NiftyCarts implements ModInitializer {
 			EntityType.Builder.of(SeedDrillEntity::new, MobCategory.MISC).sized(1.3f, 1.1f).build()
 	);
 
+    public static final EntityType<WagonEntity> WAGON_ENTITY = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(MOD_ID, "wagon"),
+            EntityType.Builder.of(WagonEntity::new, MobCategory.MISC).sized(2f, 3f).build()
+    );
+
 	public static final EntityType<PostilionEntity> POSTILION_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
 			ResourceLocation.fromNamespaceAndPath(MOD_ID, "postilion"),
@@ -177,6 +185,7 @@ public class NiftyCarts implements ModInitializer {
 			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_hand_cart"), HAND_CART.get(woodType));
 			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_reaper"), REAPER.get(woodType));
 			Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_seed_drill"), SEED_DRILL.get(woodType));
+            Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, woodType.name() + "_wagon"), WAGON.get(woodType));
 			ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
 				content.accept(SUPPLY_CART.get(woodType));
 				content.accept(PLOW.get(woodType));
@@ -184,6 +193,7 @@ public class NiftyCarts implements ModInitializer {
 				content.accept(HAND_CART.get(woodType));
 				content.accept(REAPER.get(woodType));
 				content.accept(SEED_DRILL.get(woodType));
+                content.accept(WAGON.get(woodType));
 			});
 		}
 

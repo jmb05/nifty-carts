@@ -24,6 +24,11 @@ public class SupplyCartEntity extends AbstractCargoCart {
     }
 
     @Override
+    protected double getSpacing() {
+        return 1.7;
+    }
+
+    @Override
     public Item getCartItem() {
         return NiftyCarts.SUPPLY_CART.get(getWoodType());
     }

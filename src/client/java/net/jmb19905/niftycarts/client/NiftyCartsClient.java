@@ -35,7 +35,6 @@ public class NiftyCartsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		ForgeConfigRegistry.INSTANCE.register(NiftyCarts.MOD_ID, ModConfig.Type.CLIENT, NiftyCartsConfig.clientSpec());
 
-
 		ClientPlayNetworking.registerGlobalReceiver(UpdateDrawnPayload.TYPE, (payload, ctx) -> ctx.client().execute(() -> UpdateDrawnPayload.handle(payload, Objects.requireNonNull(ctx.client().level))));
 		EntityRendererRegistry.register(NiftyCarts.SUPPLY_CART_ENTITY, SupplyCartRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.ANIMAL_CART_ENTITY, AnimalCartRenderer::new);
@@ -44,6 +43,7 @@ public class NiftyCartsClient implements ClientModInitializer {
 		EntityRendererRegistry.register(NiftyCarts.POSTILION_ENTITY, PostilionRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.REAPER_ENTITY, ReaperRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.SEED_DRILL_ENTITY, SeedDrillRenderer::new);
+        EntityRendererRegistry.register(NiftyCarts.WAGON_ENTITY, WagonRenderer::new);
 
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.SUPPLY_CART, SupplyCartModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.ANIMAL_CART, AnimalCartModel::createLayer);
@@ -51,6 +51,9 @@ public class NiftyCartsClient implements ClientModInitializer {
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.HAND_CART, HandCartModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.REAPER, ReaperModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.SEED_DRILL, SeedDrillModel::createLayer);
+        EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.WAGON, WagonModel::createLayer);
+        EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.WAGON_ROOF, WagonModel::createRoofLayer);
+        EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.WAGON_CHEST, WagonModel::createChestLayer);
 
 		MenuScreens.register(NiftyCarts.PLOW_MENU_TYPE, PlowScreen::new);
 		MenuScreens.register(NiftyCarts.SEED_DRILL_MENU_TYPE, SeedDrillScreen::new);

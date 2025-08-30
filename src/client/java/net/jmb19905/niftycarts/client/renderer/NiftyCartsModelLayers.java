@@ -11,6 +11,9 @@ public class NiftyCartsModelLayers {
     public static final ModelLayerLocation HAND_CART = main("hand_cart");
     public static final ModelLayerLocation REAPER = main("reaper");
     public static final ModelLayerLocation SEED_DRILL = main("seed_drill");
+    public static final ModelLayerLocation WAGON = main("wagon");
+    public static final ModelLayerLocation WAGON_ROOF = main("wagon_roof");
+    public static final ModelLayerLocation WAGON_CHEST = main("wagon_chest");
 
     @SuppressWarnings("ConfusingMainMethod")
     private static ModelLayerLocation main(String name) {

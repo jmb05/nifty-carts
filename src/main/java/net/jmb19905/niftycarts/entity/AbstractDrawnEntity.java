@@ -80,7 +80,6 @@ public abstract class AbstractDrawnEntity extends Entity {
     protected List<CartWheel> wheels;
     private int pullingId = -1;
     private UUID pullingUUID = null;
-    protected double spacing = 1.7D;
     public Entity pulling;
     protected AbstractDrawnEntity drawn;
 
@@ -88,6 +87,16 @@ public abstract class AbstractDrawnEntity extends Entity {
         super(entityTypeIn, worldIn);
         this.blocksBuilding = true;
         this.initWheels();
+    }
+
+    protected abstract double getSpacing();
+
+    public float getDisconnectedAngle() {
+        return 25f;
+    }
+
+    public boolean shouldPitch() {
+        return true;
     }
 
     @Override
@@ -115,7 +124,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         super.tick();
         this.tickLerp();
         if (this.pulling == null) {
-            this.setXRot(25.0F);
+            if (shouldPitch()) this.setXRot(getDisconnectedAngle());
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.attemptReattach();
         }
@@ -147,7 +156,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         }
         final double targetVecLength = targetVec.length();
         final double r = 0.2D;
-        final double relativeSpacing = Math.max(this.spacing + 0.5D * this.pulling.getBbWidth(), 1.0D);
+        final double relativeSpacing = Math.max(this.getSpacing() + 0.5D * this.pulling.getBbWidth(), 1.0D);
         final double diff = targetVecLength - relativeSpacing;
         final Vec3 move;
         if (Math.abs(diff) < r) {
@@ -368,7 +377,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      */
     public void handleRotation(final Vec3 target) {
         this.setYRot(getYaw(target));
-        this.setXRot(getPitch(target));
+        if (shouldPitch()) this.setXRot(getPitch(target));
     }
 
     public static float getYaw(final Vec3 vec) {
@@ -491,7 +500,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             final double dy = (this.lerpY - this.getY()) / this.lerpSteps;
             final double dz = (this.lerpZ - this.getZ()) / this.lerpSteps;
             this.setYRot((float) (this.getYRot() + Mth.wrapDegrees(this.lerpYaw - this.getYRot()) / this.lerpSteps));
-            this.setXRot((float) (this.getXRot() + (this.lerpPitch - this.getXRot()) / this.lerpSteps));
+            if (shouldPitch()) this.setXRot((float) (this.getXRot() + (this.lerpPitch - this.getXRot()) / this.lerpSteps));
             this.lerpSteps--;
             this.setOnGround(true);
             this.move(MoverType.SELF, new Vec3(dx, dy, dz));
@@ -749,7 +758,11 @@ public abstract class AbstractDrawnEntity extends Entity {
         public float getPitch() {
             if (Float.isNaN(this.pitch)) {
                 if (AbstractDrawnEntity.this.pulling == null) {
-                    this.pitch = Mth.lerp(this.delta, AbstractDrawnEntity.this.xRotO, AbstractDrawnEntity.this.getXRot());
+                    if (!shouldPitch()) {
+                        this.pitch = getDisconnectedAngle();
+                    } else {
+                        this.pitch = Mth.lerp(this.delta, AbstractDrawnEntity.this.xRotO, AbstractDrawnEntity.this.getXRot());
+                    }
                 } else {
                     this.pitch = AbstractDrawnEntity.getPitch(this.target);
                 }

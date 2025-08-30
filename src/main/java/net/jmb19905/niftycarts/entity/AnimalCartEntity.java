@@ -23,6 +23,11 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
+    protected double getSpacing() {
+        return 1.7;
+    }
+
+    @Override
     protected NiftyCartsConfig.CartConfig getConfig() {
         return NiftyCartsConfig.get().animalCart;
     }

@@ -66,6 +66,7 @@ public final class NiftyCartsConfig {
         public final CartConfig handCart;
         public final CartConfig reaper;
         public final CartConfig seedDrill;
+        public final CartConfig wagon;
 
         Common(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
@@ -77,6 +78,7 @@ public final class NiftyCartsConfig {
             this.handCart = new CartConfig(builder, "hand_cart", "The Hand Cart, a player pulled cart that stores items", list, 0);
             this.reaper = new CartConfig(builder, "reaper", "The Reaper, a cart that harvests crops");
             this.seedDrill = new CartConfig(builder, "seed_drill", "The Seed Drill, a cart that plants crops");
+            this.wagon = new CartConfig(builder, "wagon", "The Covered wagon, a horse drawn cart that multiple people and/or lots of items", -0.2f);
             builder.pop();
         }
     }
@@ -89,6 +91,10 @@ public final class NiftyCartsConfig {
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description) {
             this(builder, name, description, new ArrayList<>(), 0);
+        }
+
+        CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description, float defaultPullSpeed) {
+            this(builder, name, description, new ArrayList<>(), defaultPullSpeed);
         }
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description, ArrayList<String> defaultEntityList, double defaultPullSpeed) {

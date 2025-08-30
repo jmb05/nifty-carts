@@ -4,7 +4,6 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -27,7 +26,11 @@ public class ReaperEntity extends AbstractDrawnEntity {
 
     public ReaperEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
-        this.spacing = 1.3;
+    }
+
+    @Override
+    protected double getSpacing() {
+        return 1.3;
     }
 
     public float getPassengersRidingOffsetY(EntityDimensions entityDimensions, float f) {

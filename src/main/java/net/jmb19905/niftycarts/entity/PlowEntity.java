@@ -40,7 +40,11 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     public PlowEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn, SLOT_COUNT);
-        this.spacing = 1.3D;
+    }
+
+    @Override
+    protected double getSpacing() {
+        return 1.3;
     }
 
     @Override
@@ -65,7 +69,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
             } else if (this.getPulling().getControllingPassenger() instanceof Player pl) {
                 player = pl;
             }
-            if (this.entityData.get(PLOWING) && player != null) {
+            if (getPlowing() && player != null) {
                 if (this.xo != this.getX() || this.zo != this.getZ()) {
                     this.plow(player);
                 }

@@ -17,7 +17,11 @@ public class HandCartEntity extends AbstractCargoCart {
 
     public HandCartEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn, 27);
-        this.spacing = 1.0;
+    }
+
+    @Override
+    protected double getSpacing() {
+        return 1.0;
     }
 
     @Override

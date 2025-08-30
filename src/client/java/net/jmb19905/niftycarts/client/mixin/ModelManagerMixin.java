@@ -8,6 +8,7 @@ import net.jmb19905.niftycarts.client.renderer.texture.Material;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -39,12 +40,30 @@ public abstract class ModelManagerMixin {
                             .add(new Material(ResourceLocation.withDefaultNamespace("block/stripped_" + woodType.name() + "_" + logName), 16)
                                     .fill(54, 54, 10, 10, Material.R0, 0, 2)
                             )
-                            .add(new Material(ResourceLocation.withDefaultNamespace("block/oak_log"), 16)
+                            .add(new Material(ResourceLocation.withDefaultNamespace("block/" + woodType.name() + "_" + logName), 16)
                                     .fill(0, 21, 60, 4, Material.R90)
                                     .fill(46, 60, 8, 4, Material.R90)
                             )
                             .add(new Material(ResourceLocation.withDefaultNamespace("block/stone"), 16)
                                     .fill(62, 55, 2, 9)
+                            )
+                    )
+                    .add(ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/" + woodType.name() + "_wagon.png"), new AssembledTexture(64, 64)
+                            .add(new Material(ResourceLocation.withDefaultNamespace("block/" + woodType.name() + "_planks"), 16)
+                                    .fill(0, 0, 64, 48)
+                            )
+                            .add(new Material(ResourceLocation.withDefaultNamespace("block/stripped_" + woodType.name() + "_" + logName), 16)
+                                    .fill(54, 53, 10, 11, Material.R0, 0, 2)
+                            )
+                            .add(new Material(ResourceLocation.withDefaultNamespace("block/" + woodType.name() + "_" + logName), 16)
+                                    .fill(0, 60, 40, 4, Material.R90)
+                                    .fill(46, 60, 8, 4, Material.R90)
+                            )
+                            .add(new Material(ResourceLocation.withDefaultNamespace("block/stone"), 16)
+                                    .fill(62, 54, 2, 10)
+                            )
+                            .add(new Material(ResourceLocation.withDefaultNamespace("block/white_wool"), 16)
+                                    .fill(0, 38, 53, 19)
                             )
                     )
                     .add(ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/" + woodType.name() + "_plow.png"), new AssembledTexture(64, 64)
@@ -158,6 +177,11 @@ public abstract class ModelManagerMixin {
                                     .fill(0, 45, 16, 17)
                             )
                     );
+            for (DyeColor color : DyeColor.values()) {
+                factory.add(ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/wagon_roof_" + color.getName() + ".png"), new AssembledTexture(16, 16)
+                        .add(new Material(ResourceLocation.withDefaultNamespace("block/" + color.getName() + "_wool"), 16)
+                                .fill(0, 0, 16, 16)));
+            }
         }
         factory.bake();
     }
