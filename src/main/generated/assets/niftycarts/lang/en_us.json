@@ -91,5 +91,6 @@
   "subtitles.niftycarts.cart.attached": "Cart attaches",
   "subtitles.niftycarts.cart.detached": "Cart detaches",
   "subtitles.niftycarts.cart.placed": "Cart placed",
-  "tutorial.slow.message": "Press %1$s to toggle slow mode"
+  "tutorial.slow.message": "Press %1$s to toggle slow mode",
+  "message.niftycarts.use_reaper": "Sit on the reaper to use it"
 }

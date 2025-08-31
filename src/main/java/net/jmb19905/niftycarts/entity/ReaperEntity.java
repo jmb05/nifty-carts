@@ -4,6 +4,11 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,8 +28,20 @@ import java.util.Optional;
 
 public class ReaperEntity extends AbstractDrawnEntity {
 
+    private static final EntityDataAccessor<Boolean> FOLDED = SynchedEntityData.defineId(ReaperEntity.class, EntityDataSerializers.BOOLEAN);
+
     public ReaperEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FOLDED, true);
+    }
+
+    public boolean isFolded() {
+        return this.entityData.get(FOLDED);
     }
 
     @Override
@@ -58,7 +75,9 @@ public class ReaperEntity extends AbstractDrawnEntity {
     @Override
     public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
         if (!this.level().isClientSide) {
-            if (!player.isSecondaryUseActive() && this.pulling != null && this.pulling != player) {
+            if (player.isSecondaryUseActive()) {
+                player.displayClientMessage(Component.translatable("message.niftycarts.use_reaper"), true);
+            } else if (!player.isSecondaryUseActive() && this.pulling != null && this.pulling != player) {
                 if (player.startRiding(this)) {
                     return InteractionResult.CONSUME;
                 }
@@ -107,6 +126,13 @@ public class ReaperEntity extends AbstractDrawnEntity {
         super.tick();
         final Entity coachman = this.getControllingPassenger();
         final Entity pulling = this.getPulling();
+
+        boolean folded = !(pulling != null && coachman != null);
+        if (folded != this.entityData.get(FOLDED)) {
+            playSound(SoundEvents.WOODEN_TRAPDOOR_CLOSE);
+        }
+        this.entityData.set(FOLDED, folded);
+
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
             final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level());
             if (postilion != null) {
