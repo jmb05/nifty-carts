@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -97,16 +98,18 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
                 if (!(item.getBlock() instanceof  WoolCarpetBlock block)) return InteractionResult.PASS;
                 if (itemStack.getCount() >= 5 || player.hasInfiniteMaterials()) {
                     this.entityData.set(ROOF_COLOR, block.getColor().getId());
+                    playSound(SoundEvents.WOOL_PLACE);
                     if (!player.hasInfiniteMaterials()) {
                         itemStack.shrink(5);
                         if (!player.getInventory().add(this.entityData.get(EQUIPPED_CARPET))) {
                             player.drop(this.entityData.get(EQUIPPED_CARPET), false);
                         }
-                        this.entityData.set(EQUIPPED_CARPET, new ItemStack(item, 5));
                     }
+                    this.entityData.set(EQUIPPED_CARPET, new ItemStack(item, 5));
                 }
             } else {
                 this.entityData.set(UNFURL, (getUnfurled() + 1) % 3);
+                playSound(SoundEvents.WOOL_STEP);
             }
             return InteractionResult.CONSUME;
         } else {
