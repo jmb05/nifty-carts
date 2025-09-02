@@ -22,7 +22,6 @@ import net.jmb19905.niftycarts.network.serverbound.ToggleSlowPayload;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraftforge.fml.config.ModConfig;
 import org.lwjgl.glfw.GLFW;
 
