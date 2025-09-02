@@ -25,7 +25,12 @@ public class WagonRenderer extends DrawnRenderer<WagonEntity, WagonModel> {
     protected void renderContents(WagonEntity entity, float delta, PoseStack stack, MultiBufferSource source, int packedLight) {
         stack.pushPose();
         this.model.getBody().translateAndRotate(stack);
-        this.model.getChest().render(stack, source.getBuffer(this.model.renderType(ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/wagon_chest.png"))), packedLight, OverlayTexture.NO_OVERLAY);
+        stack.pushPose();
+        for (int i = 0; i < entity.getChestCount(); i++) {
+            this.model.getChest().render(stack, source.getBuffer(this.model.renderType(ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/wagon_chest.png"))), packedLight, OverlayTexture.NO_OVERLAY);
+            stack.translate(0, 0, 1);
+        }
+        stack.popPose();
         if (entity.hasRoof()) {
             model.getRoof(entity.getUnfurled()).render(stack, source.getBuffer(this.model.renderType(entity.getRoofTexture())), packedLight, OverlayTexture.NO_OVERLAY);
         }

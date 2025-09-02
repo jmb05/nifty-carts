@@ -5,6 +5,7 @@
   "client": [
     "ClientLevelMixin",
     "ClientPacketListenerMixin",
+    "EntityRenderDispatcherMixin",
     "ModelManagerMixin",
     "ModelPartMixin"
   ],

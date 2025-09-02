@@ -13,6 +13,7 @@ import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
 import net.jmb19905.niftycarts.client.renderer.entity.*;
 import net.jmb19905.niftycarts.client.renderer.entity.model.*;
+import net.jmb19905.niftycarts.client.screen.ChestScreen;
 import net.jmb19905.niftycarts.client.screen.PlowScreen;
 import net.jmb19905.niftycarts.client.screen.SeedDrillScreen;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnPayload;
@@ -21,6 +22,7 @@ import net.jmb19905.niftycarts.network.serverbound.ToggleSlowPayload;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraftforge.fml.config.ModConfig;
 import org.lwjgl.glfw.GLFW;
 
@@ -44,6 +46,7 @@ public class NiftyCartsClient implements ClientModInitializer {
 		EntityRendererRegistry.register(NiftyCarts.REAPER_ENTITY, ReaperRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.SEED_DRILL_ENTITY, SeedDrillRenderer::new);
         EntityRendererRegistry.register(NiftyCarts.WAGON_ENTITY, WagonRenderer::new);
+        EntityRendererRegistry.register(NiftyCarts.TEST_MULTI_PART_ENTITY, TestMultiPartRenderer::new);
 
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.SUPPLY_CART, SupplyCartModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.ANIMAL_CART, AnimalCartModel::createLayer);
@@ -57,6 +60,9 @@ public class NiftyCartsClient implements ClientModInitializer {
 
 		MenuScreens.register(NiftyCarts.PLOW_MENU_TYPE, PlowScreen::new);
 		MenuScreens.register(NiftyCarts.SEED_DRILL_MENU_TYPE, SeedDrillScreen::new);
+        MenuScreens.register(NiftyCarts.CHEST_9x4_MENU_TYPE, ChestScreen::new);
+        MenuScreens.register(NiftyCarts.CHEST_9x8_MENU_TYPE, ChestScreen::new);
+        MenuScreens.register(NiftyCarts.CHEST_9x12_MENU_TYPE, ChestScreen::new);
 
 		actionKeyMapping = KeyBindingHelper.registerKeyBinding(new KeyMapping(
 				"key.niftycarts.action",

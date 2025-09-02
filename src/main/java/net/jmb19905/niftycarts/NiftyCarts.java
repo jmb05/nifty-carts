@@ -16,6 +16,7 @@ import net.jmb19905.niftycarts.entity.*;
 import net.jmb19905.niftycarts.entity.ai.goal.AvoidCartGoal;
 import net.jmb19905.niftycarts.entity.ai.goal.PullCartGoal;
 import net.jmb19905.niftycarts.entity.ai.goal.RideCartGoal;
+import net.jmb19905.niftycarts.entity.util.TestMultiPartEntity;
 import net.jmb19905.niftycarts.item.CartItem;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnPayload;
 import net.jmb19905.niftycarts.network.serverbound.*;
@@ -32,8 +33,10 @@ import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -135,7 +138,13 @@ public class NiftyCarts implements ModInitializer {
     public static final EntityType<WagonEntity> WAGON_ENTITY = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(MOD_ID, "wagon"),
-            EntityType.Builder.of(WagonEntity::new, MobCategory.MISC).sized(2f, 3f).build()
+            EntityType.Builder.of(WagonEntity::new, MobCategory.MISC).sized(3f, 3f).build()
+    );
+
+    public static final EntityType<TestMultiPartEntity> TEST_MULTI_PART_ENTITY = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(MOD_ID, "test_multi_part"),
+            EntityType.Builder.of(TestMultiPartEntity::new, MobCategory.MISC).sized(1f, 2f).build()
     );
 
 	public static final EntityType<PostilionEntity> POSTILION_ENTITY = Registry.register(
@@ -160,6 +169,9 @@ public class NiftyCarts implements ModInitializer {
 
 	public static final MenuType<PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
 	public static final MenuType<SeedDrillMenu> SEED_DRILL_MENU_TYPE = new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<ChestMenu> CHEST_9x4_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x4_MENU_TYPE, i, inv, new SimpleContainer(9 * 4), 4), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<ChestMenu> CHEST_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x8_MENU_TYPE, i, inv, new SimpleContainer(9 * 8), 8), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<ChestMenu> CHEST_9x12_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x12_MENU_TYPE, i, inv, new SimpleContainer(9 * 12), 12), FeatureFlags.DEFAULT_FLAGS);
 
 	public static final ResourceLocation CART_ONE_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "cart_one_cm");
 
@@ -200,6 +212,9 @@ public class NiftyCarts implements ModInitializer {
 
 		Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow"), PLOW_MENU_TYPE);
 		Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "seed_drill"), SEED_DRILL_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "chest_four_rows"), CHEST_9x4_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "chest_eight_rows"), CHEST_9x8_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(MOD_ID, "chest_quad"), CHEST_9x12_MENU_TYPE);
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
 

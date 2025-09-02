@@ -2,6 +2,9 @@ package net.jmb19905.niftycarts.entity;
 
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
+import net.jmb19905.niftycarts.entity.util.ColliderEntity;
+import net.jmb19905.niftycarts.entity.util.MultiPartEntity;
+import net.jmb19905.niftycarts.entity.util.SubEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -10,32 +13,85 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
+@SuppressWarnings("resource")
 public class WagonEntity extends AbstractDrawnInventoryEntity {
 
     private static final EntityDataAccessor<Integer> UNFURL = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> ROOF_COLOR = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<ItemStack> EQUIPPED_CARPET = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<Integer> CHEST_COUNT = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
 
-    private static final int CONTAINER_SIZE = 54;
+    /*private final SubEntity<WagonEntity>[] subEntities;
+    private final ColliderEntity<WagonEntity> front;
+    private final ColliderEntity<WagonEntity> middle;
+    private final ColliderEntity<WagonEntity> back;*/
 
     public WagonEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
-        super(entityTypeIn, worldIn, CONTAINER_SIZE);
+        super(entityTypeIn, worldIn, 3 * 4 * 9);
+        /*this.front = new ColliderEntity<>(this, "front", 2, 3);
+        this.middle = new ColliderEntity<>(this, "middle", 2, 3);
+        this.back = new ColliderEntity<>(this, "back", 2, 3);
+        subEntities = new SubEntity[]{front, middle, back};*/
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        /*Vec3[] lastPartPositions = new Vec3[this.subEntities.length];
+
+        for (int r = 0; r < this.subEntities.length; r++) {
+            lastPartPositions[r] = new Vec3(this.subEntities[r].getX(), this.subEntities[r].getY(), this.subEntities[r].getZ());
+        }
+
+        Vec3 forward = this.getLookAngle().normalize();
+        front.setPos(getX() + forward.x, getY(), getZ() + forward.z);
+        middle.setPos(getX(), getY(), getZ());
+        back.setPos(getX() - forward.x, getY(), getZ() - forward.z);
+
+        for (int ab = 0; ab < this.subEntities.length; ab++) {
+            this.subEntities[ab].xo = lastPartPositions[ab].x;
+            this.subEntities[ab].yo = lastPartPositions[ab].y;
+            this.subEntities[ab].zo = lastPartPositions[ab].z;
+            this.subEntities[ab].xOld = lastPartPositions[ab].x;
+            this.subEntities[ab].yOld = lastPartPositions[ab].y;
+            this.subEntities[ab].zOld = lastPartPositions[ab].z;
+        }*/
+    }
+
+    @Override
+    public void onDestroyedAndDoDrops(DamageSource source) {
+        super.onDestroyedAndDoDrops(source);
+        if (level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            this.spawnAtLocation(Items.CHEST, getChestCount());
+            this.spawnAtLocation(this.entityData.get(EQUIPPED_CARPET));
+        }
+    }
+
+    public int getChestCount() {
+        return this.entityData.get(CHEST_COUNT);
+    }
+
+    public int getCurrentRowCount() {
+        return getChestCount() * 4;
     }
 
     @Override
@@ -76,6 +132,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         super.defineSynchedData(builder);
         builder.define(UNFURL, 0);
         builder.define(ROOF_COLOR, -1);
+        builder.define(CHEST_COUNT, 0);
         builder.define(EQUIPPED_CARPET, ItemStack.EMPTY);
     }
 
@@ -93,28 +150,59 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     public @NotNull InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (vec3.y > 2.2 && !player.isSecondaryUseActive()) {
-            if (itemStack.is(ItemTags.WOOL_CARPETS)) {
-                if (!(itemStack.getItem() instanceof BlockItem item)) return InteractionResult.PASS;
-                if (!(item.getBlock() instanceof  WoolCarpetBlock block)) return InteractionResult.PASS;
-                if (itemStack.getCount() >= 5 || player.hasInfiniteMaterials()) {
-                    this.entityData.set(ROOF_COLOR, block.getColor().getId());
-                    playSound(SoundEvents.WOOL_PLACE);
-                    if (!player.hasInfiniteMaterials()) {
-                        itemStack.shrink(5);
-                        if (!player.getInventory().add(this.entityData.get(EQUIPPED_CARPET))) {
-                            player.drop(this.entityData.get(EQUIPPED_CARPET), false);
-                        }
-                    }
-                    this.entityData.set(EQUIPPED_CARPET, new ItemStack(item, 5));
+            return interactCarpet(itemStack, player);
+        } else if (itemStack.is(Items.CHEST) && canAddChest()) {
+            return interactChest(itemStack, player);
+        } else if (player.isSecondaryUseActive() && !getPassengers().isEmpty() && !this.level().isClientSide) {
+            for (final Entity entity : this.getPassengers()) {
+                if (!(entity instanceof Player)) {
+                    entity.stopRiding();
                 }
-            } else {
-                this.entityData.set(UNFURL, (getUnfurled() + 1) % 3);
-                playSound(SoundEvents.WOOL_STEP);
             }
-            return InteractionResult.CONSUME;
-        } else {
-            return super.interact(player, interactionHand);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
         }
+        return super.interact(player, interactionHand);
+    }
+
+    private InteractionResult interactCarpet(ItemStack itemStack, Player player) {
+        if (itemStack.is(ItemTags.WOOL_CARPETS)) {
+            if (!(itemStack.getItem() instanceof BlockItem item)) return InteractionResult.PASS;
+            if (!(item.getBlock() instanceof  WoolCarpetBlock block)) return InteractionResult.PASS;
+            if (itemStack.getCount() >= 5 || player.hasInfiniteMaterials()) {
+                this.entityData.set(ROOF_COLOR, block.getColor().getId());
+                playSound(SoundEvents.WOOL_PLACE);
+                if (!player.hasInfiniteMaterials()) {
+                    itemStack.shrink(5);
+                    if (!player.getInventory().add(this.entityData.get(EQUIPPED_CARPET))) {
+                        player.drop(this.entityData.get(EQUIPPED_CARPET), false);
+                    }
+                }
+                this.entityData.set(EQUIPPED_CARPET, new ItemStack(item, 5));
+            }
+        } else if (hasRoof()) {
+            this.entityData.set(UNFURL, (getUnfurled() + 1) % 3);
+            playSound(SoundEvents.WOOL_STEP);
+        }
+        return InteractionResult.CONSUME;
+    }
+
+    private InteractionResult interactChest(ItemStack itemStack, Player player) {
+        this.entityData.set(CHEST_COUNT, getChestCount() + 1);
+        if (!player.hasInfiniteMaterials()) {
+            itemStack.shrink(1);
+        }
+        return InteractionResult.CONSUME;
+    }
+
+    private boolean canAddChest() {
+        int chests = getChestCount();
+        int passengers = getPassengers().size();
+        return switch (chests) {
+            case 0 -> true;
+            case 1 -> passengers <= 2;
+            case 2 -> passengers == 0;
+            default -> false;
+        };
     }
 
     public void handleRotation(final Vec3 target) {
@@ -142,7 +230,11 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     protected boolean canAddPassenger(Entity entity) {
-        return this.getPassengers().size() < 4;
+        return switch (getChestCount()) {
+            case 0, 1 -> getPassengers().size() < 4;
+            case 2 -> getPassengers().size() < 2;
+            default -> false;
+        };
     }
 
     public float getPassengersRidingOffsetY(EntityDimensions entityDimensions, float f) {
@@ -154,6 +246,8 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         int idx = this.getPassengers().indexOf(entity);
         double f = (idx == 0 || idx == 2) ? 0.1 : -1.2;
         double s = (idx == 0 || idx == 1) ? 0.7 : -0.7;
+        f = getChestCount() == 2 ? -1.2 : f;
+        s = getChestCount() == 2 ? (idx == 0 ? -0.7 : 0.7)  : s;
         final Vec3 forward = this.getLookAngle().scale(f);
         final Vec3 sideways = new Vec3(forward.z, 0, -forward.x).normalize().scale(s);
         return new Vec3(forward.x + sideways.x, getPassengersRidingOffsetY(entityDimensions, factor) + forward.y, forward.z + sideways.z);
@@ -165,8 +259,8 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         int idx = this.getPassengers().indexOf(passenger);
         int dir = idx == 0 || idx == 3 ? 1 : -1;
         if (this.hasPassenger(passenger)) {
-            passenger.setYBodyRot(this.getYRot() + 90 * dir);
-            final float f2 = Mth.wrapDegrees(passenger.getYRot() - this.getYRot() - 90 * dir);
+            passenger.setYBodyRot(this.getYRot() + (passenger instanceof TamableAnimal ? 180 : 90) * dir);
+            final float f2 = Mth.wrapDegrees(passenger.getYRot() - this.getYRot() - (passenger instanceof TamableAnimal ? 180 : 90) * dir);
             final float clamped = Mth.clamp(f2, -105.0F, 105.0F);
             passenger.yRotO += clamped - f2;
             passenger.setYRot(passenger.getYRot() + (clamped - f2));
@@ -175,8 +269,31 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
+    public void push(final Entity entityIn) {
+        if (!entityIn.hasPassenger(this)) {
+            if (!this.level().isClientSide && this.getPulling() != entityIn && canAddPassenger(entityIn)
+                    && !entityIn.isPassenger() && entityIn.getBbWidth() < 0.7
+                    && entityIn instanceof TamableAnimal tamable && tamable.isTame()) {
+                tamable.setInSittingPose(true);
+                entityIn.startRiding(this);
+            } else {
+                //Arrays.stream(subEntities).forEach(part -> {
+                //    if (part.getBoundingBox().intersects(entityIn.getBoundingBox())) part.push(entityIn);
+                //});
+            }
+        }
+    }
+
+    @Override
     protected AbstractContainerMenu createMenuLootUnpacked(int i, Inventory inventory, Player player) {
-        return ChestMenu.sixRows(i, inventory, this);
+        var type = switch (this.getChestCount()) {
+            case 1 -> NiftyCarts.CHEST_9x4_MENU_TYPE;
+            case 2 -> NiftyCarts.CHEST_9x8_MENU_TYPE;
+            case 3 -> NiftyCarts.CHEST_9x12_MENU_TYPE;
+            default -> null;
+        };
+        if (type == null) return null;
+        return new ChestMenu(type, i, inventory, this, getCurrentRowCount());
     }
 
     @Override
@@ -184,6 +301,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         super.addAdditionalSaveData(compound);
         compound.putInt("Unfurl", this.entityData.get(UNFURL));
         compound.putInt("RoofColor", this.entityData.get(ROOF_COLOR));
+        compound.putInt("ChestCount", this.entityData.get(CHEST_COUNT));
         CompoundTag itemTag = new CompoundTag();
         if (!this.entityData.get(EQUIPPED_CARPET).isEmpty()) {
             this.entityData.get(EQUIPPED_CARPET).save(this.registryAccess(), itemTag);
@@ -192,21 +310,27 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void saveInventory(CompoundTag tag) {
-        this.addChestVehicleSaveData(tag, this.registryAccess());
-    }
-
-    @Override
-    protected void readInventory(CompoundTag tag) {
-        this.readChestVehicleSaveData(tag, this.registryAccess());
-    }
-
-    @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.entityData.set(UNFURL, compound.getInt("Unfurl"));
         this.entityData.set(ROOF_COLOR, compound.getInt("RoofColor"));
+        this.entityData.set(CHEST_COUNT, compound.getInt("ChestCount"));
         CompoundTag itemTag = compound.getCompound("Carpet");
         this.entityData.set(EQUIPPED_CARPET, ItemStack.parse(this.registryAccess(), itemTag).orElse(ItemStack.EMPTY));
     }
+
+    @Override
+    protected void saveInventory(CompoundTag tag) {
+        ContainerHelper.saveAllItems(tag, this.getItemStacks(), this.registryAccess());
+    }
+
+    @Override
+    protected void readInventory(CompoundTag tag) {
+        ContainerHelper.loadAllItems(tag, this.getItemStacks(), this.registryAccess());
+    }
+
+    /*@Override
+    public @NotNull SubEntity<?>[] getSubEntities() {
+        return subEntities;
+    }*/
 }

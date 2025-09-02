@@ -32,10 +32,10 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
     private ResourceKey<LootTable> lootTable;
     private long lootTableSeed;
 
-    public AbstractDrawnInventoryEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn, int containerSize) {
+    public AbstractDrawnInventoryEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn, int maxContainerSize) {
         super(entityTypeIn, worldIn);
-        this.itemStacks = NCInventory.withSize(containerSize, ItemStack.EMPTY);
-        this.containerSize = containerSize;
+        this.itemStacks = NCInventory.withSize(maxContainerSize, ItemStack.EMPTY);
+        this.containerSize = maxContainerSize;
         this.itemStacks.setOnContentsChanged(this::onContentsChanged);
     }
 
@@ -112,8 +112,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
         return this.getChestVehicleSlot(i);
     }
 
-    public void setChanged() {
-    }
+    public void setChanged() {}
 
     @Nullable
     @Override
