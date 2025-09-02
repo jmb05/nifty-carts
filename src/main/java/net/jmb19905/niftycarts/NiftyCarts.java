@@ -16,7 +16,6 @@ import net.jmb19905.niftycarts.entity.*;
 import net.jmb19905.niftycarts.entity.ai.goal.AvoidCartGoal;
 import net.jmb19905.niftycarts.entity.ai.goal.PullCartGoal;
 import net.jmb19905.niftycarts.entity.ai.goal.RideCartGoal;
-import net.jmb19905.niftycarts.entity.util.TestMultiPartEntity;
 import net.jmb19905.niftycarts.item.CartItem;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnPayload;
 import net.jmb19905.niftycarts.network.serverbound.*;
@@ -138,13 +137,7 @@ public class NiftyCarts implements ModInitializer {
     public static final EntityType<WagonEntity> WAGON_ENTITY = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(MOD_ID, "wagon"),
-            EntityType.Builder.of(WagonEntity::new, MobCategory.MISC).sized(3f, 3f).build()
-    );
-
-    public static final EntityType<TestMultiPartEntity> TEST_MULTI_PART_ENTITY = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            ResourceLocation.fromNamespaceAndPath(MOD_ID, "test_multi_part"),
-            EntityType.Builder.of(TestMultiPartEntity::new, MobCategory.MISC).sized(1f, 2f).build()
+            EntityType.Builder.of(WagonEntity::new, MobCategory.MISC).sized(2.5f, 3f).build()
     );
 
 	public static final EntityType<PostilionEntity> POSTILION_ENTITY = Registry.register(

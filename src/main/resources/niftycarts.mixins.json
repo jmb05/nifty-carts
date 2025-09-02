@@ -3,9 +3,7 @@
   "package": "net.jmb19905.niftycarts.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "AbstractHorseMixin",
-    "EntityGetterMixin",
-    "LevelMixin"
+    "AbstractHorseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

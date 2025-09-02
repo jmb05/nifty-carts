@@ -2,9 +2,6 @@ package net.jmb19905.niftycarts.entity;
 
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
-import net.jmb19905.niftycarts.entity.util.ColliderEntity;
-import net.jmb19905.niftycarts.entity.util.MultiPartEntity;
-import net.jmb19905.niftycarts.entity.util.SubEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,6 +15,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,7 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.List;
 
 @SuppressWarnings("resource")
 public class WagonEntity extends AbstractDrawnInventoryEntity {
@@ -40,48 +38,15 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     private static final EntityDataAccessor<ItemStack> EQUIPPED_CARPET = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<Integer> CHEST_COUNT = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
 
-    /*private final SubEntity<WagonEntity>[] subEntities;
-    private final ColliderEntity<WagonEntity> front;
-    private final ColliderEntity<WagonEntity> middle;
-    private final ColliderEntity<WagonEntity> back;*/
-
     public WagonEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn, 3 * 4 * 9);
-        /*this.front = new ColliderEntity<>(this, "front", 2, 3);
-        this.middle = new ColliderEntity<>(this, "middle", 2, 3);
-        this.back = new ColliderEntity<>(this, "back", 2, 3);
-        subEntities = new SubEntity[]{front, middle, back};*/
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        /*Vec3[] lastPartPositions = new Vec3[this.subEntities.length];
-
-        for (int r = 0; r < this.subEntities.length; r++) {
-            lastPartPositions[r] = new Vec3(this.subEntities[r].getX(), this.subEntities[r].getY(), this.subEntities[r].getZ());
-        }
-
-        Vec3 forward = this.getLookAngle().normalize();
-        front.setPos(getX() + forward.x, getY(), getZ() + forward.z);
-        middle.setPos(getX(), getY(), getZ());
-        back.setPos(getX() - forward.x, getY(), getZ() - forward.z);
-
-        for (int ab = 0; ab < this.subEntities.length; ab++) {
-            this.subEntities[ab].xo = lastPartPositions[ab].x;
-            this.subEntities[ab].yo = lastPartPositions[ab].y;
-            this.subEntities[ab].zo = lastPartPositions[ab].z;
-            this.subEntities[ab].xOld = lastPartPositions[ab].x;
-            this.subEntities[ab].yOld = lastPartPositions[ab].y;
-            this.subEntities[ab].zOld = lastPartPositions[ab].z;
-        }*/
     }
 
     @Override
     public void onDestroyedAndDoDrops(DamageSource source) {
         super.onDestroyedAndDoDrops(source);
         if (level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(Items.CHEST, getChestCount());
+            this.spawnAtLocation(new ItemStack(Items.CHEST, getChestCount()));
             this.spawnAtLocation(this.entityData.get(EQUIPPED_CARPET));
         }
     }
@@ -269,17 +234,27 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    public void push(final Entity entityIn) {
-        if (!entityIn.hasPassenger(this)) {
-            if (!this.level().isClientSide && this.getPulling() != entityIn && canAddPassenger(entityIn)
-                    && !entityIn.isPassenger() && entityIn.getBbWidth() < 0.7
-                    && entityIn instanceof TamableAnimal tamable && tamable.isTame()) {
-                tamable.setInSittingPose(true);
-                entityIn.startRiding(this);
-            } else {
-                //Arrays.stream(subEntities).forEach(part -> {
-                //    if (part.getBoundingBox().intersects(entityIn.getBoundingBox())) part.push(entityIn);
-                //});
+    public void tick() {
+        super.tick();
+        List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate(0.2F, -0.01F, 0.2F), EntitySelector.pushableBy(this));
+        if (!list.isEmpty()) {
+            boolean bl = !this.level().isClientSide && !(this.getControllingPassenger() instanceof Player);
+
+            for (Entity entity : list) {
+                if (!entity.hasPassenger(this)) {
+                    if (bl
+                            && canAddPassenger(entity)
+                            && !entity.isPassenger()
+                            && entity.getBbWidth() < this.getBbWidth() / 2
+                            && entity instanceof LivingEntity
+                            && !(entity instanceof WaterAnimal)
+                            && !(entity instanceof Player)) {
+                        if(entity instanceof TamableAnimal tamable) tamable.setInSittingPose(true);
+                        entity.startRiding(this);
+                    } else {
+                        this.push(entity);
+                    }
+                }
             }
         }
     }
@@ -328,9 +303,4 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     protected void readInventory(CompoundTag tag) {
         ContainerHelper.loadAllItems(tag, this.getItemStacks(), this.registryAccess());
     }
-
-    /*@Override
-    public @NotNull SubEntity<?>[] getSubEntities() {
-        return subEntities;
-    }*/
 }
