@@ -39,6 +39,6 @@ public class WagonRenderer extends DrawnRenderer<WagonEntity, WagonModel> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(WagonEntity entity) {
-        return new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().name() + "_wagon.png");
+        return new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/" + entity.getWoodType().getId() + "_wagon.png");
     }
 }

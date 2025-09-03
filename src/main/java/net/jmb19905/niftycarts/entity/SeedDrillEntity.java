@@ -46,7 +46,11 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
 
     public SeedDrillEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn, SLOT_COUNT);
-        this.spacing = 1.3D;
+    }
+
+    @Override
+    protected double getSpacing() {
+        return 1.3D;
     }
 
     private void plant() {

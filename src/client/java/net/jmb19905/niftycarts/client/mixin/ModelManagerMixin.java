@@ -8,6 +8,7 @@ import net.jmb19905.niftycarts.client.renderer.texture.Material;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.DyeColor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -37,15 +38,15 @@ public abstract class ModelManagerMixin {
                             .fill(62, 55, 2, 9)
                     )
                     )
-                    .add(new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/" + woodType.name() + "_wagon.png"), new AssembledTexture(64, 64)
-                            .add(new Material(new ResourceLocation("block/" + woodType.name() + "_planks"), 16)
+                    .add(new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/" + woodType.getId() + "_wagon.png"), new AssembledTexture(64, 64)
+                            .add(new Material(new ResourceLocation("block/" + woodType.getId() + "_planks"), 16)
                                     .fill(0, 0, 64, 48)
                             )
-                            .add(new Material(new ResourceLocation("block/stripped_" + woodType.name() + "_" + woodType.getLogName()), 16)
+                            .add(new Material(new ResourceLocation("block/stripped_" + woodType.getId() + "_" + woodType.getLogName()), 16)
                                     .fill(54, 53, 10, 11, Material.R0, 0, 2)
                                     .fill(0, 32, 13, 19, Material.R0, 1, 0)
                             )
-                            .add(new Material(new ResourceLocation("block/" + woodType.name() + "_" + woodType.getLogName()), 16)
+                            .add(new Material(new ResourceLocation("block/" + woodType.getId() + "_" + woodType.getLogName()), 16)
                                     .fill(0, 60, 54, 4, Material.R90)
                             )
                             .add(new Material(new ResourceLocation("block/stone"), 16)
@@ -163,6 +164,11 @@ public abstract class ModelManagerMixin {
                                     .fill(0, 45, 16, 17)
                             )
                     );
+            for (DyeColor color : DyeColor.values()) {
+                factory.add(new ResourceLocation(NiftyCarts.MOD_ID, "textures/entity/wagon_roof_" + color.getName() + ".png"), new AssembledTexture(16, 16)
+                        .add(new Material(new ResourceLocation("block/" + color.getName() + "_wool"), 16)
+                                .fill(0, 0, 16, 16)));
+            }
         }
         factory.bake();
     }

@@ -206,11 +206,12 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         };
     }
 
-    public float getPassengersRidingOffsetY(EntityDimensions entityDimensions, float f) {
-        return (entityDimensions.height - 2 - 1f/16f) * f;
+    @Override
+    public double getPassengersRidingOffset() {
+        return (this.getDimensions(getPose()).height - 2 - 1f/16f);
     }
 
-    protected @NotNull Vec3 getPassengerAttachmentPoint(Entity entity, EntityDimensions entityDimensions, float factor) {
+    protected @NotNull Vec3 getPassengerAttachmentPoint(Entity entity) {
         int idx = this.getPassengers().indexOf(entity);
         double f = (idx == 0 || idx == 2) ? 0.1 : -1.2;
         double s = (idx == 0 || idx == 1) ? 0.7 : -0.7;
@@ -218,12 +219,13 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         s = getChestCount() == 2 ? (idx == 0 ? -0.7 : 0.7)  : s;
         final Vec3 forward = this.getLookAngle().scale(f);
         final Vec3 sideways = new Vec3(forward.z, 0, -forward.x).normalize().scale(s);
-        return new Vec3(forward.x + sideways.x, getPassengersRidingOffsetY(entityDimensions, factor) + forward.y, forward.z + sideways.z);
+        return new Vec3(forward.x + sideways.x, forward.y, forward.z + sideways.z);
     }
 
     @Override
     public void positionRider(final Entity passenger, MoveFunction moveFunction) {
-        super.positionRider(passenger, moveFunction);
+        Vec3 entityPosition = getPassengerAttachmentPoint(passenger);
+        moveFunction.accept(passenger, getX() + entityPosition.x, getY() + entityPosition.y + getPassengersRidingOffset() + passenger.getMyRidingOffset(), getZ() + entityPosition.z);
         int idx = this.getPassengers().indexOf(passenger);
         int dir = idx == 0 || idx == 3 ? 1 : -1;
         if (this.hasPassenger(passenger)) {

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "l": {
+      "item": "minecraft:stripped_warped_stem"
+    },
+    "p": {
+      "item": "minecraft:warped_planks"
+    },
+    "w": {
+      "item": "niftycarts:wheel"
+    }
+  },
+  "pattern": [
+    "lll",
+    "wpw",
+    "wpw"
+  ],
+  "result": {
+    "item": "niftycarts:warped_wagon"
+  },
+  "show_notification": true
+}

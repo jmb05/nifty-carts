@@ -96,6 +96,18 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                     .pattern("php")
                     .pattern("wpw")
                     .save(exporter, seedDrillId);
+
+            ResourceLocation wagonId = new ResourceLocation(NiftyCarts.MOD_ID, woodType.getId() + "_wagon");
+            Item wagon = BuiltInRegistries.ITEM.get(wagonId);
+            ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, wagon)
+                    .define('p', BuiltInRegistries.ITEM.get(new ResourceLocation(woodType.getId() + "_planks")))
+                    .define('w', NiftyCarts.WHEEL)
+                    .define('l', BuiltInRegistries.ITEM.get(new ResourceLocation("stripped_" + woodType.getId() + "_" + woodType.getLogName())))
+                    .unlockedBy("has_wheel", FabricRecipeProvider.has(NiftyCarts.WHEEL))
+                    .pattern("lll")
+                    .pattern("wpw")
+                    .pattern("wpw")
+                    .save(exporter, wagonId);
         }
     }
 }

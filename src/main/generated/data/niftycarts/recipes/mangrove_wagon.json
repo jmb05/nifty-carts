@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "l": {
+      "item": "minecraft:stripped_mangrove_log"
+    },
+    "p": {
+      "item": "minecraft:mangrove_planks"
+    },
+    "w": {
+      "item": "niftycarts:wheel"
+    }
+  },
+  "pattern": [
+    "lll",
+    "wpw",
+    "wpw"
+  ],
+  "result": {
+    "item": "niftycarts:mangrove_wagon"
+  },
+  "show_notification": true
+}
