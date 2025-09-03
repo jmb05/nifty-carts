@@ -70,6 +70,7 @@ public final class NiftyCartsConfig {
         public final CartConfig plow;
         public final CartConfig seedDrill;
         public final CartConfig reaper;
+        public final CartConfig wagon;
 
         Common(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
@@ -86,6 +87,8 @@ public final class NiftyCartsConfig {
             this.seedDrill.pop();
             this.reaper = new CartConfig(builder, "reaper", "The Reaper, a cart that harvests crops");
             this.reaper.pop();
+            this.wagon = new CartConfig(builder, "wagon", "The Covered wagon, a horse drawn cart that multiple people and/or lots of items", new ArrayList<>(), -0.2f);
+            this.wagon.pop();
             builder.pop();
         }
     }

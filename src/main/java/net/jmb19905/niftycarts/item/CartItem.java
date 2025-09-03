@@ -36,6 +36,10 @@ public class CartItem extends Item {
         this.cartType = cartType;
     }
 
+    public String getCartType() {
+        return cartType;
+    }
+
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         final ItemStack stack = player.getItemInHand(interactionHand);

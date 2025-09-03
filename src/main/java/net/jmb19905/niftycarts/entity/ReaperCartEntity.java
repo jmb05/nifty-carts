@@ -3,7 +3,11 @@ package net.jmb19905.niftycarts.entity;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,9 +31,25 @@ import java.util.Map;
 
 public class ReaperCartEntity extends AbstractDrawnEntity {
 
+    private static final EntityDataAccessor<Boolean> FOLDED = SynchedEntityData.defineId(ReaperCartEntity.class, EntityDataSerializers.BOOLEAN);
+
     public ReaperCartEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
-        this.spacing = 1.3D;
+    }
+
+    @Override
+    protected double getSpacing() {
+        return 1.3d;
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(FOLDED, true);
+    }
+
+    public boolean isFolded() {
+        return this.entityData.get(FOLDED);
     }
 
     @Override
@@ -42,6 +62,11 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
         super.tick();
         final Entity coachman = this.getControllingPassenger();
         final Entity pulling = this.getPulling();
+        boolean folded = !(pulling != null && coachman != null);
+        if (folded != this.entityData.get(FOLDED)) {
+            playSound(SoundEvents.WOODEN_TRAPDOOR_CLOSE);
+        }
+        this.entityData.set(FOLDED, folded);
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
             final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level());
             if (postilion != null) {
@@ -74,7 +99,9 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
     @Override
     public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
         if (!this.level().isClientSide) {
-            if (!player.isSecondaryUseActive() && this.pulling != null && this.pulling != player) {
+            if (player.isSecondaryUseActive()) {
+                player.displayClientMessage(Component.translatable("message.niftycarts.use_reaper"), true);
+            } else if (!player.isSecondaryUseActive() && this.pulling != null && this.pulling != player) {
                 if (player.startRiding(this)) {
                     return InteractionResult.CONSUME;
                 }
@@ -106,7 +133,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
             final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
             BlockPos pos = blockPos.above();
             BlockState state = level().getBlockState(pos);
-            if (state.is(BlockTags.CROPS)) {
+            if (state.is(NiftyCarts.REAPER_HARVESTABLE)) {
                 if (level().removeBlock(pos, false)) {
                     level().destroyBlock(pos, false);
                     if (!state.requiresCorrectToolForDrops()) {

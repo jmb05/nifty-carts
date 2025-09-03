@@ -1,0 +1,12 @@
+{
+  "values": [
+    "minecraft:short_grass",
+    "minecraft:fern",
+    "minecraft:tall_grass",
+    "minecraft:large_fern",
+    "minecraft:dead_bush",
+    "#minecraft:flowers",
+    "#minecraft:saplings",
+    "#minecraft:crops"
+  ]
+}

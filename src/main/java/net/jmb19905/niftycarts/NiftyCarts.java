@@ -35,8 +35,10 @@ import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -59,6 +61,7 @@ public class NiftyCarts implements ModInitializer {
 	public static final Map<NiftyCartsWoodType, CartItem> SEED_DRILL = new HashMap<>();
 	public static final Map<NiftyCartsWoodType, CartItem> REAPER = new HashMap<>();
 	public static final Map<NiftyCartsWoodType, CartItem> ANIMAL_CART = new HashMap<>();
+    public static final Map<NiftyCartsWoodType, CartItem> WAGON = new HashMap<>();
 
 	static {
 		for (NiftyCartsWoodType woodType : NiftyCartsWoodType.values()) {
@@ -68,6 +71,7 @@ public class NiftyCarts implements ModInitializer {
 			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "seed_drill"));
 			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "reaper"));
 			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "animal_cart"));
+            WAGON.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "wagon"));
 		}
 	}
 
@@ -117,6 +121,12 @@ public class NiftyCarts implements ModInitializer {
 			FabricEntityTypeBuilder.create(MobCategory.MISC, ReaperCartEntity::new).dimensions(EntityDimensions.fixed(1.3f, 1.4f)).build()
 	);
 
+    public static final EntityType<WagonEntity> WAGON_ENTITY = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            new ResourceLocation(MOD_ID, "wagon"),
+            FabricEntityTypeBuilder.create(MobCategory.MISC, WagonEntity::new).dimensions(EntityDimensions.fixed(2.5f, 3f)).build()
+    );
+
 	public static final EntityType<PostilionEntity> POSTILION_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
 			new ResourceLocation(MOD_ID, "postilion"),
@@ -145,13 +155,17 @@ public class NiftyCarts implements ModInitializer {
 
 	public static final MenuType<PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
 	public static final MenuType<SeedDrillMenu> SEED_DRILL_MENU_TYPE = new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<ChestMenu> CHEST_9x4_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x4_MENU_TYPE, i, inv, new SimpleContainer(9 * 4), 4), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<ChestMenu> CHEST_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x8_MENU_TYPE, i, inv, new SimpleContainer(9 * 8), 8), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<ChestMenu> CHEST_9x12_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x12_MENU_TYPE, i, inv, new SimpleContainer(9 * 12), 12), FeatureFlags.DEFAULT_FLAGS);
 
 	public static final ResourceLocation CART_ONE_CM = new ResourceLocation(MOD_ID, "cart_one_cm");
 
 	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, new ResourceLocation(NiftyCarts.MOD_ID, "plow_breakable/hoe"));
 	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, new ResourceLocation(NiftyCarts.MOD_ID, "plow_breakable/shovel"));
 	public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, new ResourceLocation(NiftyCarts.MOD_ID, "plow_breakable/axe"));
-	public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, new ResourceLocation(NiftyCarts.MOD_ID, "seed_drill_plantable"));
+    public static final TagKey<Block> REAPER_HARVESTABLE = TagKey.create(Registries.BLOCK, new ResourceLocation(NiftyCarts.MOD_ID, "reaper_harvestable"));
+    public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, new ResourceLocation(NiftyCarts.MOD_ID, "seed_drill_plantable"));
 
 	@Override
 	public void onInitialize() {
@@ -167,10 +181,14 @@ public class NiftyCarts implements ModInitializer {
 			Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, woodType.getId() + "_seed_drill"), SEED_DRILL.get(woodType));
 			Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, woodType.getId() + "_reaper"), REAPER.get(woodType));
 			Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, woodType.getId() + "_animal_cart"), ANIMAL_CART.get(woodType));
+            Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, woodType.getId() + "_wagon"), WAGON.get(woodType));
 		}
 
 		Registry.register(BuiltInRegistries.MENU, new ResourceLocation(MOD_ID, "plow"), PLOW_MENU_TYPE);
 		Registry.register(BuiltInRegistries.MENU, new ResourceLocation(MOD_ID, "seed_drill"), SEED_DRILL_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, new ResourceLocation(MOD_ID, "chest_four_rows"), CHEST_9x4_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, new ResourceLocation(MOD_ID, "chest_eight_rows"), CHEST_9x8_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, new ResourceLocation(MOD_ID, "chest_quad"), CHEST_9x12_MENU_TYPE);
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
@@ -181,6 +199,7 @@ public class NiftyCarts implements ModInitializer {
 				content.accept(SEED_DRILL.get(woodType));
 				content.accept(REAPER.get(woodType));
 				content.accept(ANIMAL_CART.get(woodType));
+                content.accept(WAGON.get(woodType));
 			}
 		});
 
