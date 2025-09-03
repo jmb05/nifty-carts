@@ -1,0 +1,38 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "niftycarts:birch_wagon"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wheel_wool_and_planks": {
+      "conditions": {
+        "items": [
+          {
+            "items": "niftycarts:wheel"
+          },
+          {
+            "items": "minecraft:birch_planks"
+          },
+          {
+            "items": "#minecraft:wool"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_wheel_wool_and_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "niftycarts:birch_wagon"
+    ]
+  }
+}

@@ -40,12 +40,14 @@ public class NiftyCartsRecipeProvider extends FabricRecipeProvider {
             ResourceLocation supplyCartId = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, woodType.name() + "_supply_cart");
             Item supplyCart = BuiltInRegistries.ITEM.get(supplyCartId);
             Item planks = BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks"));
-            var recipeTrigger = FabricRecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(NiftyCarts.WHEEL), ItemPredicate.Builder.item().of(planks));
+            String logName = NiftyCarts.LOG_NAME_OVERRIDE.getOrDefault(woodType, "log");
+            Item stripped_log = BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace("stripped_" + woodType.name() + "_" + logName));
+            var wheelAndPlanksTrigger = FabricRecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(NiftyCarts.WHEEL), ItemPredicate.Builder.item().of(planks));
             ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, supplyCart)
                     .define('p', planks)
                     .define('w', NiftyCarts.WHEEL)
                     .define('c', Blocks.CHEST)
-                    .unlockedBy("has_wheel_and_planks", recipeTrigger)
+                    .unlockedBy("has_wheel_and_planks", wheelAndPlanksTrigger)
                     .pattern("pcp")
                     .pattern("pcp")
                     .pattern("wpw")
@@ -56,7 +58,7 @@ public class NiftyCartsRecipeProvider extends FabricRecipeProvider {
             ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, animalCart)
                     .define('p', planks)
                     .define('w', NiftyCarts.WHEEL)
-                    .unlockedBy("has_wheel_and_planks", recipeTrigger)
+                    .unlockedBy("has_wheel_and_planks", wheelAndPlanksTrigger)
                     .pattern("ppp")
                     .pattern("ppp")
                     .pattern("wpw")
@@ -68,7 +70,7 @@ public class NiftyCartsRecipeProvider extends FabricRecipeProvider {
                     .define('p', planks)
                     .define('w', NiftyCarts.WHEEL)
                     .define('c', Blocks.CHEST)
-                    .unlockedBy("has_wheel_and_planks", recipeTrigger)
+                    .unlockedBy("has_wheel_and_planks", wheelAndPlanksTrigger)
                     .pattern("pcp")
                     .pattern("wpw")
                     .save(exporter, handCartId);
@@ -79,7 +81,7 @@ public class NiftyCartsRecipeProvider extends FabricRecipeProvider {
                     .define('p', planks)
                     .define('w', NiftyCarts.WHEEL)
                     .define('s', Items.STICK)
-                    .unlockedBy("has_wheel_and_planks", recipeTrigger)
+                    .unlockedBy("has_wheel_and_planks", wheelAndPlanksTrigger)
                     .pattern("sss")
                     .pattern("psp")
                     .pattern("wpw")
@@ -93,7 +95,7 @@ public class NiftyCartsRecipeProvider extends FabricRecipeProvider {
                     .define('w', NiftyCarts.WHEEL)
                     .define('s', Items.STICK)
                     .define('i', Items.IRON_INGOT)
-                    .unlockedBy("has_wheel_and_planks", recipeTrigger)
+                    .unlockedBy("has_wheel_and_planks", wheelAndPlanksTrigger)
                     .pattern(" sl")
                     .pattern("spp")
                     .pattern("iww")
@@ -106,11 +108,24 @@ public class NiftyCartsRecipeProvider extends FabricRecipeProvider {
                     .define('w', NiftyCarts.WHEEL)
                     .define('c', Blocks.CHEST)
                     .define('h', Blocks.HOPPER)
-                    .unlockedBy("has_wheel_and_planks", recipeTrigger)
+                    .unlockedBy("has_wheel_and_planks", wheelAndPlanksTrigger)
                     .pattern("pcp")
                     .pattern("php")
                     .pattern("wpw")
                     .save(exporter, seedDrillId);
+
+            var wheelPlanksWoolTrigger = FabricRecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(NiftyCarts.WHEEL), ItemPredicate.Builder.item().of(planks), ItemPredicate.Builder.item().of(ItemTags.WOOL));
+            ResourceLocation wagonId = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, woodType.name() + "_wagon");
+            Item wagon = BuiltInRegistries.ITEM.get(wagonId);
+            ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, wagon)
+                    .define('p', planks)
+                    .define('w', NiftyCarts.WHEEL)
+                    .define('l', stripped_log)
+                    .unlockedBy("has_wheel_wool_and_planks", wheelPlanksWoolTrigger)
+                    .pattern("lll")
+                    .pattern("wpw")
+                    .pattern("wpw")
+                    .save(exporter, wagonId);
         });
     }
 }

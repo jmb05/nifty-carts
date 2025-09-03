@@ -1,6 +1,5 @@
 package net.jmb19905.niftycarts.client.mixin;
 
-import com.google.common.collect.ImmutableMap;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.client.renderer.texture.AssembledTexture;
 import net.jmb19905.niftycarts.client.renderer.texture.AssembledTextureFactory;
@@ -11,7 +10,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -19,18 +17,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ModelManager.class)
 public abstract class ModelManagerMixin {
 
-    @Unique
-    private static final ImmutableMap<WoodType, String> LOG_NAME_OVERRIDE = ImmutableMap.of(
-            WoodType.CRIMSON, "stem",
-            WoodType.WARPED, "stem",
-            WoodType.BAMBOO, "block"
-    );
-
     @Inject(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V"))
     private void apply(ModelManager.ReloadState reloadState, ProfilerFiller profilerFiller, CallbackInfo ci){
         AssembledTextureFactory factory = new AssembledTextureFactory();
         for (WoodType woodType : NiftyCarts.VANILLA_WOOD_TYPES) {
-            String logName = LOG_NAME_OVERRIDE.getOrDefault(woodType, "log");
+            String logName = NiftyCarts.LOG_NAME_OVERRIDE.getOrDefault(woodType, "log");
             factory.add(ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/" + woodType.name() + "_animal_cart.png"), new AssembledTexture(64, 64)
                             .add(new Material(ResourceLocation.withDefaultNamespace("block/" + woodType.name() + "_planks"), 16)
                                     .fill(0, 0, 60, 38, Material.R0, 0, 2)

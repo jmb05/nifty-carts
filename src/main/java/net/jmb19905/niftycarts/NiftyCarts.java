@@ -1,5 +1,6 @@
 package net.jmb19905.niftycarts;
 
+import com.google.common.collect.ImmutableMap;
 import fuzs.forgeconfigapiport.fabric.api.forge.v4.ForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -73,6 +74,12 @@ public class NiftyCarts implements ModInitializer {
 			WoodType.MANGROVE,
 			WoodType.BAMBOO,
 	};
+
+    public static final ImmutableMap<WoodType, String> LOG_NAME_OVERRIDE = ImmutableMap.of(
+            WoodType.CRIMSON, "stem",
+            WoodType.WARPED, "stem",
+            WoodType.BAMBOO, "block"
+    );
 
 	static {
 		for (WoodType woodType : VANILLA_WOOD_TYPES) {
