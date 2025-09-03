@@ -151,6 +151,8 @@ public class NiftyCarts implements ModInitializer {
 	public static final GoalAdder<PathfinderMob> PATHFINDER_GOAL_ADDER = GoalAdder.mobGoal(PathfinderMob.class)
 			.add(3, mob -> new AvoidCartGoal<>(mob, SupplyCartEntity.class, 3.0f, 0.5f))
 			.add(3, mob -> new AvoidCartGoal<>(mob, PlowEntity.class, 3.0f, 0.5f))
+            .add(3, mob -> new AvoidCartGoal<>(mob, SeedDrillEntity.class, 2.0f, 0.5f))
+            .add(3, mob -> new AvoidCartGoal<>(mob, ReaperCartEntity.class, 2.0f, 0.5f))
 			.build();
 
 	public static final MenuType<PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
