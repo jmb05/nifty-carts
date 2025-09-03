@@ -66,17 +66,16 @@ fabricApi {
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	//modImplementation "curse.maven:mythic-mounts-517650:4758535"
 
 	modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"   // `modVersion` e.g. 7.0.0 for Minecraft 1.20
 	modImplementation "maven.modrinth:sodium:mc1.21-0.5.11"
+    modApi "com.terraformersmc:modmenu:11.0.3"
+    modImplementation "maven.modrinth:resource_explorer:pHTfFRPr"//To look at the cart entity textures
 }
 
 processResources {

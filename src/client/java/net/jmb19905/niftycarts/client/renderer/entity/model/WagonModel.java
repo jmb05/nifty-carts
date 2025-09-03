@@ -224,14 +224,14 @@ public class WagonModel extends CartModel<WagonEntity> {
 
         final EasyMeshBuilder roofBackFlapsFurled = new EasyMeshBuilder("roofBackFlapsFurled", 0, 0);
         roofBackFlapsFurled.setRotationAngles(0, Mth.HALF_PI, 0);
-        roofBackFlapsFurled.addBox((-axleLength / 2.0f) + Mth.sqrt(2) * 8, -25 - Mth.sqrt(2) * 8, -33 - 2 * Z_FIGHTING_EPSILON, 35f - Mth.sqrt(2) * 16, 5, 1);
-        roofBackFlapsFurled.addBox((-axleLength / 2.0f) + Mth.sqrt(2) * 8, -23 - Mth.sqrt(2) * 8, -34 - 2 * Z_FIGHTING_EPSILON, 35f - Mth.sqrt(2) * 16, 3, 1);
+        roofBackFlapsFurled.addBox((-axleLength / 2.0f) + Mth.sqrt(2) * 8, -25 - Mth.sqrt(2) * 8, -33 - 1 * Z_FIGHTING_EPSILON, 35f - Mth.sqrt(2) * 16, 5, 1);
+        roofBackFlapsFurled.addBox((-axleLength / 2.0f) - 3f + Mth.sqrt(2) * 8, -23 - Mth.sqrt(2) * 8 + Z_FIGHTING_EPSILON, -34 - 2 * Z_FIGHTING_EPSILON, 35f + 6f - Mth.sqrt(2) * 16, 3, 2);
         furled.addChild(roofBackFlapsFurled);
 
         final EasyMeshBuilder roofFrontFlapsFurled = new EasyMeshBuilder("roofFrontFlapsFurled", 0, 0);
         roofFrontFlapsFurled.setRotationAngles(0, Mth.HALF_PI, 0);
-        roofFrontFlapsFurled.addBox((-axleLength / 2.0f) + Mth.sqrt(2) * 8, -25 - Mth.sqrt(2) * 8, 32 + 2 * Z_FIGHTING_EPSILON, 35f - Mth.sqrt(2) * 16, 5, 1);
-        roofFrontFlapsFurled.addBox((-axleLength / 2.0f) + Mth.sqrt(2) * 8, -23 - Mth.sqrt(2) * 8, 33 + 2 * Z_FIGHTING_EPSILON, 35f - Mth.sqrt(2) * 16, 3, 1);
+        roofFrontFlapsFurled.addBox((-axleLength / 2.0f) + Mth.sqrt(2) * 8, -25 - Mth.sqrt(2) * 8, 32 + 1 * Z_FIGHTING_EPSILON, 35f - Mth.sqrt(2) * 16, 5, 1);
+        roofFrontFlapsFurled.addBox((-axleLength / 2.0f) - 3f + Mth.sqrt(2) * 8, -23 - Mth.sqrt(2) * 8 + Z_FIGHTING_EPSILON, 32 + 2 * Z_FIGHTING_EPSILON, 35f + 6f - Mth.sqrt(2) * 16, 3, 2);
         furled.addChild(roofFrontFlapsFurled);
 
         roof.addChild(furled);
@@ -262,39 +262,61 @@ public class WagonModel extends CartModel<WagonEntity> {
         base.addBox((float) ((-axleLength / 2.0f) + 2 + Math.ceil((axleLength - 4.0f) / 2.0f)), -2.0f, -1, (float) Math.floor((axleLength - 4) / 2.0f), 1, ((axleDist + 22) / 2) + 1);
 
         final EasyMeshBuilder walls = new EasyMeshBuilder("walls", 0, 0);
-        walls.addBox((-axleLength / 2.0f) + 2,-10,-16, 2, 8, 16);
-        walls.addBox((-axleLength / 2.0f) + 2,-10,0, 2, 8, 16);
-        walls.addBox((-axleLength / 2.0f) + 2,-10,16, 2, 8, 16);
-        walls.addBox((-axleLength / 2.0f) + 2,-10,-32, 2, 8, 16);
 
-        walls.addBox((-axleLength / 2.0f) + 1, -13, -32, 1, 11, 4);
-        walls.addBox((-axleLength / 2.0f) + 1, -13, -12, 1, 11, 4);
-        walls.addBox((-axleLength / 2.0f) + 1, -13, 8, 1, 11, 4);
-        walls.addBox((-axleLength / 2.0f) + 1, -13, 28, 1, 11, 4);
+        final EasyMeshBuilder rightWalls = new EasyMeshBuilder("rightWalls", 0, 2);
+        rightWalls.setRotationAngles(0, Mth.HALF_PI, 0);
 
-        walls.addBox((axleLength / 2.0f) - 4,-10,-16, 2, 8, 16);
-        walls.addBox((axleLength / 2.0f) - 4,-10,0, 2, 8, 16);
-        walls.addBox((axleLength / 2.0f) - 4,-10,16, 2, 8, 16);
-        walls.addBox((axleLength / 2.0f) - 4,-10,-32, 2, 8, 16);
+        rightWalls.addBox(-32,-10,(axleLength / 2.0f) - 4, 16, 8, 2);
+        rightWalls.addBox(-16,-10,(axleLength / 2.0f) - 4, 16, 8, 2);
+        rightWalls.addBox(0,-10,(axleLength / 2.0f) - 4, 16, 8, 2);
+        rightWalls.addBox(16,-10,(axleLength / 2.0f) - 4, 16, 8, 2);
 
-        walls.addBox((axleLength / 2.0f) - 2, -13, -32, 1, 11, 4);
-        walls.addBox((axleLength / 2.0f) - 2, -13, -12, 1, 11, 4);
-        walls.addBox((axleLength / 2.0f) - 2, -13, 8, 1, 11, 4);
-        walls.addBox((axleLength / 2.0f) - 2, -13, 28, 1, 11, 4);
+        final EasyMeshBuilder leftWalls = new EasyMeshBuilder("leftWalls", 0, 2);
+        leftWalls.setRotationAngles(0, -Mth.HALF_PI, 0);
 
-        walls.addBox((-axleLength / 2.0f) + 2, -25, -32f - 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
-        walls.addBox((-axleLength / 2.0f) + 2, -25, -12 + 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
-        walls.addBox((-axleLength / 2.0f) + 2, -25, 8 - 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
-        walls.addBox((-axleLength / 2.0f) + 2, -25, 28 + 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
+        leftWalls.addBox(-32,-10,(axleLength / 2.0f) - 4, 16, 8, 2);
+        leftWalls.addBox(-16,-10,(axleLength / 2.0f) - 4, 16, 8, 2);
+        leftWalls.addBox(0,-10,(axleLength / 2.0f) - 4, 16, 8, 2);
+        leftWalls.addBox(16,-10,(axleLength / 2.0f) - 4, 16, 8, 2);
 
-        walls.addBox((axleLength / 2.0f) - 3, -25, -32f - 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
-        walls.addBox((axleLength / 2.0f) - 3, -25, -12 + 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
-        walls.addBox((axleLength / 2.0f) - 3, -25, 8 - 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
-        walls.addBox((axleLength / 2.0f) - 3, -25, 28 + 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
+        final EasyMeshBuilder wallBeams = new EasyMeshBuilder("wallBeams", 0, 3);
+        wallBeams.setRotationAngles(0, Mth.HALF_PI, 0);
 
-        walls.addBox((-axleLength / 2.0f) + 4, -10, -32, axleLength - 8, 8, 1);
-        walls.addBox((-axleLength / 2.0f) + 4, -10, 31, 8, 8, 1);
-        walls.addBox((axleLength / 2.0f) - 12, -10, 31, 8, 8, 1);
+        wallBeams.addBox(-32, -10, (-axleLength / 2.0f) + 1, 4, 8, 1);
+        wallBeams.addBox(-12, -10, (-axleLength / 2.0f) + 1, 4, 8, 1);
+        wallBeams.addBox(8, -10, (-axleLength / 2.0f) + 1, 4, 8, 1);
+        wallBeams.addBox(28, -10, (-axleLength / 2.0f) + 1, 4, 8, 1);
+
+        wallBeams.addBox(-32, -10, (axleLength / 2.0f) - 2, 4, 8, 1);
+        wallBeams.addBox(-12, -10, (axleLength / 2.0f) - 2, 4, 8, 1);
+        wallBeams.addBox(8, -10, (axleLength / 2.0f) - 2, 4, 8, 1);
+        wallBeams.addBox(28, -10, (axleLength / 2.0f) - 2, 4, 8, 1);
+
+        walls.addChild(wallBeams);
+        walls.addChild(leftWalls);
+        walls.addChild(rightWalls);
+
+        final EasyMeshBuilder beams = new EasyMeshBuilder("beams", 0, 32);
+
+        beams.addBox((-axleLength / 2.0f) + 2, -25, -32f - 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
+        beams.addBox((-axleLength / 2.0f) + 2, -25, -12 + 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
+        beams.addBox((-axleLength / 2.0f) + 2, -25, 8 - 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
+        beams.addBox((-axleLength / 2.0f) + 2, -25, 28 + 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
+
+        beams.addBox((axleLength / 2.0f) - 3, -25, -32f - 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
+        beams.addBox((axleLength / 2.0f) - 3, -25, -12 + 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
+        beams.addBox((axleLength / 2.0f) - 3, -25, 8 - 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
+        beams.addBox((axleLength / 2.0f) - 3, -25, 28 + 2 * Z_FIGHTING_EPSILON, 1, 15, 4);
+
+        walls.addChild(beams);
+
+        final EasyMeshBuilder backAndFrontWalls = new EasyMeshBuilder("backAndFront", 0, 3);
+
+        backAndFrontWalls.addBox((-axleLength / 2.0f) + 4, -10, -32, axleLength - 8, 8, 1);
+        backAndFrontWalls.addBox((-axleLength / 2.0f) + 4, -10, 31, 8, 8, 1);
+        backAndFrontWalls.addBox((axleLength / 2.0f) - 12, -10, 31, 8, 8, 1);
+
+        walls.addChild(backAndFrontWalls);
 
         final EasyMeshBuilder rotating = new EasyMeshBuilder("rotating", 0, 0);
         rotating.setRotationPoint(0, -13, -20);
@@ -302,7 +324,7 @@ public class WagonModel extends CartModel<WagonEntity> {
         rotating.addBox(7.5f, 0, -35, 1, 2, 36);
         rotating.build(def.getRoot());
 
-        final EasyMeshBuilder wallLeft = new EasyMeshBuilder("beamsAngledLeft", 0, 0);
+        final EasyMeshBuilder wallLeft = new EasyMeshBuilder("beamsAngledLeft", 0, 32);
         wallLeft.setRotationPoint((axleLength / 2.0f) - 2, -25, 0);
         wallLeft.setRotationAngles(0, 0, -Mth.HALF_PI / 2f);
         wallLeft.addBox(-1, -14, -32f - Z_FIGHTING_EPSILON, 1, 14, 4);
@@ -311,7 +333,7 @@ public class WagonModel extends CartModel<WagonEntity> {
         wallLeft.addBox(-1, -14, 28f + Z_FIGHTING_EPSILON, 1, 14, 4);
         walls.addChild(wallLeft);
 
-        final EasyMeshBuilder wallRight = new EasyMeshBuilder("beamsAngledRight", 0, 0);
+        final EasyMeshBuilder wallRight = new EasyMeshBuilder("beamsAngledRight", 0, 32);
         wallRight.setRotationPoint((-axleLength / 2.0f) + 2, -25, 0);
         wallRight.setRotationAngles(0, 0, Mth.HALF_PI / 2f);
         wallRight.addBox(0, -14, -32f - Z_FIGHTING_EPSILON, 1, 14, 4);
@@ -320,7 +342,7 @@ public class WagonModel extends CartModel<WagonEntity> {
         wallRight.addBox(0, -14, 28f + Z_FIGHTING_EPSILON, 1, 14, 4);
         walls.addChild(wallRight);
 
-        final EasyMeshBuilder wallTop = new EasyMeshBuilder("beamsTop", 0, 0);
+        final EasyMeshBuilder wallTop = new EasyMeshBuilder("beamsTop", 3, 32);
         wallTop.setRotationPoint(0, -25, 0);
         wallTop.setRotationAngles(Mth.HALF_PI, Mth.HALF_PI, 0);
         wallTop.addBox(-32, (-axleLength / 2.0f) + 2 + Mth.sqrt(2) * 7, (float) (Math.sqrt(2.0f) * 7.0f - 1.0f), 4, 31f - Mth.sqrt(2) * 14, 1);
