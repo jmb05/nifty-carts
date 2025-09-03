@@ -55,6 +55,10 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         return this.entityData.get(CHEST_COUNT);
     }
 
+    public int getMaxChestCount() {
+        return 3;
+    }
+
     public int getCurrentRowCount() {
         return getChestCount() * 4;
     }
@@ -246,6 +250,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
                             && canAddPassenger(entity)
                             && !entity.isPassenger()
                             && entity.getBbWidth() < this.getBbWidth() / 2
+                            && entity.getBbWidth() * entity.getBbHeight() < 1.5
                             && entity instanceof LivingEntity
                             && !(entity instanceof WaterAnimal)
                             && !(entity instanceof Player)) {

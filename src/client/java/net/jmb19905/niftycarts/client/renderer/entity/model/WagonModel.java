@@ -11,22 +11,24 @@ public class WagonModel extends CartModel<WagonEntity> {
     private static final float Z_FIGHTING_EPSILON = 0.001f;
 
     private final ModelPart roof;
-    private final ModelPart chest;
-    private final ModelPart chestLid;
+    private final ModelPart chests;
 
     public WagonModel(ModelPart root, ModelPart roofRoot, ModelPart chestRoot) {
         super(root, 2);
         this.roof = roofRoot.getChild("roof");
-        this.chest = chestRoot;
-        this.chestLid = chestRoot.getChild("backChest").getChild("chestLid");
+        this.chests = chestRoot;
     }
 
-    public ModelPart getChest() {
-        return chest;
+    public ModelPart getChests() {
+        return chests;
     }
 
-    public ModelPart getChestLid() {
-        return chestLid;
+    public ModelPart getChest(int idx) {
+        return chests.getChild("chest" + idx);
+    }
+
+    public ModelPart getChestLid(int idx) {
+        return getChest(idx).getChild("chestLid");
     }
 
     public ModelPart getRoof(int unfurl) {
@@ -364,10 +366,20 @@ public class WagonModel extends CartModel<WagonEntity> {
     public static LayerDefinition createChestLayer() {
         MeshDefinition def = new MeshDefinition();
 
-        EasyMeshBuilder backChest = new EasyMeshBuilder("backChest", 0, 0);
+        EasyMeshBuilder backChest = new EasyMeshBuilder("chest0", 0, 0);
         backChest.setRotationPoint(0, 0, -31);
         createChest(backChest);
         backChest.build(def.getRoot());
+
+        EasyMeshBuilder middleChest = new EasyMeshBuilder("chest1", 0, 0);
+        middleChest.setRotationPoint(0, 0, -15);
+        createChest(middleChest);
+        middleChest.build(def.getRoot());
+
+        EasyMeshBuilder frontChest = new EasyMeshBuilder("chest2", 0, 0);
+        frontChest.setRotationPoint(0, 0, 1);
+        createChest(frontChest);
+        frontChest.build(def.getRoot());
 
         return LayerDefinition.create(def, 128, 64);
     }
@@ -386,10 +398,10 @@ public class WagonModel extends CartModel<WagonEntity> {
         root.addChild(chestLid);
 
         EasyMeshBuilder chestLock = new EasyMeshBuilder("chestLock", 0, 0);
-        chestLock.setRotationPoint(1, -10, 14);
+        chestLock.setRotationPoint(14, 3, 14);
         chestLock.setRotationAngles(Mth.PI, Mth.PI, 0);
         chestLock.addBox(0,0,0, 2, 4, 1);
-        root.addChild(chestLock);
+        chestLid.addChild(chestLock);
     }
 
 }
