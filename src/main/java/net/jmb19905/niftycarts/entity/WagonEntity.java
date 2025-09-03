@@ -208,7 +208,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public double getPassengersRidingOffset() {
-        return (this.getDimensions(getPose()).height - 2 - 1f/16f);
+        return (this.getDimensions(getPose()).height - 2f - 6.2f/16f);
     }
 
     protected @NotNull Vec3 getPassengerAttachmentPoint(Entity entity) {

@@ -94,7 +94,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     protected boolean shouldPitch() {
-        return false;
+        return true;
     }
 
     protected float getDisconnectedAngle() {

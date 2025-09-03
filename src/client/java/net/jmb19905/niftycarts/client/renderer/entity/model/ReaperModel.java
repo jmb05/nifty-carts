@@ -77,7 +77,7 @@ public final class ReaperModel extends CartModel<ReaperCartEntity> {
         final EasyMeshBuilder frame = new EasyMeshBuilder("foldedFrame", 0, 0);
         frame.addBox(-3.99f, -10.5F, 3.0F, 18, 2, 2);
         final EasyMeshBuilder foldedFrame = new EasyMeshBuilder("foldedInFrame", 0, 0);
-        foldedFrame.setRotationPoint(14, -10.5f, 3f);
+        foldedFrame.setRotationPoint(14.001f, -10.5f, 3f);
         foldedFrame.setRotationAngles(0, Mth.HALF_PI, 0);
         foldedFrame.addBox(-2, 15.5F, 0.0F, 26, 2, 2);
         foldedFrame.addBox(-1.99f, 0F, 0F, 26, 2, 2);
@@ -85,13 +85,13 @@ public final class ReaperModel extends CartModel<ReaperCartEntity> {
 
         final EasyMeshBuilder s = new EasyMeshBuilder("s", 0, 0);
         s.setRotationPoint(0.0F, -5.0F, -15.0F);
-        s.yRot = (float) Math.PI / 2.0F;
+        s.yRot = Mth.PI / 2.0F;
         final EasyMeshBuilder t = new EasyMeshBuilder("t", 0, 0);
         t.zRot = -0.26f;
         final EasyMeshBuilder shaftConnector1 = new EasyMeshBuilder("shaftConnector1", 0, 0);
         shaftConnector1.addBox(-20.01F, 0.0F, 14.01F, 16, 2, 2);
         final EasyMeshBuilder shaftConnector2 = new EasyMeshBuilder("shaftConnector2", 0, 0);
-        shaftConnector2.yRot = (float) Math.PI / 2.0F;
+        shaftConnector2.yRot = Mth.PI / 2.0F;
         shaftConnector2.addBox(-14f, 0.01f, -6, 21, 2, 2);
         t.addChild(shaftConnector1);
         t.addChild(shaftConnector2);

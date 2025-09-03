@@ -54,7 +54,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
 
     @Override
     public double getPassengersRidingOffset() {
-        return 18.0D / 16.0D;
+        return 17.0D / 16.0D;
     }
 
     @Override
@@ -86,7 +86,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
             final Vec3 forward = this.getLookAngle();
             final Vec3 origin = new Vec3(0.0D, this.getPassengersRidingOffset(), 0);
             final Vec3 pos = origin.add(forward.scale(-0.4D));
-            passenger.setPos(this.getX() + pos.x, this.getY() + pos.y - 0.1D + passenger.getMyRidingOffset(), this.getZ() + pos.z);
+            moveFunction.accept(passenger, this.getX() + pos.x, this.getY() + pos.y - 0.1D + passenger.getMyRidingOffset(), this.getZ() + pos.z);
             passenger.setYBodyRot(this.getYRot());
             final float f2 = Mth.wrapDegrees(passenger.getYRot() - this.getYRot());
             final float f1 = Mth.clamp(f2, -105.0F, 105.0F);

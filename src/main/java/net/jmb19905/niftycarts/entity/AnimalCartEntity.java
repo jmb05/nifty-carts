@@ -91,7 +91,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
 
     @Override
     public double getPassengersRidingOffset() {
-        return 11.0D / 16.0D;
+        return 10.0D / 16.0D;
     }
 
     @Override
