@@ -10,7 +10,9 @@
 		"jmb19905"
 	],
 	"contact": {
-		"sources": "https://github.com/jmb05/nifty-carts"
+		"sources": "https://github.com/jmb05/nifty-carts",
+        "homepage": "https://modrinth.com/mod/niftycarts",
+        "issues": "https://github.com/jmb05/nifty-carts/issues"
 	},
 	"license": "MIT",
 	"icon": "assets/niftycarts/icon.png",
@@ -34,11 +36,11 @@
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.16.5",
+		"fabricloader": ">=0.17.2",
 		"minecraft": ["1.21", "1.21.1"],
 		"java": ">=21",
 		"fabric-api": "*",
-		"forgeconfigapiport": ">=21.0.0"
+		"forgeconfigapiport": ">=21.0.8"
 	},
 	"suggests": {
 		"forgeconfigscreens": "*"
