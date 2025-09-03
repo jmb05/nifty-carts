@@ -97,6 +97,7 @@ java {
 }
 
 jar {
+    exclude('assets/niftycarts/lang/*.existing.json')//Remove the partial manually created language asset files
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}"}
 	}
