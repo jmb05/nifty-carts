@@ -26,11 +26,15 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private static final int SLOT_COUNT = 3;
@@ -80,9 +84,9 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
         for (int i = 0; i < SLOT_COUNT; i++) {
             final ItemStack stack = this.getStackInSlot(i);
             final float offset = 38.0F - i * 38.0F;
-            final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
-            final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
-            final BlockPos blockPos = new BlockPos((int) blockPosX, (int) Math.round(this.getY() - 0.75D), (int) blockPosZ);
+            final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
+            final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
+            final BlockPos blockPos = new BlockPos((int) x, (int) Math.round(this.getY() - 0.75D), (int) z);
             final boolean damageable = stack.isDamageableItem();
             final int count = stack.getCount();
             tryBreakBlock(stack, blockPos.above(), level(), player);
@@ -92,6 +96,25 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
                 this.updateSlot(i);
             }
         }
+    }
+
+    @Override
+    public Map<Vector3f, List<AABB>> getAdditionalColoredDebugBoxes() {
+        if (!this.entityData.get(PLOWING)) return Map.of();
+        Map<Vector3f, List<AABB>> map = new HashMap<>();
+        Vector3f red = new Vector3f(1, 0, 0);
+        map.put(red, new ArrayList<>());
+        Vector3f green = new Vector3f(0, 1, 0);
+        map.put(green, new ArrayList<>());
+        for (int i = 0; i < SLOT_COUNT; i++) {
+            final float offset = 38.0F - i * 38.0F;
+            final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
+            final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
+            map.get(red).add(new AABB(x - 0.1, getY() - 0.1, z - 0.1, x + 0.1, getY() + 0.1, z + 0.1));
+            final BlockPos blockPos = new BlockPos((int) x, (int) Math.round(this.getY() - 0.75D), (int) z);
+            map.get(green).add(new AABB(blockPos));
+        }
+        return map;
     }
 
     private void tryBreakBlock(ItemStack stack, BlockPos pos, Level level, Player player) {

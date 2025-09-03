@@ -47,6 +47,7 @@ public final class NiftyCartsConfig {
         public final ForgeConfigSpec.BooleanValue renderSupplyFlowers;
         public final ForgeConfigSpec.BooleanValue renderSupplyPaintings;
         public final ForgeConfigSpec.BooleanValue renderSupplyWheel;
+        public final ForgeConfigSpec.BooleanValue renderDebugBoxes;
 
         Client(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration to disable the rendering of certain supplies in the supply cart");
@@ -56,6 +57,7 @@ public final class NiftyCartsConfig {
             this.renderSupplyFlowers = builder.comment("Falls back to rendering as items if false").define("render_supply_flowers", true);
             this.renderSupplyPaintings = builder.comment("Falls back to rendering as items if false").define("render_supply_paintings", true);
             this.renderSupplyWheel = builder.comment("Falls back to rendering as items if false").define("render_supply_wheel", true);
+            this.renderDebugBoxes = builder.comment("Render boxes used for debugging the carts when Hitbox rendering is enabled").define("render_debug_boxes", false);
         }
 
     }

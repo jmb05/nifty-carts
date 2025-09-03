@@ -32,7 +32,7 @@ public final class ReaperModel extends CartModel<ReaperCartEntity> {
         axisConnectors.addBox(0,-15,0, 2, 15, 2);
         axisConnectors.addBox(23.99f,-15,0, 2, 15, 2);
 
-        final EasyMeshBuilder seat = new EasyMeshBuilder("seat", 8, 12);
+        final EasyMeshBuilder seat = new EasyMeshBuilder("seat", 0, 12);
         seat.addBox(-4,-6,1, 8, 2, 8);
 
         final EasyMeshBuilder seatConnectors = new EasyMeshBuilder("seatConnectors", 0, 12);

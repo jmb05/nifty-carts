@@ -15,8 +15,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ReaperCartEntity extends AbstractDrawnEntity {
 
@@ -92,14 +99,14 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
     }
 
     private void harvest(Player player) {
-        for (float f = 1.2f; f < 2; f += 0.6f) {
-            final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
-            final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
-            final BlockPos blockPos = new BlockPos((int) blockPosX, (int) Math.round(this.getY() - 0.75D), (int) blockPosZ);
+        for (int i = 0; i <= 12; i += 2) {
+            float f = 1.1f + ((float) i / 10f);
+            final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
             BlockPos pos = blockPos.above();
             BlockState state = level().getBlockState(pos);
             if (state.is(BlockTags.CROPS)) {
-                System.out.println("Found Crop");
                 if (level().removeBlock(pos, false)) {
                     level().destroyBlock(pos, false);
                     if (!state.requiresCorrectToolForDrops()) {
@@ -108,6 +115,25 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
                 }
             }
         }
+    }
+
+    @Override
+    public Map<Vector3f, List<AABB>> getAdditionalColoredDebugBoxes() {
+        Map<Vector3f, List<AABB>> boxes = new HashMap<>();
+        Vector3f red = new Vector3f(1, 0, 0);
+        Vector3f green = new Vector3f(0, 1, 0);
+        boxes.put(red, new ArrayList<>());
+        boxes.put(green, new ArrayList<>());
+        for (int i = 0; i <= 12; i += 2) {
+            float f = 1.1f + ((float) i / 10f);
+            final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
+            AABB box = new AABB(x - 0.5, getY() - 0.1, z - 0.5, x + 0.5, getY() + 0.1, z + 0.5);
+            boxes.get(red).add(box);
+            boxes.get(green).add(new AABB(blockPos.above()));
+        }
+        return boxes;
     }
 
     @Override

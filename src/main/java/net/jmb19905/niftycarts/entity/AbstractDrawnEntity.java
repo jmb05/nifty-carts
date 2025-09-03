@@ -58,11 +58,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
@@ -697,6 +695,10 @@ public abstract class AbstractDrawnEntity extends Entity {
         } else {
             speed.removeModifier(modifier);
         }
+    }
+
+    public Map<Vector3f, List<AABB>> getAdditionalColoredDebugBoxes() {
+        return Map.of();
     }
 
     public class RenderInfo {

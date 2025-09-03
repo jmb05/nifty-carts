@@ -23,6 +23,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.AABB;
+import org.joml.Vector3f;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
     private static final int SLOT_COUNT = 9;
@@ -46,13 +53,31 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < SLOT_COUNT; j++) {
                 final ItemStack stack = this.getStackInSlot(j);
-                final float offset = 90 - i * 90;
-                final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * 0.75;
-                final double z = this.getZ() + Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * 0.75;
-                final BlockPos blockPos = new BlockPos((int) x, (int) Math.round(this.getY() - 0.75D), (int) z);
+                final float f = i - 1;
+                final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
+                final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
+                final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
                 if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
             }
         }
+    }
+
+    @Override
+    public Map<Vector3f, List<AABB>> getAdditionalColoredDebugBoxes() {
+        Map<Vector3f, List<AABB>> map = new HashMap<>();
+        Vector3f red = new Vector3f(1, 0, 0);
+        map.put(red, new ArrayList<>());
+        Vector3f green = new Vector3f(0, 1, 0);
+        map.put(green, new ArrayList<>());
+        for (int i = 0; i < 3; i++) {
+            final float f = i - 1;
+            final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
+            map.get(red).add(new AABB(x - 0.1, getY() - 0.1, z - 0.1, x + 0.1, getY() + 0.1, z + 0.1));
+            final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
+            map.get(green).add(new AABB(blockPos.above()));
+        }
+        return map;
     }
 
     private boolean tryPlaceCrop(ItemStack stack, BlockPos pos, Level level, int slot) {
