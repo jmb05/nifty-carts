@@ -9,9 +9,11 @@
 		"paul101",
 		"jmb19905"
 	],
-	"contact": {
-		"sources": "https://github.com/jmb05/nifty-carts"
-	},
+    "contact": {
+        "sources": "https://github.com/jmb05/nifty-carts",
+        "homepage": "https://modrinth.com/mod/niftycarts",
+        "issues": "https://github.com/jmb05/nifty-carts/issues"
+    },
 	"license": "MIT",
 	"icon": "assets/niftycarts/icon.png",
 	"environment": "*",
