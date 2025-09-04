@@ -170,15 +170,23 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     @Override
     protected void addAdditionalSaveData(final CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        ContainerHelper.saveAllItems(compound, this.getItemStacks(), this.registryAccess());
         compound.putBoolean("Plowing", this.entityData.get(PLOWING));
     }
 
     @Override
     protected void readAdditionalSaveData(final CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        ContainerHelper.loadAllItems(compound, this.getItemStacks(), this.registryAccess());
         this.entityData.set(PLOWING, compound.getBooleanOr("Plowing", false));
+    }
+
+    @Override
+    protected void saveInventory(CompoundTag tag) {
+        ContainerHelper.saveAllItems(tag, this.getItemStacks(), this.registryAccess());
+    }
+
+    @Override
+    protected void readInventory(CompoundTag tag) {
+        ContainerHelper.loadAllItems(tag, this.getItemStacks(), this.registryAccess());
     }
 
 }
