@@ -8,6 +8,7 @@ import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 
 import java.util.Comparator;
@@ -34,7 +35,8 @@ public class ActionKeyMessage implements Message {
                 .or(() -> level.getEntitiesOfClass(AbstractDrawnEntity.class, pulling.getBoundingBox().inflate(2.0d), entity -> entity != pulling).stream()
                         .min(Comparator.comparing(pulling::distanceTo))
                         .map(c -> Pair.of(c, pulling))
-                ).ifPresent(p -> p.key().setPulling(p.value()));
+                ).filter(p -> p.key().getConfig().adventureModeInteract.get() || player.gameMode.getGameModeForPlayer() != GameType.ADVENTURE)
+                .ifPresent(p -> p.key().setPulling(p.value()));
     }
 
 }

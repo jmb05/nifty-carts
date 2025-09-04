@@ -61,6 +61,8 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     @Override
     public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
+        InteractionResult result = super.interact(player, interactionHand);
+        if (result == InteractionResult.FAIL) return result;
         if (canInteractNotOpen() && this.canAddPassenger(player) && !player.isSecondaryUseActive()) {
             return onInteractNotOpen(player, interactionHand);
         } else {

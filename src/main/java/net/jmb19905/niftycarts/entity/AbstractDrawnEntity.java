@@ -68,6 +68,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Boolean> LOCKED = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.BOOLEAN);
     private static final UUID PULL_SLOWLY_MODIFIER_UUID = UUID.fromString("49B0E52E-48F2-4D89-BED7-4F5DF26F1263");
     private static final UUID PULL_MODIFIER_UUID = UUID.fromString("BA594616-5BE3-46C6-8B40-7D0230C64B77");
     private int lerpSteps;
@@ -407,6 +408,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      *
      */
     protected boolean canBePulledBy(final Entity entityIn) {
+        if (this.isLocked()) return false;
         if (this.level().isClientSide) {
             return true;
         }
@@ -421,13 +423,16 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) return false;
         final ArrayList<String> allowed = this.getConfig().pullEntities.get();
         if (allowed.isEmpty()) {
-            return entity instanceof Player ||
-                    entity instanceof Saddleable && !(entity instanceof ItemSteerable);
+            if (entity instanceof Player player) {
+                return !player.isSpectator();
+            } else {
+                return entity instanceof Saddleable && !(entity instanceof ItemSteerable);
+            }
         }
         return allowed.contains(EntityType.getKey(entity.getType()).toString());
     }
 
-    protected abstract NiftyCartsConfig.CartConfig getConfig();
+    public abstract NiftyCartsConfig.CartConfig getConfig();
 
     @Override
     public boolean hurt(final DamageSource source, final float amount) {
@@ -652,6 +657,26 @@ public abstract class AbstractDrawnEntity extends Entity {
         return true;
     }
 
+    public boolean isLocked() {
+        return this.entityData.get(LOCKED);
+    }
+
+    public void setLocked(boolean b) {
+        this.entityData.set(LOCKED, b);
+    }
+
+    @Override
+    public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
+        if (this.isLocked()) return InteractionResult.FAIL;
+        return super.interact(player, interactionHand);
+    }
+
+    @Override
+    public @NotNull InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
+        if (this.isLocked()) return InteractionResult.FAIL;
+        return super.interactAt(player, vec3, interactionHand);
+    }
+
     @Override
     protected void defineSynchedData() {
         this.entityData.define(TIME_SINCE_HIT, 0);
@@ -659,6 +684,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         this.entityData.define(DAMAGE_TAKEN, 0.0F);
         this.entityData.define(BANNER, ItemStack.EMPTY);
         this.entityData.define(WOOD_TYPE, "oak");
+        this.entityData.define(LOCKED, false);
     }
 
     @Override
@@ -672,6 +698,9 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (compound.contains("WoodType")) {
             this.setWoodType(NiftyCartsWoodType.getFromId(compound.getString("WoodType")));
         }
+        if (compound.contains("Locked")) {
+            this.setLocked(compound.getBoolean("Locked"));
+        }
     }
 
     @Override
@@ -684,6 +713,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             compound.put("BannerItem", banner.save(new CompoundTag()));
         }
         compound.putString("WoodType", getWoodType().getId());
+        compound.putBoolean("Locked", this.isLocked());
     }
 
     public RenderInfo getInfo(final float delta) {

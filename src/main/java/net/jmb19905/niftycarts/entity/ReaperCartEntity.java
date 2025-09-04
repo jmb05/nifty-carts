@@ -98,6 +98,8 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
 
     @Override
     public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
+        InteractionResult result = super.interact(player, interactionHand);
+        if (result == InteractionResult.FAIL) return result;
         if (!this.level().isClientSide) {
             if (player.isSecondaryUseActive()) {
                 player.displayClientMessage(Component.translatable("message.niftycarts.use_reaper"), true);
@@ -169,7 +171,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    protected NiftyCartsConfig.CartConfig getConfig() {
+    public NiftyCartsConfig.CartConfig getConfig() {
         return NiftyCartsConfig.get().reaper;
     }
 }

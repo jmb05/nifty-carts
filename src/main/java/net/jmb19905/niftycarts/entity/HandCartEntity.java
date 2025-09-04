@@ -45,7 +45,7 @@ public class HandCartEntity extends AbstractCargoCart {
     }
 
     @Override
-    protected NiftyCartsConfig.CartConfig getConfig() {
+    public NiftyCartsConfig.CartConfig getConfig() {
         return NiftyCartsConfig.get().handCart;
     }
 }

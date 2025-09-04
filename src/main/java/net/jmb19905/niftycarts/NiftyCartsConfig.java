@@ -75,6 +75,7 @@ public final class NiftyCartsConfig {
         Common(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
             this.supplyCart = new CartConfig(builder, "supply_cart", "The Supply Cart, a type of cart that stores items");
+            this.supplyCart.pop();
             ArrayList<String> list = new ArrayList<>();
             list.add("minecraft:player");
             this.handCart = new CartConfig(builder, "handCart", "The Hand Cart, a player pulled cart that stores items", list, -0.1);
@@ -98,6 +99,7 @@ public final class NiftyCartsConfig {
         public final ForgeConfigSpec.DoubleValue slowSpeed;
         public final ForgeConfigSpec.DoubleValue pullSpeed;
         public final ForgeConfigSpec.IntValue destroyDamage;
+        public final ForgeConfigSpec.BooleanValue adventureModeInteract;
         private final ForgeConfigSpec.Builder builder;
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description) {
@@ -119,6 +121,8 @@ public final class NiftyCartsConfig {
                     .defineInRange("pull_speed", 0.0D, -1.0D, defaultPullSpeed);
             this.destroyDamage = builder.comment("Damage needed to destroy the cart. Damage accumulates over time but decays at a rate of 2 damage per second.")
                     .defineInRange("destroy_damage", 4, 1, 100);
+            this.adventureModeInteract = builder.comment("Players in adventure mode can interact with cart")
+                    .define("adventure_mode_interact", true);
         }
 
         protected void pop() {

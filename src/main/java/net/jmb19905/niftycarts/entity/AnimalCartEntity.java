@@ -5,9 +5,7 @@ import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
@@ -16,13 +14,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public final class AnimalCartEntity extends AbstractDrawnEntity {
     public AnimalCartEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
     @Override
-    protected NiftyCartsConfig.CartConfig getConfig() {
+    public NiftyCartsConfig.CartConfig getConfig() {
         return NiftyCartsConfig.get().animalCart;
     }
 
@@ -42,10 +42,35 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
                 }
             }
         }
+        if (this.isLocked()) return;
+        List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate(0.2F, -0.01F, 0.2F), EntitySelector.pushableBy(this));
+        if (!list.isEmpty()) {
+            boolean bl = !this.level().isClientSide && !(this.getControllingPassenger() instanceof Player);
+
+            for (Entity entity : list) {
+                if (!entity.hasPassenger(this)) {
+                    if (bl
+                            && canAddPassenger(entity)
+                            && !entity.isPassenger()
+                            && entity.getBbWidth() < this.getBbWidth() / 2
+                            && entity.getBbWidth() * entity.getBbHeight() < 1.5
+                            && entity instanceof LivingEntity
+                            && !(entity instanceof WaterAnimal)
+                            && !(entity instanceof Player)) {
+                        if(entity instanceof TamableAnimal tamable) tamable.setInSittingPose(true);
+                        entity.startRiding(this);
+                    } else {
+                        this.push(entity);
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public @NotNull InteractionResult interact(final Player player, final InteractionHand hand) {
+        InteractionResult result = super.interact(player, hand);
+        if (result == InteractionResult.FAIL) return result;
         if (player.isSecondaryUseActive()) {
             if (!this.level().isClientSide) {
                 for (final Entity entity : this.getPassengers()) {
