@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.jmb19905.niftycarts.client.mixin.ModelPartMixin;
 import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
-import net.jmb19905.niftycarts.entity.ReaperCartEntity;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;

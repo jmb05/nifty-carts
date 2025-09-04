@@ -142,14 +142,12 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void addAdditionalSaveData(final CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        ContainerHelper.saveAllItems(compound, this.getItemStacks(), this.registryAccess());
+    protected void saveInventory(CompoundTag tag) {
+        ContainerHelper.saveAllItems(tag, this.getItemStacks(), this.registryAccess());
     }
 
     @Override
-    protected void readAdditionalSaveData(final CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        ContainerHelper.loadAllItems(compound, this.getItemStacks(), this.registryAccess());
+    protected void readInventory(CompoundTag tag) {
+        ContainerHelper.loadAllItems(tag, this.getItemStacks(), this.registryAccess());
     }
 }
