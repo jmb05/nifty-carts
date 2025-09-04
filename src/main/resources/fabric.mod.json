@@ -9,9 +9,11 @@
 		"paul101",
 		"jmb19905"
 	],
-	"contact": {
-		"sources": "https://github.com/jmb05/nifty-carts"
-	},
+    "contact": {
+        "sources": "https://github.com/jmb05/nifty-carts",
+        "homepage": "https://modrinth.com/mod/niftycarts",
+        "issues": "https://github.com/jmb05/nifty-carts/issues"
+    },
 	"license": "MIT",
 	"icon": "assets/niftycarts/icon.png",
 	"environment": "*",
@@ -33,11 +35,11 @@
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.16.8",
-		"minecraft": "~1.21.3",
+		"fabricloader": ">=0.17.2",
+		"minecraft": "~1.21.5",
 		"java": ">=21",
 		"fabric-api": "*",
-		"forgeconfigapiport": ">=21.1.0"
+		"forgeconfigapiport": ">=21.5.1"
 	},
 	"suggests": {
 		"forgeconfigscreens": "*"
