@@ -116,8 +116,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public @NotNull InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
-        InteractionResult result = super.interact(player, interactionHand);
-        if (result == InteractionResult.FAIL) return result;
+        if (this.isLocked()) return InteractionResult.FAIL;
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (vec3.y > 2.2 && !player.isSecondaryUseActive()) {
             return interactCarpet(itemStack, player);
