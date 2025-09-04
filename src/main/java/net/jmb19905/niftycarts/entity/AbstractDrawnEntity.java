@@ -43,6 +43,8 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -497,7 +499,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(Entity entity) {
         return this.isAlive();
     }
 
@@ -638,29 +640,29 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(final CompoundTag compound) {
-        Optional<UUID> optId = compound.read("PullingUUID", UUIDUtil.CODEC);
+    protected void readAdditionalSaveData(ValueInput input) {
+        Optional<UUID> optId = input.read("PullingUUID", UUIDUtil.CODEC);
         optId.ifPresent(value -> this.pullingUUID = value);
-        Optional<ItemStack> optItem = compound.read("BannerItem", ItemStack.OPTIONAL_CODEC);
+        Optional<ItemStack> optItem = input.read("BannerItem", ItemStack.OPTIONAL_CODEC);
         optItem.ifPresent(this::setBanner);
-        Optional<String> woodTypeString = compound.getString("WoodType");
+        Optional<String> woodTypeString = input.getString("WoodType");
         WoodType woodType = WoodType.values().filter(type -> type.name().equals(woodTypeString.orElse(null))).findFirst().orElse(WoodType.OAK);
         setWoodType(woodType);
-        boolean locked = compound.getBoolean("Locked").orElse(false);
+        boolean locked = input.getBooleanOr("Locked", false);
         this.entityData.set(LOCKED, locked);
     }
 
     @Override
-    protected void addAdditionalSaveData(final CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput output) {
         if (this.pullingUUID != null) {
-            compound.store("PullingUUID", UUIDUtil.CODEC, this.pullingUUID);
+            output.store("PullingUUID", UUIDUtil.CODEC, this.pullingUUID);
         }
         final ItemStack banner = this.getBanner();
         if (!banner.isEmpty()) {
-            compound.store("BannerItem", ItemStack.OPTIONAL_CODEC, banner);
+            output.store("BannerItem", ItemStack.OPTIONAL_CODEC, banner);
         }
-        compound.putString("WoodType", getWoodType().name());
-        compound.putBoolean("Locked", isLocked());
+        output.putString("WoodType", getWoodType().name());
+        output.putBoolean("Locked", isLocked());
     }
 
     public RenderInfo getInfo(final float delta) {

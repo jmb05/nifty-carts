@@ -16,6 +16,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -82,12 +84,12 @@ public abstract class AbstractCargoCart extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void saveInventory(CompoundTag tag) {
-        this.addChestVehicleSaveData(tag, this.registryAccess());
+    protected void saveInventory(ValueOutput output) {
+        this.addChestVehicleSaveData(output);
     }
 
     @Override
-    protected void readInventory(CompoundTag tag) {
-        this.readChestVehicleSaveData(tag, this.registryAccess());
+    protected void readInventory(ValueInput input) {
+        this.readChestVehicleSaveData(input);
     }
 }

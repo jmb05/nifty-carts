@@ -37,7 +37,7 @@ public abstract class AbstractHorseMixin extends LivingEntity {
                 ((AbstractHorse) (Object) this).gallopSoundCounter = 0;
             }
             if (this.onGround()) {
-                ((AbstractHorse) (Object) this).setIsJumping(false);
+                this.setJumping(false);
             }
         }
     }

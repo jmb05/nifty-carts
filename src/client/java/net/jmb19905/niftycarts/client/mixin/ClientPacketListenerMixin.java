@@ -28,7 +28,7 @@ public abstract class ClientPacketListenerMixin {
                     .append("; ")
                     .append(slowToggled);
             Minecraft.getInstance().gui.setOverlayMessage(component, false);
-            Minecraft.getInstance().getNarrator().sayNow(component);
+            Minecraft.getInstance().getNarrator().saySystemNow(component);
             ci.cancel();
         }
     }

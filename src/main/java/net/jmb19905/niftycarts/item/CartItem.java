@@ -62,7 +62,7 @@ public class CartItem extends Item {
             return InteractionResult.PASS;
         } else {
             final Vec3 lookVec = player.getLookAngle();
-            final List<Entity> list = level.getEntities(player, player.getBoundingBox().expandTowards(lookVec.scale(5.0D)).inflate(5.0D), EntitySelector.NO_SPECTATORS.and(Entity::canBeCollidedWith));
+            final List<Entity> list = level.getEntities(player, player.getBoundingBox().expandTowards(lookVec.scale(5.0D)).inflate(5.0D), EntitySelector.CAN_BE_COLLIDED_WITH);
             if (!list.isEmpty()) {
                 final Vec3 eyePos = player.getEyePosition(1.0F);
                 for (final Entity entity : list) {

@@ -25,6 +25,8 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.WoolCarpetBlock;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -276,35 +278,33 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("Unfurl", this.entityData.get(UNFURL));
-        compound.putInt("RoofColor", this.entityData.get(ROOF_COLOR));
-        compound.putInt("ChestCount", this.entityData.get(CHEST_COUNT));
-        CompoundTag itemTag = new CompoundTag();
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("Unfurl", this.entityData.get(UNFURL));
+        output.putInt("RoofColor", this.entityData.get(ROOF_COLOR));
+        output.putInt("ChestCount", this.entityData.get(CHEST_COUNT));
         if (!this.entityData.get(EQUIPPED_CARPET).isEmpty()) {
-            this.entityData.get(EQUIPPED_CARPET).save(this.registryAccess(), itemTag);
+            var itemStack = this.entityData.get(EQUIPPED_CARPET);
+            output.store("Carpet", ItemStack.CODEC, itemStack);
         }
-        compound.put("Carpet", itemTag);
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.entityData.set(UNFURL, compound.getInt("Unfurl").orElse(0));
-        this.entityData.set(ROOF_COLOR, compound.getInt("RoofColor").orElse(-1));
-        this.entityData.set(CHEST_COUNT, compound.getInt("ChestCount").orElse(0));
-        CompoundTag itemTag = compound.getCompound("Carpet").orElse(new CompoundTag());
-        this.entityData.set(EQUIPPED_CARPET, ItemStack.parse(this.registryAccess(), itemTag).orElse(ItemStack.EMPTY));
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.entityData.set(UNFURL, input.getInt("Unfurl").orElse(0));
+        this.entityData.set(ROOF_COLOR, input.getInt("RoofColor").orElse(-1));
+        this.entityData.set(CHEST_COUNT, input.getInt("ChestCount").orElse(0));
+        this.entityData.set(EQUIPPED_CARPET, input.read("Carpet", ItemStack.CODEC).orElse(ItemStack.EMPTY));
     }
 
     @Override
-    protected void saveInventory(CompoundTag tag) {
-        ContainerHelper.saveAllItems(tag, this.getItemStacks(), this.registryAccess());
+    protected void saveInventory(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, this.getItemStacks());
     }
 
     @Override
-    protected void readInventory(CompoundTag tag) {
-        ContainerHelper.loadAllItems(tag, this.getItemStacks(), this.registryAccess());
+    protected void readInventory(ValueInput input) {
+        ContainerHelper.loadAllItems(input, this.getItemStacks());
     }
 }

@@ -23,6 +23,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
 
@@ -142,12 +144,12 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void saveInventory(CompoundTag tag) {
-        ContainerHelper.saveAllItems(tag, this.getItemStacks(), this.registryAccess());
+    protected void saveInventory(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, this.getItemStacks());
     }
 
     @Override
-    protected void readInventory(CompoundTag tag) {
-        ContainerHelper.loadAllItems(tag, this.getItemStacks(), this.registryAccess());
+    protected void readInventory(ValueInput input) {
+        ContainerHelper.loadAllItems(input, this.getItemStacks());
     }
 }

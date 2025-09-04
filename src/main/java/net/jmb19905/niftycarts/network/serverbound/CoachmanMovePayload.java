@@ -34,7 +34,7 @@ public record CoachmanMovePayload(float zza) implements CustomPacketPayload {
     }
 
     public static void handle(CoachmanMovePayload msg, ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         Entity vehicle = player.getRootVehicle();
         if (vehicle != player && vehicle.getControllingPassenger() == player && vehicle instanceof AbstractDrawnEntity drawnEntity) {
             Entity pulling = NiftyWorld.get(level).getCurrentlyPulling(drawnEntity).orElse(null);

@@ -2,6 +2,7 @@ package net.jmb19905.niftycarts.client.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -23,11 +24,11 @@ public class ChestScreen extends ContainerScreen {
     protected void renderBg(GuiGraphics guiGraphics, float f, int i, int j) {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(RenderType::guiTextured, CONTAINER_BACKGROUND, x, y, 0, 0, this.imageWidth, 17, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, CONTAINER_BACKGROUND, x, y, 0, 0, this.imageWidth, 17, 256, 256);
         for (int k = 0; k < this.containerRows; k++) {
-            guiGraphics.blit(RenderType::guiTextured, CONTAINER_BACKGROUND, x, y + k * 18 + 17, 0, 17, this.imageWidth, 18, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, CONTAINER_BACKGROUND, x, y + k * 18 + 17, 0, 17, this.imageWidth, 18, 256, 256);
         }
-        guiGraphics.blit(RenderType::guiTextured, CONTAINER_BACKGROUND, x, y + this.containerRows * 18 + 17, 0, 126, this.imageWidth, 96, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, CONTAINER_BACKGROUND, x, y + this.containerRows * 18 + 17, 0, 126, this.imageWidth, 96, 256, 256);
     }
 
 

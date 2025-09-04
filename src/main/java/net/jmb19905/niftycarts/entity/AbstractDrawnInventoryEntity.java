@@ -2,7 +2,6 @@ package net.jmb19905.niftycarts.entity;
 
 import net.jmb19905.niftycarts.util.NiftyInventory;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
@@ -21,6 +20,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -177,19 +178,19 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        saveInventory(compound);
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        saveInventory(output);
     }
 
-    protected abstract void saveInventory(CompoundTag tag);
+    protected abstract void saveInventory(ValueOutput output);
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        readInventory(compound);
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        readInventory(input);
     }
 
-    protected abstract void readInventory(CompoundTag tag);
+    protected abstract void readInventory(ValueInput input);
 
 }

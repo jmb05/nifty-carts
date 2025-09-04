@@ -27,6 +27,8 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -168,25 +170,25 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void addAdditionalSaveData(final CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putBoolean("Plowing", this.entityData.get(PLOWING));
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putBoolean("Plowing", this.entityData.get(PLOWING));
     }
 
     @Override
-    protected void readAdditionalSaveData(final CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.entityData.set(PLOWING, compound.getBooleanOr("Plowing", false));
+    protected void saveInventory(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, this.getItemStacks());
     }
 
     @Override
-    protected void saveInventory(CompoundTag tag) {
-        ContainerHelper.saveAllItems(tag, this.getItemStacks(), this.registryAccess());
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.entityData.set(PLOWING, input.getBooleanOr("Plowing", false));
     }
 
     @Override
-    protected void readInventory(CompoundTag tag) {
-        ContainerHelper.loadAllItems(tag, this.getItemStacks(), this.registryAccess());
+    protected void readInventory(ValueInput input) {
+        ContainerHelper.loadAllItems(input, this.getItemStacks());
     }
 
 }
