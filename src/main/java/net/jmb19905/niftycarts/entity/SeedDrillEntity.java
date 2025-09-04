@@ -137,7 +137,7 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected NiftyCartsConfig.CartConfig getConfig() {
+    public NiftyCartsConfig.CartConfig getConfig() {
         return NiftyCartsConfig.get().seedDrill;
     }
 

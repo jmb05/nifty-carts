@@ -29,7 +29,7 @@ public class SupplyCartEntity extends AbstractCargoCart {
     }
 
     @Override
-    protected NiftyCartsConfig.CartConfig getConfig() {
+    public NiftyCartsConfig.CartConfig getConfig() {
         return NiftyCartsConfig.get().supplyCart;
     }
 

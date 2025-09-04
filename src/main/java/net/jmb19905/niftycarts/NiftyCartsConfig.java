@@ -94,6 +94,7 @@ public final class NiftyCartsConfig {
         public final ForgeConfigSpec.ConfigValue<ArrayList<String>> pullEntities;
         public final ForgeConfigSpec.DoubleValue slowSpeed;
         public final ForgeConfigSpec.DoubleValue pullSpeed;
+        public final ForgeConfigSpec.BooleanValue adventureModeInteract;
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description) {
             this(builder, name, description, new ArrayList<>(), 0);
@@ -111,6 +112,8 @@ public final class NiftyCartsConfig {
                     .defineInRange("slow_speed", -0.65D, -1.0D, 0.0D);
             this.pullSpeed = builder.comment("Base speed modifier applied to animals (-0.5 = half normal speed)")
                     .defineInRange("pull_speed", 0.0D, -1.0D, defaultPullSpeed);
+            this.adventureModeInteract = builder.comment("Players in adventure mode can interact with cart")
+                    .define("adventure_mode_interact", true);
             builder.pop();
         }
     }

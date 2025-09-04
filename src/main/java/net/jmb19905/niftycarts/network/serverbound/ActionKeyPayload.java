@@ -9,6 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +46,9 @@ public record ActionKeyPayload() implements CustomPacketPayload {
                 .or(() -> level.getEntitiesOfClass(AbstractDrawnEntity.class, pulling.getBoundingBox().inflate(2.0d), entity -> entity != pulling).stream()
                         .min(Comparator.comparing(pulling::distanceTo))
                         .map(c -> Pair.of(c, pulling))
-                ).ifPresent(p -> p.key().setPulling(p.value()));
+                ).filter(p -> p.key().getConfig().adventureModeInteract.get()
+                        || player.gameMode.getGameModeForPlayer() != GameType.ADVENTURE)
+                .ifPresent(p -> p.key().setPulling(p.value()));
     }
 
 }

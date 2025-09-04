@@ -14,13 +14,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public final class AnimalCartEntity extends AbstractDrawnEntity {
     public AnimalCartEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
     @Override
-    protected NiftyCartsConfig.CartConfig getConfig() {
+    public NiftyCartsConfig.CartConfig getConfig() {
         return NiftyCartsConfig.get().animalCart;
     }
 
@@ -40,10 +42,31 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
                 }
             }
         }
+        if (isLocked()) return;
+        List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate(0.2F, -0.01F, 0.2F), EntitySelector.pushableBy(this));
+        if (!list.isEmpty()) {
+            boolean bl = !this.level().isClientSide && !(this.getControllingPassenger() instanceof Player);
+            for (Entity entity : list) {
+                if (!entity.hasPassenger(this)) {
+                    if (bl
+                            && canAddPassenger(entity)
+                            && !entity.isPassenger()
+                            && entity.getBbWidth() < this.getBbWidth()
+                            && entity.getBbWidth() * entity.getBbHeight() < 1.5
+                            && entity instanceof LivingEntity
+                            && !(entity instanceof WaterAnimal)
+                            && !(entity instanceof Player)) {
+                        if(entity instanceof TamableAnimal tamable) tamable.setInSittingPose(true);
+                        entity.startRiding(this);
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public @NotNull InteractionResult interact(final Player player, final InteractionHand hand) {
+        if (isLocked()) return InteractionResult.FAIL;
         if (player.isSecondaryUseActive()) {
             if (!this.level().isClientSide) {
                 for (final Entity entity : this.getPassengers()) {

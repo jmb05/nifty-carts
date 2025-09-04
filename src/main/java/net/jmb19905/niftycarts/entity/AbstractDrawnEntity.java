@@ -38,6 +38,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.block.state.properties.WoodType;
@@ -55,6 +56,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Boolean> LOCKED = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.BOOLEAN);
     private static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = NiftyCarts.resLoc("pull_slowly");
     private static final ResourceLocation PULL_MODIFIER_ID = NiftyCarts.resLoc("pull");
     private final CartInterpolationHandler interpolation = new CartInterpolationHandler(this);
@@ -83,12 +85,24 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     public boolean isLocked() {
-        return false;//TODO: implement cart lock
+        return this.entityData.get(LOCKED);
     }
 
     @Override
     public float maxUpStep() {
         return 1.2f;
+    }
+
+    @Override
+    public @NotNull InteractionResult interact(Player player, InteractionHand hand) {
+        if (isLocked()) return InteractionResult.FAIL;
+        return super.interact(player, hand);
+    }
+
+    @Override
+    public @NotNull InteractionResult interactAt(Player player, Vec3 vec, InteractionHand hand) {
+        if (isLocked()) return InteractionResult.FAIL;
+        return super.interactAt(player, vec, hand);
     }
 
     @Override
@@ -384,6 +398,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      *
      */
     protected boolean canBePulledBy(final Entity entityIn) {
+        if (this.isLocked()) return false;
         if (this.level().isClientSide) {
             return true;
         }
@@ -401,10 +416,11 @@ public abstract class AbstractDrawnEntity extends Entity {
         } else return allowed.contains(EntityType.getKey(entity.getType()).toString());
     }
 
-    protected abstract NiftyCartsConfig.CartConfig getConfig();
+    public abstract NiftyCartsConfig.CartConfig getConfig();
 
     @Override
     public boolean hurtServer(ServerLevel serverLevel, final DamageSource source, final float amount) {
+        if (isLocked()) return false;
         if (this.isInvulnerableToBase(source)) {
             return false;
         } else if (!this.level().isClientSide && this.isAlive()) {
@@ -417,7 +433,9 @@ public abstract class AbstractDrawnEntity extends Entity {
             this.setForwardDirection(-this.getForwardDirection());
             this.setTimeSinceHit(10);
             this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
-            final boolean flag = source.getEntity() instanceof Player && ((Player) source.getEntity()).getAbilities().instabuild;
+            final boolean flag = source.getEntity() instanceof Player player && player.getAbilities().instabuild;
+            final boolean adventureFlag = source.getEntity() instanceof Player player && player.gameMode() == GameType.ADVENTURE && !this.getConfig().adventureModeInteract.get();
+            if (adventureFlag) return false;
             if (flag || this.getDamageTaken() > 40.0F) {
                 this.onDestroyed(source, flag);
                 this.setPulling(null);
@@ -616,6 +634,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         builder.define(DAMAGE_TAKEN, 0.0F);
         builder.define(BANNER, ItemStack.EMPTY);
         builder.define(WOOD_TYPE, "oak");
+        builder.define(LOCKED, false);
     }
 
     @Override
@@ -627,6 +646,8 @@ public abstract class AbstractDrawnEntity extends Entity {
         Optional<String> woodTypeString = compound.getString("WoodType");
         WoodType woodType = WoodType.values().filter(type -> type.name().equals(woodTypeString.orElse(null))).findFirst().orElse(WoodType.OAK);
         setWoodType(woodType);
+        boolean locked = compound.getBoolean("Locked").orElse(false);
+        this.entityData.set(LOCKED, locked);
     }
 
     @Override
@@ -639,6 +660,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             compound.store("BannerItem", ItemStack.OPTIONAL_CODEC, banner);
         }
         compound.putString("WoodType", getWoodType().name());
+        compound.putBoolean("Locked", isLocked());
     }
 
     public RenderInfo getInfo(final float delta) {
