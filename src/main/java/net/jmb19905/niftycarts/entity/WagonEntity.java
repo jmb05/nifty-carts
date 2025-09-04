@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@SuppressWarnings("resource")
 public class WagonEntity extends AbstractDrawnInventoryEntity {
 
     private static final EntityDataAccessor<Integer> UNFURL = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
