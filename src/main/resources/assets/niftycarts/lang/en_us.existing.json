@@ -6,7 +6,7 @@
   "subtitles.niftycarts.cart.detached": "Cart detaches",
   "subtitles.niftycarts.cart.placed": "Cart placed",
   "tutorial.slow.message": "Press %1$s to toggle slow mode",
-  "item.cart.press_shift_tooltip": "Hold [Left Shift] for Details",
+  "item.cart.press_shift_tooltip": "Hold [Shift] for Details",
   "item.supply_cart.tooltip1": "This cart can hold up to 54 stacks of items",
   "item.supply_cart.tooltip2": "Has one seat, can be decorated with a banner",
   "item.hand_cart.tooltip1": "This cart can hold up to 27 stacks of items",
