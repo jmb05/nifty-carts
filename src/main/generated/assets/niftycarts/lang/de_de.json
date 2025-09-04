@@ -7,6 +7,7 @@
   "entity.niftycarts.supply_cart": "Transportkarren",
   "item.animal_cart.tooltip1": "This cart has two seats for animals or players and can be decorated with a banner",
   "item.animal_cart.tooltip2": "It can be also controlled from the front seat",
+  "item.cart.press_shift_tooltip": "Hold [Shift] to show Details",
   "item.hand_cart.tooltip1": "This cart can hold up to 27 stacks of items",
   "item.hand_cart.tooltip2": "It can only be pulled by the player",
   "item.niftycarts.acacia_animal_cart": "Akazienholztierkarren",

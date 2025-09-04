@@ -19,5 +19,6 @@
   "item.reaper.tooltip2": "Sie funktioniert nur, wenn ein Spieler sie bedient",
   "message.niftycarts.use_reaper": "Sitze auf der Mähmaschine um sie zu bedienen",
   "message.niftycarts.slow_toggled_on": "Reittier bewegt sich langsam, Drücke %1$s um zu deaktivieren",
-  "message.niftycarts.slow_toggled_off": "Reittier bewegt sich normal, Drücke %1$s um zu aktivieren"
+  "message.niftycarts.slow_toggled_off": "Reittier bewegt sich normal, Drücke %1$s um zu aktivieren",
+  "item.cart.press_shift_tooltip": "Halte die [Umshalttaste] gedrückt für mehr Details"
 }

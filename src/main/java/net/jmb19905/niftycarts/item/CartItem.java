@@ -2,11 +2,9 @@ package net.jmb19905.niftycarts.item;
 
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -19,8 +17,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.WoodType;
@@ -32,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public class CartItem extends Item {
 
@@ -43,15 +38,6 @@ public class CartItem extends Item {
         super(settings);
         this.woodType = woodType;
         this.cartType = cartType;
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag tooltipFlag) {
-        consumer.accept(Component.empty());
-        consumer.accept(Component.translatable("item." + this.cartType + ".tooltip1").withStyle(ChatFormatting.GRAY));
-        consumer.accept(Component.translatable("item." + this.cartType + ".tooltip2").withStyle(ChatFormatting.GRAY));
-        super.appendHoverText(itemStack, tooltipContext, tooltipDisplay, consumer, tooltipFlag);
     }
 
     @Override
@@ -99,5 +85,9 @@ public class CartItem extends Item {
                 return InteractionResult.PASS;
             }
         }
+    }
+
+    public String getCartType() {
+        return cartType;
     }
 }
