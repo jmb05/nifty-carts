@@ -17,5 +17,7 @@
   "item.seed_drill.tooltip2": "It has room for 9 stacks of seeds",
   "item.reaper.tooltip1": "This contraption can harvest crops",
   "item.reaper.tooltip2": "Only works if the player is sitting on it",
-  "message.niftycarts.use_reaper": "Sit on the reaper to use it"
+  "message.niftycarts.use_reaper": "Sit on the reaper to use it",
+  "message.niftycarts.slow_toggled_on": "Mount moving slowly, Press %1$s to disable",
+  "message.niftycarts.slow_toggled_off": "Mount moving normaly, Press %1$s to enable slow speed"
 }

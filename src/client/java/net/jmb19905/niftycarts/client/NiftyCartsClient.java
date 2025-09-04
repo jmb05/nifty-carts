@@ -23,6 +23,7 @@ import net.jmb19905.niftycarts.network.serverbound.ToggleSlowPayload;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.fml.config.ModConfig;
 import org.lwjgl.glfw.GLFW;
@@ -38,7 +39,7 @@ public class NiftyCartsClient implements ClientModInitializer {
     );
 
 	private static KeyMapping actionKeyMapping;
-	private static KeyMapping toggleSlowMapping;
+	public static KeyMapping toggleSlowMapping;
 
 	@Override
 	public void onInitializeClient() {
@@ -89,12 +90,19 @@ public class NiftyCartsClient implements ClientModInitializer {
 				ClientPlayNetworking.send(new ActionKeyPayload());
 			}
 			var player = client.player;
-			if (player != null && ToggleSlowPayload.getCart(player).isPresent()) {
-				while (toggleSlowMapping.consumeClick()) {
-					ClientPlayNetworking.send(new ToggleSlowPayload());
-					KeyMapping.set(toggleSlowMapping.getDefaultKey(), false);
-				}
-			}
+            if (player != null) {
+                while (toggleSlowMapping.consumeClick()) {
+                    if (player.getControlledVehicle() != null && ToggleSlowPayload.isSlowable(player.getControlledVehicle())) {
+                        if (!ToggleSlowPayload.isSlow(player.getControlledVehicle())) {
+                            player.displayClientMessage(Component.translatable("message.niftycarts.slow_toggled_on", toggleSlowMapping.getTranslatedKeyMessage()), true);
+                        } else {
+                            player.displayClientMessage(Component.translatable("message.niftycarts.slow_toggled_off", toggleSlowMapping.getTranslatedKeyMessage()), true);
+                        }
+                    }
+                    ClientPlayNetworking.send(new ToggleSlowPayload());
+                    KeyMapping.set(toggleSlowMapping.getDefaultKey(), false);
+                }
+            }
 			if (!client.isPaused() && client.level != null) {
 				NiftyWorld.getClient().tick(client.level);
 			}

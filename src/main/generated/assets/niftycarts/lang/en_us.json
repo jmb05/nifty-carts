@@ -106,6 +106,8 @@
   "key.categories.niftycarts": "NiftyCarts",
   "key.niftycarts.action": "Attach/Detach Cart",
   "key.niftycarts.slow": "Toggle Slow",
+  "message.niftycarts.slow_toggled_off": "Mount moving normaly, Press %1$s to enable slow speed",
+  "message.niftycarts.slow_toggled_on": "Mount moving slowly, Press %1$s to disable",
   "message.niftycarts.use_reaper": "Sit on the reaper to use it",
   "niftycarts.cart_one_cm": "Distance by Cart",
   "subtitles.niftycarts.cart.attached": "Cart attaches",
