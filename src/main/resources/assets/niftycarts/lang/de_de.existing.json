@@ -22,5 +22,7 @@
   "item.wagon.tooltip1": "Verwende 5 Teppiche als Dach, Truhen für Lagerplatz",
   "item.wagon.tooltip2": "Hat bis zu vier Sitzplätze",
   "tag.item.niftycarts.seed_drill_plantable": "Kann mit der Sämaschine gesät werden",
-  "message.niftycarts.use_reaper": "Sitze auf der Mähmaschine um sie zu benutzen"
+  "message.niftycarts.use_reaper": "Sitze auf der Mähmaschine um sie zu benutzen",
+  "message.niftycarts.slow_toggled_on": "Reittier bewegt sich langsam, Drücke %1$s um zu deaktivieren",
+  "message.niftycarts.slow_toggled_off": "Reittier bewegt sich normal, Drücke %1$s um zu aktivieren"
 }

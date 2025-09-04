@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnPayload;
+import net.jmb19905.niftycarts.network.serverbound.ToggleSlowPayload;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.jmb19905.niftycarts.util.CartWheel;
 import net.minecraft.core.BlockPos;
@@ -70,7 +71,6 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> LOCKED = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "pull_slowly");
     private static final ResourceLocation PULL_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "pull");
     private int lerpSteps;
     private double lerpX;
@@ -242,7 +242,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                     if (this.pulling instanceof LivingEntity) {
                         final AttributeInstance attr = ((LivingEntity) this.pulling).getAttribute(Attributes.MOVEMENT_SPEED);
                         if (attr != null) {
-                            attr.removeModifier(PULL_SLOWLY_MODIFIER_ID);
+                            attr.removeModifier(ToggleSlowPayload.PULL_SLOWLY_MODIFIER_ID);
                             attr.removeModifier(PULL_MODIFIER_ID);
                         }
                     } else if (this.pulling instanceof AbstractDrawnEntity) {
@@ -730,23 +730,6 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     public RenderInfo getInfo(final float delta) {
         return new RenderInfo(delta);
-    }
-
-    public void toggleSlow() {
-        final Entity pulling = this.pulling;
-        if (!(pulling instanceof LivingEntity)) return;
-        final AttributeInstance speed = ((LivingEntity) pulling).getAttribute(Attributes.MOVEMENT_SPEED);
-        if (speed == null) return;
-        final AttributeModifier modifier = speed.getModifier(PULL_SLOWLY_MODIFIER_ID);
-        if (modifier == null) {
-            speed.addTransientModifier(new AttributeModifier(
-                    PULL_SLOWLY_MODIFIER_ID,
-                    this.getConfig().slowSpeed.get(),
-                    AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
-            ));
-        } else {
-            speed.removeModifier(modifier.id());
-        }
     }
 
     @Override

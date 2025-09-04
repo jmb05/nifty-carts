@@ -27,13 +27,9 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fml.config.ModConfig;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.List;
 import java.util.Objects;
 
 public class NiftyCartsClient implements ClientModInitializer {
@@ -101,8 +97,15 @@ public class NiftyCartsClient implements ClientModInitializer {
 				ClientPlayNetworking.send(new ActionKeyPayload());
 			}
 			var player = client.player;
-			if (player != null && ToggleSlowPayload.getCart(player).isPresent()) {
+			if (player != null) {
 				while (toggleSlowMapping.consumeClick()) {
+                    if (player.getControlledVehicle() != null && ToggleSlowPayload.isSlowable(player.getControlledVehicle())) {
+                        if (!ToggleSlowPayload.isSlow(player.getControlledVehicle())) {
+                            player.displayClientMessage(Component.translatable("message.niftycarts.slow_toggled_on", toggleSlowMapping.getTranslatedKeyMessage()), true);
+                        } else {
+                            player.displayClientMessage(Component.translatable("message.niftycarts.slow_toggled_off", toggleSlowMapping.getTranslatedKeyMessage()), true);
+                        }
+                    }
 					ClientPlayNetworking.send(new ToggleSlowPayload());
 					KeyMapping.set(toggleSlowMapping.getDefaultKey(), false);
 				}
