@@ -52,15 +52,13 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
                     if (bl
                             && canAddPassenger(entity)
                             && !entity.isPassenger()
-                            && entity.getBbWidth() < this.getBbWidth() / 2
+                            && entity.getBbWidth() < this.getBbWidth()
                             && entity.getBbWidth() * entity.getBbHeight() < 1.5
                             && entity instanceof LivingEntity
                             && !(entity instanceof WaterAnimal)
                             && !(entity instanceof Player)) {
                         if(entity instanceof TamableAnimal tamable) tamable.setInSittingPose(true);
                         entity.startRiding(this);
-                    } else {
-                        this.push(entity);
                     }
                 }
             }

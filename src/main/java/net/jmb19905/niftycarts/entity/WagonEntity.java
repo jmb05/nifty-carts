@@ -258,8 +258,6 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
                             && !(entity instanceof Player)) {
                         if(entity instanceof TamableAnimal tamable) tamable.setInSittingPose(true);
                         entity.startRiding(this);
-                    } else {
-                        this.push(entity);
                     }
                 }
             }
