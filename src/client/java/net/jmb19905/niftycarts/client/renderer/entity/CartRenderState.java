@@ -19,4 +19,5 @@ public class CartRenderState extends EntityRenderState {
     public DyeColor bannerColor;
     public BannerPatternLayers bannerPattern;
     public WoodType woodType;
+    public boolean folded;
 }

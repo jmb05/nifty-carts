@@ -1,0 +1,21 @@
+{
+  "key.categories.niftycarts": "NiftyCarts",
+  "key.niftycarts.action": "Attach/Detach Cart",
+  "key.niftycarts.slow": "Toggle Slow",
+  "subtitles.niftycarts.cart.attached": "Cart attaches",
+  "subtitles.niftycarts.cart.detached": "Cart detaches",
+  "subtitles.niftycarts.cart.placed": "Cart placed",
+  "item.supply_cart.tooltip1": "This cart can hold up to 54 stacks of items",
+  "item.supply_cart.tooltip2": "It has one seat and can be decorated with a banner",
+  "item.hand_cart.tooltip1": "This cart can hold up to 27 stacks of items",
+  "item.hand_cart.tooltip2": "It can only be pulled by the player",
+  "item.animal_cart.tooltip1": "This cart has two seats for animals or players and can be decorated with a banner",
+  "item.animal_cart.tooltip2": "It can be also controlled from the front seat",
+  "item.plow.tooltip1": "This contraption can till the ground, make dirt paths or strip logs",
+  "item.plow.tooltip2": "It needs the respective tools to work and can be toggled by right-clicking",
+  "item.seed_drill.tooltip1": "This contraption plants seeds on farmland",
+  "item.seed_drill.tooltip2": "It has room for 9 stacks of seeds",
+  "item.reaper.tooltip1": "This contraption can harvest crops",
+  "item.reaper.tooltip2": "Only works if the player is sitting on it",
+  "message.niftycarts.use_reaper": "Sit on the reaper to use it"
+}

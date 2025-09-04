@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.jmb19905.niftycarts.client.mixin.ModelPartMixin;
 import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
+import net.jmb19905.niftycarts.entity.ReaperCartEntity;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
@@ -58,6 +59,9 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends Car
         state.bannerColor = entity.getBannerColor();
         state.bannerPattern = entity.getBannerPattern();
         state.woodType = entity.getWoodType();
+        if (entity instanceof ReaperCartEntity reaper) {
+            state.folded = reaper.isFolded();
+        }
     }
 
     public abstract ResourceLocation getTextureLocation(S state);

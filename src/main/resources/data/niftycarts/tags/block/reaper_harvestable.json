@@ -1,10 +1,15 @@
 {
   "values": [
     "minecraft:short_grass",
+    "minecraft:short_dry_grass",
+    "minecraft:tall_dry_grass",
+    "minecraft:cactus_flower",
     "minecraft:fern",
     "minecraft:tall_grass",
     "minecraft:large_fern",
     "minecraft:dead_bush",
+    "minecraft:bush",
+    "minecraft:firefly_bush",
     "#minecraft:flowers",
     "#minecraft:saplings",
     "#minecraft:crops",
