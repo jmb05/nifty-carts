@@ -74,6 +74,7 @@ public class ReaperEntity extends AbstractDrawnEntity {
 
     @Override
     public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
+        if (isLocked()) return InteractionResult.FAIL;
         if (!this.level().isClientSide) {
             if (player.isSecondaryUseActive()) {
                 player.displayClientMessage(Component.translatable("message.niftycarts.use_reaper"), true);
@@ -153,7 +154,7 @@ public class ReaperEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    protected NiftyCartsConfig.CartConfig getConfig() {
+    public NiftyCartsConfig.CartConfig getConfig() {
         return NiftyCartsConfig.get().reaper;
     }
 }

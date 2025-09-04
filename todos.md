@@ -1,0 +1,2 @@
+- Rethink mob size requirements for sitting in wagon and animal cart
+- 1.20.1 fix wagon/animal cart pushing entities away bug

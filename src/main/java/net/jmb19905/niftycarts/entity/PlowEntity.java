@@ -48,7 +48,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected NiftyCartsConfig.CartConfig getConfig() {
+    public NiftyCartsConfig.CartConfig getConfig() {
         return NiftyCartsConfig.get().plow;
     }
 

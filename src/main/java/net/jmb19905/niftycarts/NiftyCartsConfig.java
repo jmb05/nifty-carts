@@ -88,6 +88,7 @@ public final class NiftyCartsConfig {
         public final ForgeConfigSpec.DoubleValue slowSpeed;
         public final ForgeConfigSpec.DoubleValue pullSpeed;
         public final ForgeConfigSpec.IntValue destroyDamage;
+        public final ForgeConfigSpec.BooleanValue adventureModeInteract;
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description) {
             this(builder, name, description, new ArrayList<>(), 0);
@@ -111,6 +112,8 @@ public final class NiftyCartsConfig {
                     .defineInRange("pull_speed", 0.0D, -1.0D, defaultPullSpeed);
             this.destroyDamage = builder.comment("Damage needed to destroy the cart. Damage accumulates over time but decays at a rate of 2 damage per second.")
                             .defineInRange("destroy_damage", 4, 1, 100);
+            this.adventureModeInteract = builder.comment("Players in adventure mode can interact with cart")
+                    .define("adventure_mode_interact", true);
             builder.pop();
         }
     }

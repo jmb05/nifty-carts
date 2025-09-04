@@ -63,13 +63,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-@SuppressWarnings("resource")
 public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Boolean> LOCKED = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.BOOLEAN);
     private static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "pull_slowly");
     private static final ResourceLocation PULL_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "pull");
     private int lerpSteps;
@@ -404,6 +404,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      *
      */
     protected boolean canBePulledBy(final Entity entityIn) {
+        if (this.isLocked()) return false;
         if (this.level().isClientSide) {
             return true;
         }
@@ -418,13 +419,28 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) return false;
         final ArrayList<String> allowed = this.getConfig().pullEntities.get();
         if (allowed.isEmpty()) {
-            return entity instanceof Player ||
-                    entity instanceof Saddleable && !(entity instanceof ItemSteerable);
+            if (entity instanceof Player player) {
+                return !player.isSpectator();
+            } else {
+                return entity instanceof Saddleable && !(entity instanceof ItemSteerable);
+            }
         }
         return allowed.contains(EntityType.getKey(entity.getType()).toString());
     }
 
-    protected abstract NiftyCartsConfig.CartConfig getConfig();
+    public abstract NiftyCartsConfig.CartConfig getConfig();
+
+    @Override
+    public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
+        if (this.isLocked()) return InteractionResult.FAIL;
+        return super.interact(player, interactionHand);
+    }
+
+    @Override
+    public @NotNull InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
+        if (this.isLocked()) return InteractionResult.FAIL;
+        return super.interactAt(player, vec3, interactionHand);
+    }
 
     @Override
     public boolean hurt(final DamageSource source, final float amount) {
@@ -636,6 +652,14 @@ public abstract class AbstractDrawnEntity extends Entity {
         return WoodType.values().filter(type -> type.name().equals(this.entityData.get(WOOD_TYPE))).findFirst().orElse(null);
     }
 
+    public boolean isLocked() {
+        return this.entityData.get(LOCKED);
+    }
+
+    public void setLocked(boolean b) {
+        this.entityData.set(LOCKED, b);
+    }
+
     public DyeColor getBannerColor() {
         final ItemStack banner = this.getBanner();
         if (banner.getItem() instanceof BannerItem bannerItem) {
@@ -672,6 +696,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         builder.define(DAMAGE_TAKEN, 0.0F);
         builder.define(BANNER, ItemStack.EMPTY);
         builder.define(WOOD_TYPE, "oak");
+        builder.define(LOCKED, false);
     }
 
     @Override
@@ -685,6 +710,9 @@ public abstract class AbstractDrawnEntity extends Entity {
         String woodTypeString = compound.getString("WoodType");
         WoodType woodType = WoodType.values().filter(type -> type.name().equals(woodTypeString)).findFirst().orElse(WoodType.OAK);
         setWoodType(woodType);
+        if (compound.contains("Locked")) {
+            setLocked(compound.getBoolean("Locked"));
+        }
     }
 
     @Override
@@ -697,6 +725,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             compound.put("BannerItem", banner.saveOptional(this.registryAccess()));
         }
         compound.putString("WoodType", getWoodType().name());
+        compound.putBoolean("Locked", isLocked());
     }
 
     public RenderInfo getInfo(final float delta) {

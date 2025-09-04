@@ -117,6 +117,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public @NotNull InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
+        if (isLocked()) return InteractionResult.FAIL;
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (vec3.y > 2.2 && !player.isSecondaryUseActive()) {
             return interactCarpet(itemStack, player);
@@ -179,7 +180,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected NiftyCartsConfig.CartConfig getConfig() {
+    public NiftyCartsConfig.CartConfig getConfig() {
         return NiftyCartsConfig.get().wagon;
     }
 
@@ -240,10 +241,10 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     @Override
     public void tick() {
         super.tick();
+        if (isLocked()) return;
         List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate(0.2F, -0.01F, 0.2F), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
             boolean bl = !this.level().isClientSide && !(this.getControllingPassenger() instanceof Player);
-
             for (Entity entity : list) {
                 if (!entity.hasPassenger(this)) {
                     if (bl
@@ -256,8 +257,6 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
                             && !(entity instanceof Player)) {
                         if(entity instanceof TamableAnimal tamable) tamable.setInSittingPose(true);
                         entity.startRiding(this);
-                    } else {
-                        this.push(entity);
                     }
                 }
             }
