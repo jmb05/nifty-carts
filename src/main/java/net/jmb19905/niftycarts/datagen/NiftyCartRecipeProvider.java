@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -23,6 +24,16 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
 
     @Override
     public void buildRecipes(Consumer<FinishedRecipe> exporter) {
+        ResourceLocation wheelId = new ResourceLocation(NiftyCarts.MOD_ID, "wheel");
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NiftyCarts.WHEEL)
+                .define('p', ItemTags.PLANKS)
+                .define('s', Items.STICK)
+                .unlockedBy("has_stick", FabricRecipeProvider.has(Items.STICK))
+                .pattern("sss")
+                .pattern("sps")
+                .pattern("sss")
+                .save(exporter, wheelId);
+
         for (NiftyCartsWoodType woodType : NiftyCartsWoodType.values()) {
             ResourceLocation supplyCartId = new ResourceLocation(NiftyCarts.MOD_ID, woodType.getId() + "_supply_cart");
             Item supplyCart = BuiltInRegistries.ITEM.get(supplyCartId);
