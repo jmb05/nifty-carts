@@ -7,6 +7,7 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -50,28 +51,12 @@ public class NiftyCartsDeDeLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(NiftyCarts.REAPER_ENTITY, "Mähmaschine");
         translationBuilder.add(NiftyCarts.WAGON_ENTITY, "Wagen");
         translationBuilder.add(NiftyCarts.CART_ONE_CM, "Strecke auf Karren gefahren");
-        translationBuilder.add("key.categories.niftycarts", "NiftyCarts");
-        translationBuilder.add("key.niftycarts.action", "Karren an-/abhängen");
-        translationBuilder.add("key.niftycarts.slow", "Langsammodus an-/ausschalten");
-        translationBuilder.add("subtitles.niftycarts.cart.attached", "Karren wird angehängt");
-        translationBuilder.add("subtitles.niftycarts.cart.detached", "Karren wird abgehängt");
-        translationBuilder.add("subtitles.niftycarts.cart.placed", "Karren wird platziert");
-        translationBuilder.add("tutorial.slow.message", "Drücke %1$s um den Langsammodus zu aktivieren");
-        translationBuilder.add("item.cart.press_shift_tooltip", "Halte die [Linke Umschalttaste] gedrückt für mehr Details");
-        translationBuilder.add("item.supply_cart.tooltip1", "Dieser Karren kann bis zu 54 Stapel lagern");
-        translationBuilder.add("item.supply_cart.tooltip2", "Hat einen Sitzplatz, kann mit einem Banner dekoriert werden");
-        translationBuilder.add("item.hand_cart.tooltip1", "Dieser Karren kann bis zu 27 Stapel lagern");
-        translationBuilder.add("item.hand_cart.tooltip2", "Er kann nur vom Spieler gezogen werden");
-        translationBuilder.add("item.animal_cart.tooltip1", "Hat zwei Sitzplätze, kann mit einem Banner dekoriert werden");
-        translationBuilder.add("item.animal_cart.tooltip2", "Kann auch vom vorderen Sitz aus gesteuert werden");
-        translationBuilder.add("item.plow.tooltip1", "Kann den Boden pflügen, Wege planieren oder Rinde abschaben");
-        translationBuilder.add("item.plow.tooltip2", "Braucht das jeweilige Werkzeug, mit Rechtsklick aktivieren");
-        translationBuilder.add("item.seed_drill.tooltip1", "Diese Maschine kann Samen pflanzen");
-        translationBuilder.add("item.seed_drill.tooltip2", "Sie hat Platz für 9 Stapel Samen");
-        translationBuilder.add("item.reaper.tooltip1", "Diese Maschine kann Felder abernten");
-        translationBuilder.add("item.reaper.tooltip2", "Sie funktioniert nur, wenn ein Spieler sie bedient");
-        translationBuilder.add("item.wagon.tooltip1", "Verwende 5 Teppiche als Dach, Truhen für Lagerplatz");
-        translationBuilder.add("item.wagon.tooltip2", "Hat bis zu vier Sitzplätze");
-        translationBuilder.add("tag.item.niftycarts.seed_drill_plantable", "Kann mit der Sämaschine gesät werden");
+
+        try {
+            Path path = dataOutput.getModContainer().findPath("assets/" + NiftyCarts.MOD_ID + "/lang/de_de.existing.json").orElseThrow();
+            translationBuilder.add(path);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load existing lang file", e);
+        }
     }
 }
