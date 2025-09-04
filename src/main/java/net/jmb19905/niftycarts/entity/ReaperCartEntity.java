@@ -8,7 +8,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,7 +30,11 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
 
     public ReaperCartEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
-        this.spacing = 1.3D;
+    }
+
+    @Override
+    protected double getSpacing() {
+        return 1.3;
     }
 
     @Override

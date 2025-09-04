@@ -59,9 +59,6 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends Car
         state.bannerColor = entity.getBannerColor();
         state.bannerPattern = entity.getBannerPattern();
         state.woodType = entity.getWoodType();
-        if (entity instanceof ReaperCartEntity reaper) {
-            state.folded = reaper.isFolded();
-        }
     }
 
     public abstract ResourceLocation getTextureLocation(S state);

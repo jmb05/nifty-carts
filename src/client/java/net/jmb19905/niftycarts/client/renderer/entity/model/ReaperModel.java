@@ -1,12 +1,13 @@
 package net.jmb19905.niftycarts.client.renderer.entity.model;
 
 import net.jmb19905.niftycarts.client.renderer.entity.CartRenderState;
+import net.jmb19905.niftycarts.client.renderer.entity.ReaperRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.util.Mth;
 
-public final class ReaperModel extends CartModel<CartRenderState> {
+public final class ReaperModel extends CartModel<ReaperRenderState> {
 
     private final ModelPart frame;
     private final ModelPart foldedFrame;
@@ -18,7 +19,7 @@ public final class ReaperModel extends CartModel<CartRenderState> {
     }
 
     @Override
-    public void setupAnim(CartRenderState state) {
+    public void setupAnim(ReaperRenderState state) {
         super.setupAnim(state);
         if (state.folded) {
             this.frame.visible = false;

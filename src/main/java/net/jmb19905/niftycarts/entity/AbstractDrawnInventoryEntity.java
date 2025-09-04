@@ -2,6 +2,7 @@ package net.jmb19905.niftycarts.entity;
 
 import net.jmb19905.niftycarts.util.NiftyInventory;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
@@ -172,5 +173,22 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
     public void setContainerLootTableSeed(long l) {
         this.lootTableSeed = l;
     }
+
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        saveInventory(compound);
+    }
+
+    protected abstract void saveInventory(CompoundTag tag);
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        readInventory(compound);
+    }
+
+    protected abstract void readInventory(CompoundTag tag);
 
 }

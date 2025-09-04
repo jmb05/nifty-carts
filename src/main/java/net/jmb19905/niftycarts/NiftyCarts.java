@@ -32,9 +32,12 @@ import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlag;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -53,13 +56,17 @@ public class NiftyCarts implements ModInitializer {
 	public static final String MOD_ID = "niftycarts";
 
 	public static final Item WHEEL = register("wheel", Item::new);
-	private static final TriFunction<WoodType, String, FeatureFlag[], CartItem> CART_ITEM_SUPPLIER = (wood, type, flags) -> register(wood.name() + "_" + type, prop -> new CartItem(wood, type, prop.stacksTo(1).requiredFeatures(flags)));
+	private static final TriFunction<WoodType, String, FeatureFlag[], CartItem> CART_ITEM_SUPPLIER =
+            (wood, type, flags) ->
+                    register(wood.name() + "_" + type, prop ->
+                            new CartItem(wood, type, prop.stacksTo(1).requiredFeatures(flags)));
 	public static final Map<WoodType, CartItem> SUPPLY_CART = new HashMap<>();
 	public static final Map<WoodType, CartItem> HAND_CART = new HashMap<>();
 	public static final Map<WoodType, CartItem> PLOW = new HashMap<>();
 	public static final Map<WoodType, CartItem> ANIMAL_CART = new HashMap<>();
 	public static final Map<WoodType, CartItem> SEED_DRILL = new HashMap<>();
 	public static final Map<WoodType, CartItem> REAPER = new HashMap<>();
+    public static final Map<WoodType, CartItem> WAGON = new HashMap<>();
 
 	public static final WoodType[] VANILLA_WOOD_TYPES = {
 			WoodType.OAK,
@@ -85,6 +92,7 @@ public class NiftyCarts implements ModInitializer {
 			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "seed_drill", flags));
 			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "reaper", flags));
 			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "animal_cart", flags));
+            WAGON.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "wagon", flags));
 		}
 	}
 
@@ -116,6 +124,9 @@ public class NiftyCarts implements ModInitializer {
 	public static final EntityType<ReaperCartEntity> REAPER_ENTITY = register("reaper",
 			EntityType.Builder.of(ReaperCartEntity::new, MobCategory.MISC).sized(1.3f, 1.4f));
 
+    public static final EntityType<WagonEntity> WAGON_ENTITY = register("wagon",
+            EntityType.Builder.of(WagonEntity::new, MobCategory.MISC).sized(2.5f, 3f));
+
 	public static final EntityType<PostilionEntity> POSTILION_ENTITY = register("postilion",
 			EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
 					.sized(0.25f, 0.25f)
@@ -130,10 +141,15 @@ public class NiftyCarts implements ModInitializer {
 	public static final NiftyGoalAdder<PathfinderMob> PATHFINDER_GOAL_ADDER = NiftyGoalAdder.mobGoal(PathfinderMob.class)
 			.add(3, mob -> new AvoidCartGoal<>(mob, SupplyCartEntity.class, 3.0f, 0.5f))
 			.add(3, mob -> new AvoidCartGoal<>(mob, PlowEntity.class, 3.0f, 0.5f))
+            .add(3, mob -> new AvoidCartGoal<>(mob, SeedDrillEntity.class, 3.0f, 0.5f))
+            .add(3, mob -> new AvoidCartGoal<>(mob, ReaperCartEntity.class, 3.0f, 0.5f))
 			.build();
 
 	public static final MenuType<PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
 	public static final MenuType<SeedDrillMenu> SEED_DRILL_MENU_TYPE = new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<ChestMenu> CHEST_9x4_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x4_MENU_TYPE, i, inv, new SimpleContainer(4 * 9), 4), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<ChestMenu> CHEST_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x8_MENU_TYPE, i, inv, new SimpleContainer(8 * 9), 8), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<ChestMenu> CHEST_9x12_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x12_MENU_TYPE, i, inv, new SimpleContainer(12 * 9), 12), FeatureFlags.DEFAULT_FLAGS);
 
 	public static final ResourceLocation CART_ONE_CM = resLoc("cart_one_cm");
 
@@ -161,6 +177,7 @@ public class NiftyCarts implements ModInitializer {
             content.accept(REAPER.get(woodType));
             content.accept(ANIMAL_CART.get(woodType));
             content.accept(HAND_CART.get(woodType));
+            content.accept(WAGON.get(woodType));
         }));
 
 		Registry.register(BuiltInRegistries.SOUND_EVENT, ATTACH_SOUND_ID, ATTACH_SOUND);

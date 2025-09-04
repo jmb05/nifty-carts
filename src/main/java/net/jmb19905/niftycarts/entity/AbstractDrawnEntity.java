@@ -61,7 +61,6 @@ public abstract class AbstractDrawnEntity extends Entity {
     protected List<CartWheel> wheels;
     private int pullingId = -1;
     private UUID pullingUUID = null;
-    protected double spacing = 1.7D;
     public Entity pulling;
     protected AbstractDrawnEntity drawn;
 
@@ -69,6 +68,22 @@ public abstract class AbstractDrawnEntity extends Entity {
         super(entityTypeIn, worldIn);
         this.blocksBuilding = true;
         this.initWheels();
+    }
+
+    protected double getSpacing() {
+        return 1.7;
+    }
+
+    public boolean shouldPitch() {
+        return true;
+    }
+
+    public float getDisconnectedAngle() {
+        return 25f;
+    }
+
+    public boolean isLocked() {
+        return false;//TODO: implement cart lock
     }
 
     @Override
@@ -122,7 +137,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         }
         final double targetVecLength = targetVec.length();
         final double r = 0.2D;
-        final double relativeSpacing = Math.max(this.spacing + 0.5D * this.pulling.getBbWidth(), 1.0D);
+        final double relativeSpacing = Math.max(this.getSpacing() + 0.5D * this.pulling.getBbWidth(), 1.0D);
         final double diff = targetVecLength - relativeSpacing;
         final Vec3 move;
         if (Math.abs(diff) < r) {

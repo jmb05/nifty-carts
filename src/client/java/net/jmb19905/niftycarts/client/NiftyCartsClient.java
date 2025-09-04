@@ -13,6 +13,7 @@ import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
 import net.jmb19905.niftycarts.client.renderer.entity.*;
 import net.jmb19905.niftycarts.client.renderer.entity.model.*;
+import net.jmb19905.niftycarts.client.screen.ChestScreen;
 import net.jmb19905.niftycarts.client.screen.PlowScreen;
 import net.jmb19905.niftycarts.client.screen.SeedDrillScreen;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnPayload;
@@ -42,6 +43,7 @@ public class NiftyCartsClient implements ClientModInitializer {
 		EntityRendererRegistry.register(NiftyCarts.HAND_CART_ENTITY, HandCartRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.SEED_DRILL_ENTITY, SeedDrillRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.REAPER_ENTITY, ReaperRenderer::new);
+        EntityRendererRegistry.register(NiftyCarts.WAGON_ENTITY, WagonRenderer::new);
 		EntityRendererRegistry.register(NiftyCarts.POSTILION_ENTITY, PostilionRenderer::new);
 
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.SUPPLY_CART, SupplyCartModel::createLayer);
@@ -50,9 +52,15 @@ public class NiftyCartsClient implements ClientModInitializer {
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.HAND_CART, HandCartModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.SEED_DRILL, SeedDrillModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.REAPER, ReaperModel::createLayer);
+        EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.WAGON, WagonModel::createLayer);
+        EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.WAGON_ROOF, WagonModel::createRoofLayer);
+        EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.WAGON_CHEST, WagonModel::createChestLayer);
 
 		MenuScreens.register(NiftyCarts.PLOW_MENU_TYPE, PlowScreen::new);
 		MenuScreens.register(NiftyCarts.SEED_DRILL_MENU_TYPE, SeedDrillScreen::new);
+        MenuScreens.register(NiftyCarts.CHEST_9x4_MENU_TYPE, ChestScreen::new);
+        MenuScreens.register(NiftyCarts.CHEST_9x8_MENU_TYPE, ChestScreen::new);
+        MenuScreens.register(NiftyCarts.CHEST_9x12_MENU_TYPE, ChestScreen::new);
 
 		actionKeyMapping = KeyBindingHelper.registerKeyBinding(new KeyMapping(
 				"key.niftycarts.action",

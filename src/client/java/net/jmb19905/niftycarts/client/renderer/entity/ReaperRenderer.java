@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public final class ReaperRenderer extends DrawnRenderer<ReaperCartEntity, CartRenderState, ReaperModel> {
+public final class ReaperRenderer extends DrawnRenderer<ReaperCartEntity, ReaperRenderState, ReaperModel> {
 
     public ReaperRenderer(final EntityRendererProvider.Context renderManager) {
         super(renderManager, new ReaperModel(renderManager.bakeLayer(NiftyCartsModelLayers.REAPER)));
@@ -18,15 +18,21 @@ public final class ReaperRenderer extends DrawnRenderer<ReaperCartEntity, CartRe
     }
 
     @Override
-    public @NotNull CartRenderState createRenderState() {
-        return new CartRenderState();
+    public void extractRenderState(ReaperCartEntity entity, ReaperRenderState state, float delta) {
+        super.extractRenderState(entity, state, delta);
+        state.folded = entity.isFolded();
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(CartRenderState state) {
+    public @NotNull ReaperRenderState createRenderState() {
+        return new ReaperRenderState();
+    }
+
+    @Override
+    public @NotNull ResourceLocation getTextureLocation(ReaperRenderState state) {
         return NiftyCarts.resLoc("textures/entity/" + state.woodType.name() + "_reaper.png");
     }
 
     @Override
-    protected void renderContents(CartRenderState state, PoseStack stack, MultiBufferSource source, int packedLight) {}
+    protected void renderContents(ReaperRenderState state, PoseStack stack, MultiBufferSource source, int packedLight) {}
 }
