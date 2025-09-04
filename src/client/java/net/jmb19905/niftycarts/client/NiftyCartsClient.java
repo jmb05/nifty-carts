@@ -37,7 +37,7 @@ import static net.jmb19905.niftycarts.NiftyCarts.UPDATE_DRAWN_MESSAGE_ID;
 public class NiftyCartsClient implements ClientModInitializer {
 
 	private static KeyMapping actionKeyMapping;
-	private static KeyMapping toggleSlowMapping;
+	public static KeyMapping toggleSlowMapping;
 
 	@Override
 	public void onInitializeClient() {
@@ -107,8 +107,15 @@ public class NiftyCartsClient implements ClientModInitializer {
 				ClientPlayNetworking.send(ACTION_KEY_MESSAGE_ID, buf);
 			}
 			var player = client.player;
-			if (player != null && ToggleSlowMessage.getCart(player).isPresent()) {
+			if (player != null) {
 				while (toggleSlowMapping.consumeClick()) {
+                    if (player.getControlledVehicle() != null && ToggleSlowMessage.isSlowable(player.getControlledVehicle())) {
+                        if (!ToggleSlowMessage.isSlow(player.getControlledVehicle())) {
+                            player.displayClientMessage(Component.translatable("message.niftycarts.slow_toggled_on", toggleSlowMapping.getTranslatedKeyMessage()), true);
+                        } else {
+                            player.displayClientMessage(Component.translatable("message.niftycarts.slow_toggled_off", toggleSlowMapping.getTranslatedKeyMessage()), true);
+                        }
+                    }
 					var buf = PacketByteBufs.create();
 					var msg = new ToggleSlowMessage();
 					msg.encode(buf);

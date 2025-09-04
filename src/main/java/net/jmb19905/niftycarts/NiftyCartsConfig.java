@@ -64,6 +64,7 @@ public final class NiftyCartsConfig {
 
 
     public static class Common {
+        public final ForgeConfigSpec.DoubleValue slowSpeed;
         public final CartConfig supplyCart;
         public final CartConfig handCart;
         public final CartConfig animalCart;
@@ -73,6 +74,8 @@ public final class NiftyCartsConfig {
         public final CartConfig wagon;
 
         Common(final ForgeConfigSpec.Builder builder) {
+            this.slowSpeed = builder.comment("Slow speed modifier toggled by the sprint key")
+                    .defineInRange("slow_speed", -0.65D, -1.0D, 0.0D);
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
             this.supplyCart = new CartConfig(builder, "supply_cart", "The Supply Cart, a type of cart that stores items");
             this.supplyCart.pop();
@@ -96,7 +99,6 @@ public final class NiftyCartsConfig {
 
     public static class CartConfig {
         public final ForgeConfigSpec.ConfigValue<ArrayList<String>> pullEntities;
-        public final ForgeConfigSpec.DoubleValue slowSpeed;
         public final ForgeConfigSpec.DoubleValue pullSpeed;
         public final ForgeConfigSpec.IntValue destroyDamage;
         public final ForgeConfigSpec.BooleanValue adventureModeInteract;
@@ -115,8 +117,6 @@ public final class NiftyCartsConfig {
                                     "An empty list defaults to all which may wear a saddle but not steered by an item"
                     )
                     .define("pull_animals", defaultEntityList);
-            this.slowSpeed = builder.comment("Slow speed modifier toggled by the sprint key")
-                    .defineInRange("slow_speed", -0.65D, -1.0D, 0.0D);
             this.pullSpeed = builder.comment("Base speed modifier applied to animals (-0.5 = half normal speed)")
                     .defineInRange("pull_speed", 0.0D, -1.0D, defaultPullSpeed);
             this.destroyDamage = builder.comment("Damage needed to destroy the cart. Damage accumulates over time but decays at a rate of 2 damage per second.")

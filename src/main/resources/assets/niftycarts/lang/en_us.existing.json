@@ -21,5 +21,8 @@
   "item.reaper.tooltip2": "Only works if the player is sitting on it",
   "item.wagon.tooltip1": "Add 5 carpets as roof, add chests for storage",
   "item.wagon.tooltip2": "Has up to four seats",
-  "tag.item.niftycarts.seed_drill_plantable": "Plantable using the Seed Drill"
+  "tag.item.niftycarts.seed_drill_plantable": "Plantable using the Seed Drill",
+  "message.niftycarts.use_reaper": "Sit on the reaper to use it",
+  "message.niftycarts.slow_toggled_on": "Mount moving slowly, Press %1$s to disable",
+  "message.niftycarts.slow_toggled_off": "Mount moving normaly, Press %1$s to enable slow speed"
 }

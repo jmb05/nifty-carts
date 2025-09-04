@@ -8,6 +8,7 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.NiftyCartsWoodType;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnMessage;
+import net.jmb19905.niftycarts.network.serverbound.ToggleSlowMessage;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.jmb19905.niftycarts.util.CartWheel;
 import net.minecraft.core.BlockPos;
@@ -69,7 +70,6 @@ public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> LOCKED = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final UUID PULL_SLOWLY_MODIFIER_UUID = UUID.fromString("49B0E52E-48F2-4D89-BED7-4F5DF26F1263");
     private static final UUID PULL_MODIFIER_UUID = UUID.fromString("BA594616-5BE3-46C6-8B40-7D0230C64B77");
     private int lerpSteps;
     private double lerpX;
@@ -239,7 +239,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                     if (this.pulling instanceof LivingEntity) {
                         final AttributeInstance attr = ((LivingEntity) this.pulling).getAttribute(Attributes.MOVEMENT_SPEED);
                         if (attr != null) {
-                            attr.removeModifier(PULL_SLOWLY_MODIFIER_UUID);
+                            attr.removeModifier(ToggleSlowMessage.PULL_SLOWLY_MODIFIER_UUID);
                             attr.removeModifier(PULL_MODIFIER_UUID);
                         }
                     } else if (this.pulling instanceof AbstractDrawnEntity) {
@@ -718,24 +718,6 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     public RenderInfo getInfo(final float delta) {
         return new RenderInfo(delta);
-    }
-
-    public void toggleSlow() {
-        final Entity pulling = this.pulling;
-        if (!(pulling instanceof LivingEntity)) return;
-        final AttributeInstance speed = ((LivingEntity) pulling).getAttribute(Attributes.MOVEMENT_SPEED);
-        if (speed == null) return;
-        final AttributeModifier modifier = speed.getModifier(PULL_SLOWLY_MODIFIER_UUID);
-        if (modifier == null) {
-            speed.addTransientModifier(new AttributeModifier(
-                    PULL_SLOWLY_MODIFIER_UUID,
-                    "Pull slowly modifier",
-                    this.getConfig().slowSpeed.get(),
-                    AttributeModifier.Operation.MULTIPLY_TOTAL
-            ));
-        } else {
-            speed.removeModifier(modifier);
-        }
     }
 
     public Map<Vector3f, List<AABB>> getAdditionalColoredDebugBoxes() {
