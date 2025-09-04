@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "l": "minecraft:stripped_cherry_log",
+    "p": "minecraft:cherry_planks",
+    "w": "niftycarts:wheel"
+  },
+  "pattern": [
+    "lll",
+    "wpw",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:cherry_wagon"
+  }
+}

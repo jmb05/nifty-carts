@@ -1,5 +1,6 @@
 package net.jmb19905.niftycarts.client;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import net.fabricmc.api.ClientModInitializer;
@@ -22,12 +23,19 @@ import net.jmb19905.niftycarts.network.serverbound.ToggleSlowPayload;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.fml.config.ModConfig;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Objects;
 
 public class NiftyCartsClient implements ClientModInitializer {
+
+    public static final ImmutableMap<WoodType, String> LOG_NAME_OVERRIDE = ImmutableMap.of(
+            WoodType.CRIMSON, "stem",
+            WoodType.WARPED, "stem",
+            WoodType.BAMBOO, "block"
+    );
 
 	private static KeyMapping actionKeyMapping;
 	private static KeyMapping toggleSlowMapping;

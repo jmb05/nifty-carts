@@ -1,29 +1,22 @@
 package net.jmb19905.niftycarts.client.mixin;
 
-import com.google.common.collect.ImmutableMap;
 import net.jmb19905.niftycarts.NiftyCarts;
+import net.jmb19905.niftycarts.client.NiftyCartsClient;
 import net.jmb19905.niftycarts.client.renderer.texture.AssembledTexture;
 import net.jmb19905.niftycarts.client.renderer.texture.AssembledTextureFactory;
 import net.jmb19905.niftycarts.client.renderer.texture.Material;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ModelManager.class)
 public abstract class ModelManagerMixin {
-
-    @Unique
-    private static final ImmutableMap<WoodType, String> LOG_NAME_OVERRIDE = ImmutableMap.of(
-            WoodType.CRIMSON, "stem",
-            WoodType.WARPED, "stem",
-            WoodType.BAMBOO, "block"
-    );
 
     @Inject(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V"))
     private void apply(ModelManager.ReloadState reloadState, ProfilerFiller profilerFiller, CallbackInfo ci){
@@ -41,7 +34,7 @@ public abstract class ModelManagerMixin {
         Material dirt = new Material(ResourceLocation.withDefaultNamespace("block/dirt"), 16)
                 .fill(0, 45, 16, 17);
         for (WoodType type : NiftyCarts.VANILLA_WOOD_TYPES) {
-            String logName = LOG_NAME_OVERRIDE.getOrDefault(type, "log");
+            String logName = NiftyCartsClient.LOG_NAME_OVERRIDE.getOrDefault(type, "log");
             factory.add(new AssembledTexture(NiftyCarts.resLoc("textures/entity/" + type.name() + "_animal_cart.png"),64, 64)
                 .add(new Material(ResourceLocation.withDefaultNamespace("block/" + type.name() + "_planks"), 16)
                         .fill(0, 0, 60, 38, Material.R0, 0, 2)
@@ -71,6 +64,21 @@ public abstract class ModelManagerMixin {
                                 .fill(46, 60, 8, 4, Material.R90)
                         )
                         .add(stone)
+                )
+                .add(new AssembledTexture(NiftyCarts.resLoc("textures/entity/" + type.name() + "_wagon.png"), 64, 64)
+                        .add(new Material(ResourceLocation.withDefaultNamespace("block/" + type.name() + "_planks"), 16)
+                                .fill(0, 0, 64, 48)
+                        )
+                        .add(new Material(ResourceLocation.withDefaultNamespace("block/stripped_" + type.name() + "_" + logName), 16)
+                                .fill(54, 53, 10, 11, Material.R0, 0, 2)
+                                .fill(0, 32, 13, 19, Material.R0, 1, 0)
+                        )
+                        .add(new Material(ResourceLocation.withDefaultNamespace("block/" + type.name() + "_" + logName), 16)
+                                .fill(0, 60, 54, 4, Material.R90)
+                        )
+                        .add(new Material(ResourceLocation.withDefaultNamespace("block/stone"), 16)
+                                .fill(62, 54, 2, 10)
+                        )
                 )
                 .add(new AssembledTexture(NiftyCarts.resLoc("textures/entity/" + type.name() + "_seed_drill.png"), 64, 64)
                         .add(new Material(ResourceLocation.withDefaultNamespace("block/" + type.name() + "_planks"), 16)
@@ -143,6 +151,11 @@ public abstract class ModelManagerMixin {
                         .add(composterTop)
                         .add(dirt)
             );
+            for (DyeColor color : DyeColor.values()) {
+                factory.add(new AssembledTexture(NiftyCarts.resLoc("textures/entity/wagon_roof_" + color.getName() + ".png"), 16, 16)
+                        .add(new Material(ResourceLocation.withDefaultNamespace("block/" + color.getName() + "_wool"), 16)
+                                .fill(0, 0, 16, 16)));
+            }
         }
         factory.bake();
     }

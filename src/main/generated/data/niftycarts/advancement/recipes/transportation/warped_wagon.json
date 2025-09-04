@@ -1,0 +1,38 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "niftycarts:warped_wagon"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wheel_planks_wool": {
+      "conditions": {
+        "items": [
+          {
+            "items": "niftycarts:wheel"
+          },
+          {
+            "items": "minecraft:warped_planks"
+          },
+          {
+            "items": "#minecraft:wool"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_wheel_planks_wool"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "niftycarts:warped_wagon"
+    ]
+  }
+}

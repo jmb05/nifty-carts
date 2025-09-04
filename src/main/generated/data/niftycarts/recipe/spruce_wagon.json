@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "l": "minecraft:stripped_spruce_log",
+    "p": "minecraft:spruce_planks",
+    "w": "niftycarts:wheel"
+  },
+  "pattern": [
+    "lll",
+    "wpw",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:spruce_wagon"
+  }
+}

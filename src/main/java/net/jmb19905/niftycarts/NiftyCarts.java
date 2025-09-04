@@ -167,6 +167,9 @@ public class NiftyCarts implements ModInitializer {
 
 		Registry.register(BuiltInRegistries.MENU, resLoc("plow"), PLOW_MENU_TYPE);
 		Registry.register(BuiltInRegistries.MENU, resLoc("seed_drill"), SEED_DRILL_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, resLoc("chest_four_rows"), CHEST_9x4_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, resLoc("chest_eight_rows"), CHEST_9x8_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, resLoc("chest_quad"), CHEST_9x12_MENU_TYPE);
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> Arrays.stream(VANILLA_WOOD_TYPES).forEach(woodType -> {

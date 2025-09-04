@@ -105,7 +105,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         super.tick();
         this.interpolation.interpolate();
         if (this.pulling == null) {
-            this.setXRot(25.0F);
+            if (shouldPitch()) this.setXRot(getDisconnectedAngle());
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.attemptReattach();
         }
@@ -305,7 +305,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             }
         } else {
             if (this.pullingUUID != null) {
-                final Entity entity = ((ServerLevel) this.level()).getEntity(this.pullingUUID);
+                final Entity entity = this.level().getEntity(this.pullingUUID);
                 if (entity != null && entity.isAlive()) {
                     this.setPulling(entity);
                 }
@@ -358,7 +358,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      */
     public void handleRotation(final Vec3 target) {
         this.setYRot(getYaw(target));
-        this.setXRot(getPitch(target));
+        if (shouldPitch()) this.setXRot(getPitch(target));
     }
 
     public static float getYaw(final Vec3 vec) {
@@ -697,7 +697,11 @@ public abstract class AbstractDrawnEntity extends Entity {
         public float getPitch() {
             if (Float.isNaN(this.pitch)) {
                 if (AbstractDrawnEntity.this.pulling == null) {
-                    this.pitch = Mth.lerp(this.delta, AbstractDrawnEntity.this.xRotO, AbstractDrawnEntity.this.getXRot());
+                    if (!shouldPitch()) {
+                        this.pitch = getDisconnectedAngle();
+                    } else {
+                        this.pitch = Mth.lerp(this.delta, AbstractDrawnEntity.this.xRotO, AbstractDrawnEntity.this.getXRot());
+                    }
                 } else {
                     this.pitch = AbstractDrawnEntity.getPitch(this.getTarget());
                 }

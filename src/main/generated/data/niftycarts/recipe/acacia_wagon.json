@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "l": "minecraft:stripped_acacia_log",
+    "p": "minecraft:acacia_planks",
+    "w": "niftycarts:wheel"
+  },
+  "pattern": [
+    "lll",
+    "wpw",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "niftycarts:acacia_wagon"
+  }
+}

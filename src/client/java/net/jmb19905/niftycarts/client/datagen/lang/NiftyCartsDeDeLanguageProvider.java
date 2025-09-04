@@ -24,7 +24,8 @@ public class NiftyCartsDeDeLanguageProvider extends FabricLanguageProvider {
             .put(WoodType.JUNGLE, "Tropenholz")
             .put(WoodType.MANGROVE, "Mangrovenholz")
             .put(WoodType.CRIMSON, "Karmesin")
-            .put(WoodType.WARPED, "Wirr").build();
+            .put(WoodType.WARPED, "Wirr")
+            .put(WoodType.PALE_OAK, "Blasseichen").build();
 
     public NiftyCartsDeDeLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(dataOutput, "de_de", registryLookup);
@@ -41,6 +42,7 @@ public class NiftyCartsDeDeLanguageProvider extends FabricLanguageProvider {
             translationBuilder.add(NiftyCarts.PLOW.get(woodType), woodTypeName + "pflug");
             translationBuilder.add(NiftyCarts.SEED_DRILL.get(woodType), woodTypeName + "sämaschine");
             translationBuilder.add(NiftyCarts.REAPER.get(woodType), woodTypeName + "mähmaschine");
+            translationBuilder.add(NiftyCarts.WAGON.get(woodType), woodTypeName + "wagen");
         });
         translationBuilder.add(NiftyCarts.SUPPLY_CART_ENTITY, "Transportkarren");
         translationBuilder.add(NiftyCarts.ANIMAL_CART_ENTITY, "Tierkarren");

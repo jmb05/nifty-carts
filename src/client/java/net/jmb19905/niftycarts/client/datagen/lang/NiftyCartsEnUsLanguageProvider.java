@@ -26,6 +26,7 @@ public class NiftyCartsEnUsLanguageProvider extends FabricLanguageProvider {
             translationBuilder.add(NiftyCarts.PLOW.get(woodType), capitalizeWordStart(woodType.name()) + "Plow");
             translationBuilder.add(NiftyCarts.SEED_DRILL.get(woodType), capitalizeWordStart(woodType.name()) + "Seed Drill");
             translationBuilder.add(NiftyCarts.REAPER.get(woodType), capitalizeWordStart(woodType.name()) + "Reaper");
+            translationBuilder.add(NiftyCarts.WAGON.get(woodType), capitalizeWordStart(woodType.name()) + "Wagon");
         });
         translationBuilder.add(NiftyCarts.SUPPLY_CART_ENTITY, "Supply Cart");
         translationBuilder.add(NiftyCarts.ANIMAL_CART_ENTITY, "Animal Cart");
@@ -33,6 +34,7 @@ public class NiftyCartsEnUsLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(NiftyCarts.PLOW_ENTITY, "Plow");
         translationBuilder.add(NiftyCarts.SEED_DRILL_ENTITY, "Seed Drill");
         translationBuilder.add(NiftyCarts.REAPER_ENTITY, "Reaper");
+        translationBuilder.add(NiftyCarts.WAGON_ENTITY, "Wagon");
         translationBuilder.add(NiftyCarts.CART_ONE_CM, "Distance by Cart");
 
         try {

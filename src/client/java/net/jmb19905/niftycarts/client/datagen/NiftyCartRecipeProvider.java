@@ -3,6 +3,7 @@ package net.jmb19905.niftycarts.client.datagen;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.jmb19905.niftycarts.NiftyCarts;
+import net.jmb19905.niftycarts.client.NiftyCartsClient;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -49,9 +50,15 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                     ResourceLocation supplyCartId = NiftyCarts.resLoc(woodType.name() + "_supply_cart");
                     Optional<Holder.Reference<Item>> supplyCart = BuiltInRegistries.ITEM.get(supplyCartId);
                     Item planks = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks"));
+                    Item strippedLogs = BuiltInRegistries.ITEM.getValue(
+                            ResourceLocation.withDefaultNamespace(
+                                    "stripped_"
+                                            + woodType.name()
+                                            + "_" + (NiftyCartsClient.LOG_NAME_OVERRIDE.getOrDefault(woodType, "log"))));
                     var recipeTrigger = RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, NiftyCarts.WHEEL), ItemPredicate.Builder.item().of(items, planks));
+                    var wagonRecipeTrigger = RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, NiftyCarts.WHEEL), ItemPredicate.Builder.item().of(items, planks), ItemPredicate.Builder.item().of(items, ItemTags.WOOL));
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, supplyCart.get().value())
-                            .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
+                            .define('p', planks)
                             .define('w', NiftyCarts.WHEEL)
                             .define('c', Blocks.CHEST)
                             .unlockedBy("has_wheel_and_planks", recipeTrigger)
@@ -63,7 +70,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                     ResourceLocation animalCartId = NiftyCarts.resLoc(woodType.name() + "_animal_cart");
                     Optional<Holder.Reference<Item>>  animalCart = BuiltInRegistries.ITEM.get(animalCartId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, animalCart.get().value())
-                            .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
+                            .define('p', planks)
                             .define('w', NiftyCarts.WHEEL)
                             .unlockedBy("has_wheel_and_planks", recipeTrigger)
                             .pattern("ppp")
@@ -74,7 +81,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                     ResourceLocation handCartId = NiftyCarts.resLoc(woodType.name() + "_hand_cart");
                     Optional<Holder.Reference<Item>>  handCart = BuiltInRegistries.ITEM.get(handCartId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, handCart.get().value())
-                            .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
+                            .define('p', planks)
                             .define('w', NiftyCarts.WHEEL)
                             .define('c', Blocks.CHEST)
                             .unlockedBy("has_wheel_and_planks", recipeTrigger)
@@ -85,7 +92,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                     ResourceLocation plowId = NiftyCarts.resLoc(woodType.name() + "_plow");
                     Optional<Holder.Reference<Item>>  plow = BuiltInRegistries.ITEM.get(plowId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, plow.get().value())
-                            .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
+                            .define('p', planks)
                             .define('w', NiftyCarts.WHEEL)
                             .define('s', Items.STICK)
                             .unlockedBy("has_wheel_and_planks", recipeTrigger)
@@ -97,7 +104,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                     ResourceLocation reaperId = NiftyCarts.resLoc(woodType.name() + "_reaper");
                     Optional<Holder.Reference<Item>>  reaper = BuiltInRegistries.ITEM.get(reaperId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, reaper.get().value())
-                            .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
+                            .define('p', planks)
                             .define('l', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_slab")).get().value())
                             .define('w', NiftyCarts.WHEEL)
                             .define('s', Items.STICK)
@@ -111,13 +118,25 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                     ResourceLocation seedDrillId = NiftyCarts.resLoc(woodType.name() + "_seed_drill");
                     Optional<Holder.Reference<Item>>  seedDrill = BuiltInRegistries.ITEM.get(seedDrillId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, seedDrill.get().value())
-                            .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
+                            .define('p', planks)
                             .define('w', NiftyCarts.WHEEL)
                             .define('c', Blocks.CHEST)
                             .define('h', Blocks.HOPPER)
                             .unlockedBy("has_wheel_and_planks", recipeTrigger)
                             .pattern("pcp")
                             .pattern("php")
+                            .pattern("wpw")
+                            .save(recipeOutput);
+
+                    ResourceLocation wagonId = NiftyCarts.resLoc(woodType.name() + "_wagon");
+                    Optional<Holder.Reference<Item>> wagon = BuiltInRegistries.ITEM.get(wagonId);
+                    ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, wagon.get().value())
+                            .define('p', planks)
+                            .define('w', NiftyCarts.WHEEL)
+                            .define('l', strippedLogs)
+                            .unlockedBy("has_wheel_planks_wool", wagonRecipeTrigger)
+                            .pattern("lll")
+                            .pattern("wpw")
                             .pattern("wpw")
                             .save(recipeOutput);
                 });
