@@ -1,0 +1,98 @@
+## Items
+- ### Wheel
+  - Crafting ingredient
+  - Recipe:
+    <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/e93733ad927acfe08e23fa02432930ad4bc89a1f.png">
+- ### Supply Cart
+  - Summons Supply Cart Entity
+  - Has tooltip that expands on holding Shift
+  - exists for all wood types
+  - Recipe:
+  <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/23560032e7e8db0017c2e7f590d96f623ed009ce.png">
+- ### Animal Cart
+  - Summons Animal Cart Entity
+  - Has tooltip that expands on holding Shift
+  - exists for all wood types
+  - Recipe:
+  <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/de8ca4369830fe55dba0cfc28d11227fbec5781c.png">
+- ### Plow
+  - Summons Plow Entity
+  - Has tooltip that expands on holding Shift
+  - exists for all wood types
+  - Recipe:
+    <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/a3586b5eb22a4a8819bf8ed50f20a91eb9448d04.png">
+- ### Handcart
+  - Summons Handcart Entity
+  - Has tooltip that expands on holding Shift
+  - exists for all wood types
+  - Recipe:
+  <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/1fe51705ccc0a4b8d8cc46a251f692745bddfc9d.webp">
+- ### Seed Drill
+  - Summons Seed Drill Entity
+  - Has tooltip that expands on holding Shift
+  - exists for all wood types
+  - Recipe:
+  <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/57007fd449e42a6fdd2f1953e7fbe5ac86bdbb5c.png">
+- ### Reaper
+  - Summons Reaper Entity
+  - Has tooltip that expands on holding Shift
+  - exists for all wood types
+  - Recipe:
+  <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/f272deef5cced628997c3c5aa0bcae42905bc4bf.png">
+- ### Wagon
+  - Summons Wagon Entity
+  - has tooltip that expands on holding Shift
+  - exists for all wood types
+  - Recipe: TODO: add image
+## Entities
+- ### Supply Cart
+  - Drawn Cart
+  - Has inventory with 54 slots
+  - Items in the inventory are rendered onto the cart model
+  - 1 backwards facing seat for players
+  - banner can be added facing backwards
+  - cart can be pulled by player and saddled animals that aren't steered by item
+  - Mobs path away from cart
+- ### Animal Cart
+  - Drawn Cart
+  - 2 seats for players and mobs
+  - cart can be pulled by player and saddled animals that aren't steered by item
+  - cart can be steered from the front seat
+  - banner can be added facing backwards
+- ### Plow
+  - Drawn Cart
+  - Has 3 inventory slots for tools
+  - cart can be pulled by player and saddled animals that aren't steered by item
+  - can be activated with right-click
+  - activated cart uses items in slot on ground
+  - mobs path away from cart
+- ### Handcart
+  - Drawn Cart
+  - Has inventory with 27 slots
+  - Items in the inventory are rendered onto the cart model
+  - cart can only be pulled by players
+  - mobs cart away from cart
+- ### Seed Drill
+  - Drawn Cart
+  - Has inventory with 9 slots for seeds
+  - Items in the inventory are rendered onto the cart model
+  - cart can be pulled by player and saddled animals that aren't steered by item
+  - Seeds in inventory are placed onto ground when pulled
+  - mobs path away from cart
+- ### Reaper
+  - Drawn Cart
+  - Has 1 seat
+  - can be pulled by player and saddled animals that aren't steered by item
+  - breaks crops, grass and flowers on ground when active
+  - only active when player on seat
+  - mobs path away from cart
+- ### Wagon
+  - Drawn Cart
+  - Can have roof by adding/clicking carpets (5 in survival)
+  - roof has three variants that can be cycles by right-clicking top part of wagon
+  - Can have up to three chests (added by clicking) each chest adds 36 slots
+  - Can have up to four seats
+  - Seat count restricted by chest count
+    - 0-1 chests → 4 seats
+    - 2 chests → 2 seats
+    - 3 chests → 0 seats
