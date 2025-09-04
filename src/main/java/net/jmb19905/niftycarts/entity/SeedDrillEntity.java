@@ -49,14 +49,13 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
 
     private void plant() {
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < SLOT_COUNT; j++) {
-                final ItemStack stack = this.getStackInSlot(j);
-                final float f = i - 1;
-                final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
-                final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
-                final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
-                if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
-            }
+            int j = this.level().random.nextInt(SLOT_COUNT);
+            final ItemStack stack = this.getStackInSlot(j);
+            final float f = i - 1;
+            final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
+            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
         }
     }
 
