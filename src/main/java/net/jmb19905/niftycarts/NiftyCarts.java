@@ -140,6 +140,7 @@ public class NiftyCarts implements ModInitializer {
 	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/hoe"));
 	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/shovel"));
 	public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/axe"));
+    public static final TagKey<Block> REAPER_HARVESTABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "reaper_harvestable"));
 	public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, NiftyCarts.resLoc("seed_drill_plantable"));
 
 	@Override

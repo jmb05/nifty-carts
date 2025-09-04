@@ -103,7 +103,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
             final BlockPos blockPos = new BlockPos((int) blockPosX, (int) Math.round(this.getY() - 0.75D), (int) blockPosZ);
             BlockPos pos = blockPos.above();
             BlockState state = level().getBlockState(pos);
-            if (state.is(BlockTags.CROPS)) {
+            if (state.is(NiftyCarts.REAPER_HARVESTABLE)) {
                 if (level().removeBlock(pos, false)) {
                     level().destroyBlock(pos, false);
                     if (!state.requiresCorrectToolForDrops()) {
