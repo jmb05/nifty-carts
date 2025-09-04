@@ -104,10 +104,11 @@ public class ReaperEntity extends AbstractDrawnEntity {
     }
 
     private void harvest(Player player) {
-        for (float f = 0.9f; f <= 2; f += 0.1f) {
-            final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
-            final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
-            final BlockPos blockPos = new BlockPos((int) Math.round(blockPosX), (int) Math.round(this.getY() - 0.75D), (int) Math.round(blockPosZ));
+        for (int i = 0; i <= 12; i += 2) {
+            float f = 1.1f + ((float) i / 10f);
+            final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
             BlockPos pos = blockPos.above();
             BlockState state = level().getBlockState(pos);
             if (state.is(NiftyCarts.REAPER_HARVESTABLE)) {
