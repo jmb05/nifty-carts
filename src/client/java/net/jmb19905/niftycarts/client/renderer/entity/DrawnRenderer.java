@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends EntityModel<T>> extends EntityRenderer<T> {
-    protected M model;
+    protected final M model;
 
     private final ModelPart flag;
     private final ModelPart pole;
@@ -73,23 +73,32 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends Ent
         stack.scale(-1.0F, -1.0F, 1.0F);
     }
 
-    protected void renderBanner(final PoseStack stack, final MultiBufferSource source, final int packedLight, final List<Pair<Holder<BannerPattern>, DyeColor>> banner) {
+    protected void renderBanner(AbstractDrawnEntity entity, float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight, final List<Pair<Holder<BannerPattern>, DyeColor>> banner) {
+        this.renderBanner(entity, delta, stack, source, packedLight, banner, true);
+    }
+
+    protected void renderBanner(AbstractDrawnEntity entity, float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight, final List<Pair<Holder<BannerPattern>, DyeColor>> banner, boolean renderPole) {
         stack.pushPose();
         stack.mulPose(Axis.YP.rotationDegrees(90.0F));
         final float scale = 2.0F / 3.0F;
         stack.scale(scale, scale, scale);
         VertexConsumer consumer = ModelBakery.BANNER_BASE.buffer(source, RenderType::entitySolid);
-        this.pole.zRot = -0.3f;
-        this.pole.x = 14.0f;
-        this.pole.render(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
-        this.bar.x = -4.0F;
-        this.bar.y = 4.0F;
-        this.bar.z = 0.1F;
+        if (renderPole) {
+            this.pole.zRot = -0.3f;
+            this.pole.x = 14.0f;
+            this.pole.render(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
+        }
+        this.bar.x = -3.912F;
+        this.bar.y = 3.045F;
+        this.bar.z = 0.001F;
         this.bar.render(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
-        this.flag.x = -4.0F;
-        this.flag.y = -26.0F;
+        this.flag.x = -4.001F;
+        this.flag.y = -27.1F;
         this.flag.z = 1.5F;
-        this.flag.xRot = 0.0F;
+        @SuppressWarnings("resource")
+        long gameTime = entity.level().getGameTime();
+        float animationTime = ((float)Math.floorMod((long)(entity.getX() * 7 + entity.getY() * 9 + entity.getZ() * 13) + gameTime, 100L) + delta) / 100.0F;
+        this.flag.xRot = (0.01F * Mth.cos(((float)Math.PI * 2F) * animationTime)) * (float)Math.PI;
         BannerRenderer.renderPatterns(stack, source, packedLight, OverlayTexture.NO_OVERLAY, this.flag, ModelBakery.BANNER_BASE, true, banner);
         stack.popPose();
     }

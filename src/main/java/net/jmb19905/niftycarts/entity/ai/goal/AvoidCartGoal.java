@@ -47,10 +47,6 @@ public class AvoidCartGoal<T extends AbstractDrawnEntity>
         this.avoidEntityTargeting = this.avoidEntityTargeting.range(f).selector(predicate2.and(predicate));
     }
 
-    public AvoidCartGoal(PathfinderMob pathfinderMob, Class<T> class_, float f, double d, Predicate<AbstractDrawnEntity> predicate) {
-        this(pathfinderMob, class_, livingEntity -> true, f, d, predicate);
-    }
-
     @SuppressWarnings("resource")
     @Override
     public boolean canUse() {

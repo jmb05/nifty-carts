@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@SuppressWarnings("resource")
 public final class AnimalCartEntity extends AbstractDrawnEntity {
     public AnimalCartEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
@@ -29,19 +30,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     @Override
     public void tick() {
         super.tick();
-        final Entity coachman = this.getControllingPassenger();
-        final Entity pulling = this.getPulling();
-        if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
-            final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level());
-            if (postilion != null) {
-                postilion.moveTo(pulling.getX(), pulling.getY(), pulling.getZ(), coachman.getYRot(), coachman.getXRot());
-                if (postilion.startRiding(pulling)) {
-                    this.level().addFreshEntity(postilion);
-                } else {
-                    postilion.discard();
-                }
-            }
-        }
+        managePostilion();
         if (this.isLocked()) return;
         List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate(0.2F, -0.01F, 0.2F), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
@@ -83,16 +72,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
         if (bannerResult.consumesAction()) {
             return bannerResult;
         }
-        if (this.getPulling() != player) {
-            if (!this.canAddPassenger(player)) {
-                return InteractionResult.PASS;
-            }
-            if (!this.level().isClientSide) {
-                return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.PASS;
+        return interactStartRiding(player);
     }
 
     @Override
@@ -134,12 +114,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
             final Vec3 origin = new Vec3(0.0D, this.getPassengersRidingOffset(), 1.0D / 16.0D);
             final Vec3 pos = origin.add(forward.scale(f + Mth.sin((float) Math.toRadians(this.getXRot())) * 0.7D));
             passenger.setPos(this.getX() + pos.x, this.getY() + pos.y + passenger.getMyRidingOffset(), this.getZ() + pos.z);
-            passenger.setYBodyRot(this.getYRot());
-            final float f2 = Mth.wrapDegrees(passenger.getYRot() - this.getYRot());
-            final float f1 = Mth.clamp(f2, -105.0F, 105.0F);
-            passenger.yRotO += f1 - f2;
-            passenger.setYRot(passenger.getYRot() + (f1 - f2));
-            passenger.setYHeadRot(passenger.getYRot());
+            clampRiderRotation(passenger);
             if (passenger instanceof Animal && this.getPassengers().size() > 1) {
                 final int j = passenger.getId() % 2 == 0 ? 90 : 270;
                 passenger.setYBodyRot(((Animal) passenger).yBodyRot + j);

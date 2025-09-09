@@ -30,7 +30,7 @@ public class AssembledTexture {
             final int i = it.nextIndex();
             final PreparedMaterial p = it.next().prepare(sprites);
             prepared[i] = p;
-            resolution = Math.max(resolution, p.getResolution());
+            resolution = Math.max(resolution, p.resolution());
         }
         final NativeImage image = new NativeImage(this.width * resolution, this.height * resolution, true);
         for (final PreparedMaterial p : prepared) p.draw(image, resolution);

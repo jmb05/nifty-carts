@@ -3,23 +3,9 @@ package net.jmb19905.niftycarts.client.renderer.texture;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-public class Fill {
-    private final int x, y, width, height;
+public record Fill(int x, int y, int width, int height, int[][] rot, int u, int v) {
 
-    private final int[][] rot;
-
-    private final int u, v;
-
-    Fill(final int x, final int y, final int width, final int height, final int[][] rot, final int u, final int v) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.rot = rot;
-        this.u = u;
-        this.v = v;
-    }
-
+    @SuppressWarnings("resource")
     void fill(final NativeImage image, final TextureAtlasSprite sprite, final int resolution, final int outResolution) {
         final int r = outResolution / resolution;
         final int x1 = (this.x + this.width) * resolution;

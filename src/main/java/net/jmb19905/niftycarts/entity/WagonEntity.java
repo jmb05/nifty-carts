@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@SuppressWarnings("resource")
 public class WagonEntity extends AbstractDrawnInventoryEntity {
 
     private static final EntityDataAccessor<Integer> UNFURL = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
@@ -115,9 +116,11 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    public @NotNull InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
+    public @NotNull InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand hand) {
         if (this.isLocked()) return InteractionResult.FAIL;
-        ItemStack itemStack = player.getItemInHand(interactionHand);
+        ItemStack itemStack = player.getItemInHand(hand);
+        final InteractionResult bannerResult = this.useBanner(player, hand);
+        if (bannerResult.consumesAction()) return bannerResult;
         if (vec3.y > 2.2 && !player.isSecondaryUseActive()) {
             return interactCarpet(itemStack, player);
         } else if (itemStack.is(Items.CHEST) && canAddChest()) {
@@ -130,7 +133,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
             }
             return InteractionResult.sidedSuccess(this.level().isClientSide);
         }
-        return super.interact(player, interactionHand);
+        return super.interact(player, hand);
     }
 
     private InteractionResult interactCarpet(ItemStack itemStack, Player player) {
@@ -185,16 +188,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     protected InteractionResult onInteractNotOpen(Player player, InteractionHand hand) {
-        if (this.getPulling() != player) {
-            if (!this.canAddPassenger(player)) {
-                return InteractionResult.PASS;
-            }
-            if (!this.level().isClientSide) {
-                return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.PASS;
+        return interactStartRiding(player);
     }
 
     @Override
@@ -287,6 +281,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
             this.entityData.get(EQUIPPED_CARPET).save(itemTag);
         }
         compound.put("Carpet", itemTag);
+        ContainerHelper.saveAllItems(compound, this.getItemStacks());
     }
 
     @Override
@@ -297,7 +292,6 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         this.entityData.set(CHEST_COUNT, compound.getInt("ChestCount"));
         CompoundTag itemTag = compound.getCompound("Carpet");
         this.entityData.set(EQUIPPED_CARPET, ItemStack.of(itemTag));
-        ContainerHelper.saveAllItems(compound, this.getItemStacks());
         ContainerHelper.loadAllItems(compound, this.getItemStacks());
     }
 }

@@ -1,6 +1,7 @@
 package net.jmb19905.niftycarts.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
 import net.jmb19905.niftycarts.client.renderer.entity.model.WagonModel;
@@ -8,8 +9,13 @@ import net.jmb19905.niftycarts.entity.WagonEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class WagonRenderer extends DrawnRenderer<WagonEntity, WagonModel> {
 
@@ -33,6 +39,13 @@ public class WagonRenderer extends DrawnRenderer<WagonEntity, WagonModel> {
         stack.popPose();
         if (entity.hasRoof()) {
             model.getRoof(entity.getUnfurled()).render(stack, source.getBuffer(this.model.renderType(entity.getRoofTexture())), packedLight, OverlayTexture.NO_OVERLAY);
+        }
+        final List<Pair<Holder<BannerPattern>, DyeColor>> list = entity.getBannerPattern();
+        if (!list.isEmpty()) {
+            stack.pushPose();
+            stack.translate(0.0D, -0.58D, 2.62D);
+            this.renderBanner(entity, delta, stack, source, packedLight, list);
+            stack.popPose();
         }
         stack.popPose();
     }

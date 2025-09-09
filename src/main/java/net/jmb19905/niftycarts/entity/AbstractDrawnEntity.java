@@ -63,6 +63,7 @@ import org.joml.Vector3f;
 
 import java.util.*;
 
+@SuppressWarnings("resource")
 public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
@@ -675,6 +676,44 @@ public abstract class AbstractDrawnEntity extends Entity {
     public @NotNull InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
         if (this.isLocked()) return InteractionResult.FAIL;
         return super.interactAt(player, vec3, interactionHand);
+    }
+
+    protected InteractionResult interactStartRiding(Player player) {
+        if (this.getPulling() != player) {
+            if (!this.canAddPassenger(player)) {
+                return InteractionResult.PASS;
+            }
+            if (!this.level().isClientSide) {
+                return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
+            }
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.PASS;
+    }
+
+    protected void managePostilion() {
+        final Entity coachman = this.getControllingPassenger();
+        final Entity pulling = this.getPulling();
+        if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
+            final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level());
+            if (postilion != null) {
+                postilion.moveTo(pulling.getX(), pulling.getY(), pulling.getZ(), coachman.getYRot(), coachman.getXRot());
+                if (postilion.startRiding(pulling)) {
+                    this.level().addFreshEntity(postilion);
+                } else {
+                    postilion.discard();
+                }
+            }
+        }
+    }
+
+    protected void clampRiderRotation(Entity passenger) {
+        passenger.setYBodyRot(this.getYRot());
+        final float f2 = Mth.wrapDegrees(passenger.getYRot() - this.getYRot());
+        final float f1 = Mth.clamp(f2, -105.0F, 105.0F);
+        passenger.yRotO += f1 - f2;
+        passenger.setYRot(passenger.getYRot() + (f1 - f2));
+        passenger.setYHeadRot(passenger.getYRot());
     }
 
     @Override

@@ -81,9 +81,9 @@ public class NiftyCarts implements ModInitializer {
 	public static final ResourceLocation DETACH_SOUND_ID = new ResourceLocation(MOD_ID, "entity.cart.detach");
 	public static final ResourceLocation PLACE_SOUND_ID = new ResourceLocation(MOD_ID, "entity.cart.place");
 
-	public static SoundEvent ATTACH_SOUND = SoundEvent.createVariableRangeEvent(ATTACH_SOUND_ID);
-	public static SoundEvent DETACH_SOUND = SoundEvent.createVariableRangeEvent(DETACH_SOUND_ID);
-	public static SoundEvent PLACE_SOUND = SoundEvent.createVariableRangeEvent(PLACE_SOUND_ID);
+	public static final SoundEvent ATTACH_SOUND = SoundEvent.createVariableRangeEvent(ATTACH_SOUND_ID);
+	public static final SoundEvent DETACH_SOUND = SoundEvent.createVariableRangeEvent(DETACH_SOUND_ID);
+	public static final SoundEvent PLACE_SOUND = SoundEvent.createVariableRangeEvent(PLACE_SOUND_ID);
 
 	public static final EntityType<SupplyCartEntity> SUPPLY_CART_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,

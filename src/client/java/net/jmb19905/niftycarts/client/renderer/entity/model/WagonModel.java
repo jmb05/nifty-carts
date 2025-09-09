@@ -259,9 +259,10 @@ public class WagonModel extends CartModel<WagonEntity> {
 
         final EasyMeshBuilder base = new EasyMeshBuilder("base", 0, 0);
         base.addBox((-axleLength / 2.0f) + 2, -2.0f, -1.0f - (axleDist / 2f) - 10, (float) Math.ceil((axleLength - 4.0f) / 2.0f), 1, ((axleDist + 22) / 2) - 1);
-        base.addBox((float) ((-axleLength / 2.0f) + 2 + Math.ceil((axleLength - 4.0f) / 2.0f)), -2.0f, -1.0f - (axleDist / 2f) - 10, (float) Math.floor((axleLength - 4) / 2.0f), 1, ((axleDist + 22) / 2) - 1);
+        float f = (float) ((-axleLength / 2.0f) + 2 + Math.ceil((axleLength - 4.0f) / 2.0f));
+        base.addBox(f, -2.0f, -1.0f - (axleDist / 2f) - 10, (float) Math.floor((axleLength - 4) / 2.0f), 1, ((axleDist + 22) / 2) - 1);
         base.addBox((-axleLength / 2.0f) + 2, -2.0f, -1, (float) Math.ceil((axleLength - 4.0f) / 2.0f), 1, ((axleDist + 22) / 2) + 1);
-        base.addBox((float) ((-axleLength / 2.0f) + 2 + Math.ceil((axleLength - 4.0f) / 2.0f)), -2.0f, -1, (float) Math.floor((axleLength - 4) / 2.0f), 1, ((axleDist + 22) / 2) + 1);
+        base.addBox(f, -2.0f, -1, (float) Math.floor((axleLength - 4) / 2.0f), 1, ((axleDist + 22) / 2) + 1);
 
         final EasyMeshBuilder walls = new EasyMeshBuilder("walls", 0, 0);
 

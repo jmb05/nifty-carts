@@ -51,7 +51,7 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
 
     @Override
     protected void renderContents(HandCartEntity entity, float delta, PoseStack stack, MultiBufferSource source, int packedLight) {
-        CargoRenderUtil.renderContents(entity, this.model, this, stack, source, packedLight);
+        CargoRenderUtil.renderContents(entity, this.model, this, delta, stack, source, packedLight);
     }
 
     public void renderFlowers(final AbstractCargoCart entity, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
@@ -99,7 +99,7 @@ public class HandCartRenderer extends DrawnRenderer<HandCartEntity, HandCartMode
             final BakedModel model = renderer.getModel(itemStack, entity.level(), null, i);
             stack.pushPose();
             if (model.isGui3d() && itemStack.getItem() != Items.TRIDENT && NiftyCartsConfig.getClient().renderSupplyGear.get()) {
-                stack.translate(x, -0.46D, z);
+                stack.translate(x, -0.38D, z);
                 stack.scale(0.5F, 0.5F, 0.5F);
                 stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
                 if (itemStack.getItem() == Items.SHIELD) {

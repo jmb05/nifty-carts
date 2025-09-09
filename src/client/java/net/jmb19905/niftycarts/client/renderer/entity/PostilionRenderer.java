@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class PostilionRenderer extends EntityRenderer<PostilionEntity> {
 
@@ -35,9 +35,8 @@ public class PostilionRenderer extends EntityRenderer<PostilionEntity> {
         return true;
     }
 
-    @Nullable
     @Override
-    public ResourceLocation getTextureLocation(final PostilionEntity postilion) {
-        return null;
+    public @NotNull ResourceLocation getTextureLocation(final PostilionEntity postilion) {
+        return new ResourceLocation("missing_texture");
     }
 }

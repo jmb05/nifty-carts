@@ -93,7 +93,7 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
                 rim.xRot = i * (float) Math.PI / 4.0F;
                 leftWheel.addChild(rim);
 
-                final EasyMeshBuilder spoke = new EasyMeshBuilder("spoke_" + i, 54, 64 - Mth.ceil(wheelRadius - 2));
+                final EasyMeshBuilder spoke = new EasyMeshBuilder("spoke_" + i, 54, 64 - Mth.ceil(wheelRadius - 1));
                 spoke.addBox(-1.5F, 1.0F, -0.5F, 1, wheelRadius - 2, 1);
                 spoke.xRot = i * (float) Math.PI / 4.0F;
                 leftWheel.addChild(spoke);
@@ -109,7 +109,7 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
                 rim.xRot = i * (float) Math.PI / 4.0F;
                 rightWheel.addChild(rim);
 
-                final EasyMeshBuilder spoke = new EasyMeshBuilder("spoke_" + i, 54, 64 - Mth.ceil(wheelRadius - 2));
+                final EasyMeshBuilder spoke = new EasyMeshBuilder("spoke_" + i, 54, 64 - Mth.ceil(wheelRadius - 1));
                 spoke.addBox(0.5F, 1.0F, -0.5F, 1, wheelRadius - 2, 1);
                 spoke.xRot = i * (float) Math.PI / 4.0F;
                 rightWheel.addChild(spoke);

@@ -43,7 +43,7 @@ import java.util.List;
 
 public class CargoRenderUtil {
 
-    public static void renderContents(AbstractCargoCart entity, CartModel<?> model, DrawnRenderer<?, ?> renderer, PoseStack stack, MultiBufferSource source, int packedLight) {
+    public static void renderContents(AbstractCargoCart entity, CartModel<?> model, DrawnRenderer<?, ?> renderer, float delta, PoseStack stack, MultiBufferSource source, int packedLight) {
         final NonNullList<ItemStack> cargo = entity.getCargo();
         Contents contents = Contents.SUPPLIES;
         final Iterator<ItemStack> it = cargo.iterator();
@@ -76,7 +76,7 @@ public class CargoRenderUtil {
         final List<Pair<Holder<BannerPattern>, DyeColor>> list = entity.getBannerPattern();
         if (!list.isEmpty()) {
             stack.translate(0.0D, -0.6D, 1.5D);
-            renderer.renderBanner(stack, source, packedLight, list);
+            renderer.renderBanner(entity, delta, stack, source, packedLight, list);
         }
         stack.popPose();
     }
@@ -116,6 +116,7 @@ public class CargoRenderUtil {
         stack.popPose();
     }
 
+    @SuppressWarnings("resource")
     public static void renderArmor(Entity entity, HumanoidModel<LivingEntity> leggings, HumanoidModel<LivingEntity> armor, TextureAtlas armorTrimAtlas, final PoseStack stack, final MultiBufferSource source, final int packedLight, final ItemStack itemStack, final int ix) {
         final Item item = itemStack.getItem();
         if (!(item instanceof final ArmorItem armorItem)) return;

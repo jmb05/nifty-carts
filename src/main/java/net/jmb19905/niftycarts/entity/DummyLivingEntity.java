@@ -5,6 +5,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.PushReaction;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -25,13 +26,13 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public Iterable<ItemStack> getArmorSlots() {
+    public @NotNull Iterable<ItemStack> getArmorSlots() {
         return Collections.emptyList();
 
     }
 
     @Override
-    public ItemStack getItemBySlot(final EquipmentSlot slotIn) {
+    public @NotNull ItemStack getItemBySlot(final EquipmentSlot slotIn) {
         return ItemStack.EMPTY;
     }
 
@@ -40,7 +41,7 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public HumanoidArm getMainArm() {
+    public @NotNull HumanoidArm getMainArm() {
         return HumanoidArm.RIGHT;
     }
 
@@ -50,7 +51,7 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public PushReaction getPistonPushReaction() {
+    public @NotNull PushReaction getPistonPushReaction() {
         return PushReaction.IGNORE;
     }
 
@@ -72,11 +73,6 @@ public class DummyLivingEntity extends LivingEntity {
     @Override
     public boolean isPushable() {
         return false;
-    }
-
-    @Override
-    public void rideTick() {
-        super.rideTick();
     }
 
     @Override
@@ -139,11 +135,6 @@ public class DummyLivingEntity extends LivingEntity {
     @Override
     public boolean addEffect(final MobEffectInstance effect, @Nullable Entity entity) {
         return false;
-    }
-
-    @Override
-    protected void updateEffectVisibility() {
-        super.updateEffectVisibility();
     }
 
     @Override

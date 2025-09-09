@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("resource")
 public class ReaperCartEntity extends AbstractDrawnEntity {
 
     private static final EntityDataAccessor<Boolean> FOLDED = SynchedEntityData.defineId(ReaperCartEntity.class, EntityDataSerializers.BOOLEAN);
@@ -67,17 +68,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
             playSound(SoundEvents.WOODEN_TRAPDOOR_CLOSE);
         }
         this.entityData.set(FOLDED, folded);
-        if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
-            final PostilionEntity postilion = NiftyCarts.POSTILION_ENTITY.create(this.level());
-            if (postilion != null) {
-                postilion.moveTo(pulling.getX(), pulling.getY(), pulling.getZ(), coachman.getYRot(), coachman.getXRot());
-                if (postilion.startRiding(pulling)) {
-                    this.level().addFreshEntity(postilion);
-                } else {
-                    postilion.discard();
-                }
-            }
-        }
+        managePostilion();
     }
 
     @Override
@@ -87,12 +78,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
             final Vec3 origin = new Vec3(0.0D, this.getPassengersRidingOffset(), 0);
             final Vec3 pos = origin.add(forward.scale(-0.4D));
             moveFunction.accept(passenger, this.getX() + pos.x, this.getY() + pos.y - 0.1D + passenger.getMyRidingOffset(), this.getZ() + pos.z);
-            passenger.setYBodyRot(this.getYRot());
-            final float f2 = Mth.wrapDegrees(passenger.getYRot() - this.getYRot());
-            final float f1 = Mth.clamp(f2, -105.0F, 105.0F);
-            passenger.yRotO += f1 - f2;
-            passenger.setYRot(passenger.getYRot() + (f1 - f2));
-            passenger.setYHeadRot(passenger.getYRot());
+            clampRiderRotation(passenger);
         }
     }
 

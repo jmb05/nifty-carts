@@ -30,7 +30,7 @@ public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, An
             stack.pushPose();
             this.model.getBody().translateAndRotate(stack);
             stack.translate(0.0D, -0.6D, 1.56D);
-            this.renderBanner(stack, source, packedLight, list);
+            this.renderBanner(entity, delta, stack, source, packedLight, list);
             stack.popPose();
         }
     }

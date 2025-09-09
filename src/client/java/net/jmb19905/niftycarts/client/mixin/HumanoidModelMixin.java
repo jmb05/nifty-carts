@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(HumanoidModel.class)
 public class HumanoidModelMixin {
 
+    @SuppressWarnings({"unchecked", "DataFlowIssue"})
     @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
     public <T extends LivingEntity> void setupAnim(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
         if (livingEntity.isPassenger() && livingEntity.getRootVehicle() instanceof WagonEntity) {

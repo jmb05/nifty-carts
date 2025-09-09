@@ -71,6 +71,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"   // `modVersion` e.g. 7.0.0 for Minecraft 1.20
+    modImplementation "maven.modrinth:resource_explorer:tTMOSCg6"
 	//modImplementation "maven.modrinth:open-parties-and-claims:fabric-1.20.1-0.23.2"
 }
 

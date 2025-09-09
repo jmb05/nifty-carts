@@ -52,7 +52,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
 
     @Override
     protected void renderContents(final SupplyCartEntity entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
-        CargoRenderUtil.renderContents(entity, this.model, this, stack, source, packedLight);
+        CargoRenderUtil.renderContents(entity, this.model, this, delta, stack, source, packedLight);
     }
 
     @Override
