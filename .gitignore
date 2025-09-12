@@ -41,3 +41,4 @@ replay_*.log
 /src/main/generated/.cache/
 /gallery/
 /src/main/resources/assets/niftycarts/textures/entity/
+/fabric/src/main/generated/.cache/
