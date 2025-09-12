@@ -4,11 +4,14 @@ import com.google.common.collect.ImmutableList;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.container.SeedDrillMenu;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
@@ -24,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -53,7 +57,7 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
         return 1.3D;
     }
 
-    private void plant() {
+    private void plant(@Nullable  Player player) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < SLOT_COUNT; j++) {
                 final ItemStack stack = this.getStackInSlot(j);
@@ -61,7 +65,14 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
                 final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
                 final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
                 final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
-                if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
+                if (tryPlaceCrop(stack, blockPos.above(), level(), j)) {
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+                        CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, blockPos.above(), stack);
+                        NiftyCarts.SEED_DRILL_PLACE_CRITERION.trigger(serverPlayer, stack);
+                    }
+                    break;
+                }
             }
         }
     }
@@ -106,8 +117,9 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
             return;
         }
         if (!this.level().isClientSide) {
+            Player player = getControllingPlayer();
             if (this.xo != this.getX() || this.zo != this.getZ()) {
-                this.plant();
+                this.plant(player);
             }
         }
     }

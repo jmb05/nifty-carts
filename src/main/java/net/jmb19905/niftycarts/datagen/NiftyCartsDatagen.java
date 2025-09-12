@@ -13,5 +13,6 @@ public class NiftyCartsDatagen implements DataGeneratorEntrypoint {
         pack.addProvider(NiftyCartsModelProvider::new);
         pack.addProvider(NiftyCartsEnUsLanguageProvider::new);
         pack.addProvider(NiftyCartsDeDeLanguageProvider::new);
+        pack.addProvider(NiftyCartsAdvancementProvider::new);
     }
 }

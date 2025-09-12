@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -70,12 +71,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
             return;
         }
         if (!this.level().isClientSide) {
-            Player player = null;
-            if (this.getPulling() instanceof Player pl) {
-                player = pl;
-            } else if (this.getPulling().getControllingPassenger() instanceof Player pl) {
-                player = pl;
-            }
+            ServerPlayer player = (ServerPlayer) getControllingPlayer();
             if (this.entityData.get(PLOWING) && player != null) {
                 if (this.xo != this.getX() || this.zo != this.getZ()) {
                     this.plow(player);
@@ -84,7 +80,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
         }
     }
 
-    private void plow(final Player player) {
+    private void plow(final ServerPlayer player) {
         for (int i = 0; i < SLOT_COUNT; i++) {
             final ItemStack stack = this.getStackInSlot(i);
             final float offset = 38.0F - i * 38.0F;
@@ -94,7 +90,8 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
             final boolean damageable = stack.isDamageableItem();
             final int count = stack.getCount();
             tryBreakBlock(stack, blockPos.above(), level(), player);
-            stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
+            InteractionResult result = stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
+            if (result.consumesAction()) NiftyCarts.USE_PLOW_CRITERION.trigger(player, stack);
             if (damageable && stack.getCount() < count) {
                 this.playSound(SoundEvents.ITEM_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
                 this.updateSlot(i);

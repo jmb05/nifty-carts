@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:niftycarts/root",
+  "criteria": {
+    "plow_create_path": {
+      "conditions": {
+        "item": {
+          "tag": "minecraft:shovels"
+        }
+      },
+      "trigger": "niftycarts:use_plow"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.niftycarts.plow_create_path.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:dirt_path"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.niftycarts.plow_create_path.title"
+    }
+  },
+  "requirements": [
+    [
+      "plow_create_path"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

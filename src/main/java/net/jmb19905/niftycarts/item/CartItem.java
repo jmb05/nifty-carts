@@ -5,6 +5,7 @@ import net.jmb19905.niftycarts.NiftyCartsWoodType;
 import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -34,6 +35,10 @@ public class CartItem extends Item {
         super(settings);
         this.woodType = woodType;
         this.cartType = cartType;
+    }
+
+    public NiftyCartsWoodType getWoodType() {
+        return woodType;
     }
 
     public String getCartType() {
@@ -75,6 +80,7 @@ public class CartItem extends Item {
                     if (!level.isClientSide()) {
                         level.addFreshEntity(cart);
                         level.playSound(null, cart.getX(), cart.getY(), cart.getZ(), NiftyCarts.PLACE_SOUND, SoundSource.BLOCKS, 0.75F, 0.8F);
+                        NiftyCarts.PLACE_CART_CRITERION.trigger((ServerPlayer) player, stack);
                     }
                     if (!player.getAbilities().instabuild) {
                         stack.shrink(1);

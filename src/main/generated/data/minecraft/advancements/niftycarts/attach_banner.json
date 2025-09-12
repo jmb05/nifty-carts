@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:niftycarts/root",
+  "criteria": {
+    "attach_banner": {
+      "conditions": {
+        "item": {
+          "tag": "minecraft:banners"
+        }
+      },
+      "trigger": "niftycarts:cart_add_banner"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.niftycarts.attach_banner.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:red_banner"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.niftycarts.attach_banner.title"
+    }
+  },
+  "requirements": [
+    [
+      "attach_banner"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

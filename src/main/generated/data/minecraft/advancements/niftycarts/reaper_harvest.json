@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:niftycarts/root",
+  "criteria": {
+    "reaper_harvest": {
+      "conditions": {
+        "block": {
+          "tag": "minecraft:crops"
+        }
+      },
+      "trigger": "niftycarts:reaper_harvest"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.niftycarts.reaper_harvest.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "niftycarts:oak_reaper"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.niftycarts.reaper_harvest.title"
+    }
+  },
+  "requirements": [
+    [
+      "reaper_harvest"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:niftycarts/root",
+  "criteria": {
+    "animal_cart_steer": {
+      "conditions": {
+        "distance": 1.0
+      },
+      "trigger": "niftycarts:steer_cart"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.niftycarts.animal_cart_steer.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "niftycarts:oak_animal_cart"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.niftycarts.animal_cart_steer.title"
+    }
+  },
+  "requirements": [
+    [
+      "animal_cart_steer"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

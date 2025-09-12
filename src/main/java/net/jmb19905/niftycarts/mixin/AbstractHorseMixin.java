@@ -6,6 +6,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -72,6 +73,15 @@ public abstract class AbstractHorseMixin extends LivingEntity {
         if (entity instanceof PostilionEntity dummy) {
             cir.setReturnValue(dummy);
         }
+    }
+
+    @Override
+    public float maxUpStep() {
+        float f = super.maxUpStep();
+        if (this.getControllingPassenger() instanceof PostilionEntity) {
+            return Math.max(f, 1.2f);
+        }
+        return this.getControllingPassenger() instanceof Player ? Math.max(f, 1.0F) : f;
     }
 
 }

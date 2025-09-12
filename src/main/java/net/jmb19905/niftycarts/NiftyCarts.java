@@ -1,5 +1,6 @@
 package net.jmb19905.niftycarts;
 
+import com.google.common.collect.ImmutableMap;
 import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -11,6 +12,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.jmb19905.niftycarts.advancement.*;
 import net.jmb19905.niftycarts.container.PlowMenu;
 import net.jmb19905.niftycarts.container.SeedDrillMenu;
 import net.jmb19905.niftycarts.entity.*;
@@ -24,6 +26,7 @@ import net.jmb19905.niftycarts.network.serverbound.RequestCartUpdate;
 import net.jmb19905.niftycarts.network.serverbound.ToggleSlowMessage;
 import net.jmb19905.niftycarts.util.GoalAdder;
 import net.jmb19905.niftycarts.util.NiftyWorld;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -161,7 +164,23 @@ public class NiftyCarts implements ModInitializer {
     public static final MenuType<ChestMenu> CHEST_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x8_MENU_TYPE, i, inv, new SimpleContainer(9 * 8), 8), FeatureFlags.DEFAULT_FLAGS);
     public static final MenuType<ChestMenu> CHEST_9x12_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x12_MENU_TYPE, i, inv, new SimpleContainer(9 * 12), 12), FeatureFlags.DEFAULT_FLAGS);
 
-	public static final ResourceLocation CART_ONE_CM = new ResourceLocation(MOD_ID, "cart_one_cm");
+    public static final Map<EntityType<?>, ResourceLocation> CART_PULL_CM;
+
+    static {
+        CART_PULL_CM = ImmutableMap.of(
+                SUPPLY_CART_ENTITY, new ResourceLocation(MOD_ID, "supply_cart_pull_cm"),
+                HAND_CART_ENTITY, new ResourceLocation(MOD_ID, "hand_cart_pull_cm"),
+                ANIMAL_CART_ENTITY, new ResourceLocation(MOD_ID, "animal_cart_pull_cm"),
+                PLOW_ENTITY, new ResourceLocation(MOD_ID, "plow_pull_cm"),
+                REAPER_ENTITY, new ResourceLocation(MOD_ID, "reaper_pull_cm"),
+                SEED_DRILL_ENTITY, new ResourceLocation(MOD_ID, "seed_drill_pull_cm"),
+                WAGON_ENTITY, new ResourceLocation(MOD_ID, "wagon_pull_cm")
+        );
+    }
+
+    public static final ResourceLocation RIDE_CART_CM = new ResourceLocation(MOD_ID, "ride_cart_cm");
+    public static final ResourceLocation STEER_ANIMAL_CART_CM = new ResourceLocation(MOD_ID, "steer_animal_cart_cm");
+    public static final ResourceLocation STEER_REAPER_CM = new ResourceLocation(MOD_ID, "steer_reaper_cm");
 
 	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, new ResourceLocation(NiftyCarts.MOD_ID, "plow_breakable/hoe"));
 	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, new ResourceLocation(NiftyCarts.MOD_ID, "plow_breakable/shovel"));
@@ -169,12 +188,33 @@ public class NiftyCarts implements ModInitializer {
     public static final TagKey<Block> REAPER_HARVESTABLE = TagKey.create(Registries.BLOCK, new ResourceLocation(NiftyCarts.MOD_ID, "reaper_harvestable"));
     public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, new ResourceLocation(NiftyCarts.MOD_ID, "seed_drill_plantable"));
 
+    public static final SeedDrillPlaceCriterion SEED_DRILL_PLACE_CRITERION = CriteriaTriggers.register(new SeedDrillPlaceCriterion());
+    public static final PlaceCartItemCriterion PLACE_CART_CRITERION = CriteriaTriggers.register(new PlaceCartItemCriterion());
+    public static final UsePlowCriterion USE_PLOW_CRITERION = CriteriaTriggers.register(new UsePlowCriterion());
+    public static final CartAddBannerCriterion CART_ADD_BANNER_CRITERION = CriteriaTriggers.register(new CartAddBannerCriterion());
+    public static final ReaperHarvestCriterion REAPER_HARVEST_CRITERION = CriteriaTriggers.register(new ReaperHarvestCriterion());
+    public static final PullCartCriterion<HandCartEntity> PULL_HAND_CART_CRITERION = CriteriaTriggers.register(new PullCartCriterion<>("hand_cart"));
+    public static final PullCartCriterion<WagonEntity> PULL_WAGON_CRITERION = CriteriaTriggers.register(new PullCartCriterion<>("supply_cart"));
+    public static final SteerCartCriterion STEER_ANIMAL_CART_CRITERION = CriteriaTriggers.register(new SteerCartCriterion());
+    public static final PullFilledCartCriterion PULL_FILLED_CART_CRITERION = CriteriaTriggers.register(new PullFilledCartCriterion());
+
+    private static void registerStat(ResourceLocation id, StatFormatter formatter) {
+        Registry.register(BuiltInRegistries.CUSTOM_STAT, id, id);
+        Stats.CUSTOM.get(id, formatter);
+    }
+
 	@Override
 	public void onInitialize() {
 		ForgeConfigRegistry.INSTANCE.register(MOD_ID, ModConfig.Type.COMMON, NiftyCartsConfig.spec());
 
-		Registry.register(BuiltInRegistries.CUSTOM_STAT, CART_ONE_CM, CART_ONE_CM);
-		Stats.CUSTOM.get(CART_ONE_CM, StatFormatter.DEFAULT);
+        for (ResourceLocation stat : CART_PULL_CM.values()) {
+            registerStat(stat, StatFormatter.DISTANCE);
+        }
+
+        registerStat(RIDE_CART_CM, StatFormatter.DISTANCE);
+        registerStat(STEER_ANIMAL_CART_CM, StatFormatter.DISTANCE);
+        registerStat(STEER_REAPER_CM, StatFormatter.DISTANCE);
+
 		Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, "wheel"), WHEEL);
 		for (NiftyCartsWoodType woodType : NiftyCartsWoodType.values()) {
 			Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, woodType.getId() + "_supply_cart"), SUPPLY_CART.get(woodType));

@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "place_cart": {
+      "conditions": {},
+      "trigger": "niftycarts:place_cart"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "minecraft:textures/gui/advancements/backgrounds/husbandry.png",
+    "description": {
+      "translate": "advancements.niftycarts.place_cart.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "niftycarts:wheel"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.niftycarts.place_cart.title"
+    }
+  },
+  "requirements": [
+    [
+      "place_cart"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

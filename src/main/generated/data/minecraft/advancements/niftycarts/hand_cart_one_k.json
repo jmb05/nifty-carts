@@ -1,0 +1,33 @@
+{
+  "parent": "minecraft:niftycarts/root",
+  "criteria": {
+    "hand_cart_one_k": {
+      "conditions": {
+        "distance": 100000.0,
+        "passengers": 0
+      },
+      "trigger": "niftycarts:pull_cart_hand_cart"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.niftycarts.hand_cart_one_k.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "niftycarts:oak_hand_cart"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.niftycarts.hand_cart_one_k.title"
+    }
+  },
+  "requirements": [
+    [
+      "hand_cart_one_k"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,8 +1,10 @@
 package net.jmb19905.niftycarts.entity;
 
+import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.util.NCInventory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,6 +37,15 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
         this.itemStacks = NCInventory.withSize(containerSize, ItemStack.EMPTY);
         this.containerSize = containerSize;
         this.itemStacks.setOnContentsChanged(this::onContentsChanged);
+    }
+
+    @Override
+    public void pulledTick() {
+        super.pulledTick();
+        final Player player = getControllingPlayer();
+        if (player instanceof ServerPlayer serverPlayer) {
+            NiftyCarts.PULL_FILLED_CART_CRITERION.trigger(serverPlayer, this, getFillLevel());
+        }
     }
 
     public boolean stillValid(Player player) {
@@ -130,6 +141,11 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     public @NotNull NonNullList<ItemStack> getItemStacks() {
         return this.itemStacks;
+    }
+
+    protected float getFillLevel() {
+        float slots = getItemStacks().stream().filter(s -> !s.isEmpty()).count();
+        return slots / containerSize;
     }
 
     public void clearItemStacks() {
