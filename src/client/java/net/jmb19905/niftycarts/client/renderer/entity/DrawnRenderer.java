@@ -79,15 +79,16 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends Ent
         this.pole.zRot = -0.3f;
         this.pole.x = 14.0f;
         this.pole.render(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
-        this.bar.x = -4.0F;
-        this.bar.y = 4.0F;
-        this.bar.z = 0.1F;
+        this.bar.x = -3.912F;
+        this.bar.y = 3.045F;
+        this.bar.z = 0.001F;
         this.bar.render(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
-        this.flag.x = -4.0F;
-        this.flag.y = -26.0F;
+        this.flag.x = -4.001F;
+        this.flag.y = -27.1F;
         this.flag.z = 1.5F;
-        float k = ((float)Math.floorMod((long)(entity.getX() * 7 + entity.getY() * 9 + entity.getZ() * 13) + entity.level().getGameTime(), 100L) + delta) / 100.0F;
-        this.flag.xRot = (0.01F * Mth.cos(Mth.TWO_PI * k)) * Mth.PI;
+        long gameTime = entity.level().getGameTime();
+        float animationTime = ((float)Math.floorMod((long)(entity.getX() * 7 + entity.getY() * 9 + entity.getZ() * 13) + gameTime, 100L) + delta) / 100.0F;
+        this.flag.xRot = (0.01F * Mth.cos(((float)Math.PI * 2F) * animationTime)) * (float)Math.PI;
         BannerRenderer.renderPatterns(stack, source, packedLight, OverlayTexture.NO_OVERLAY, this.flag, ModelBakery.BANNER_BASE, true, color, banner);
         stack.popPose();
     }
