@@ -1,0 +1,26 @@
+{
+  "parent": "minecraft:niftycarts/root",
+  "criteria": {
+    "seed_drill_plant": {
+      "trigger": "niftycarts:seed_drill_place"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.niftycarts.seed_drill_plant.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "niftycarts:oak_seed_drill"
+    },
+    "title": {
+      "translate": "advancements.niftycarts.seed_drill_plant.title"
+    }
+  },
+  "requirements": [
+    [
+      "seed_drill_plant"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -3,6 +3,7 @@ package net.jmb19905.niftycarts.entity;
 import com.google.common.collect.ImmutableList;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
+import net.jmb19905.niftycarts.advancement.NCCriteriaTriggers;
 import net.jmb19905.niftycarts.container.PlowMenu;
 import net.jmb19905.niftycarts.util.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -28,6 +30,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Optional;
 
 public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private static final int SLOT_COUNT = 3;
@@ -63,21 +67,16 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
             return;
         }
         if (!this.level().isClientSide) {
-            Player player = null;
-            if (this.getPulling() instanceof Player pl) {
-                player = pl;
-            } else if (this.getPulling().getControllingPassenger() instanceof Player pl) {
-                player = pl;
-            }
-            if (getPlowing() && player != null) {
+            Optional<Player> playerOptional = getControllingPlayer();
+            if (getPlowing() && playerOptional.isPresent()) {
                 if (this.xo != this.getX() || this.zo != this.getZ()) {
-                    this.plow(player);
+                    this.plow((ServerPlayer) playerOptional.get());
                 }
             }
         }
     }
 
-    private void plow(final Player player) {
+    private void plow(final ServerPlayer player) {
         for (int i = 0; i < SLOT_COUNT; i++) {
             final ItemStack stack = this.getStackInSlot(i);
             if (stack.getItem() instanceof TieredItem) {
@@ -88,7 +87,8 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
                 final boolean damageable = stack.isDamageableItem();
                 final int count = stack.getCount();
                 tryBreakBlock(stack, blockPos.above(), level(), player);
-                stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
+                InteractionResult result = stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
+                if (result.consumesAction()) NCCriteriaTriggers.USE_PLOW.trigger(player, stack);
                 if (damageable && stack.getCount() < count) {
                     this.playSound(SoundEvents.ITEM_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
                     this.updateSlot(i);

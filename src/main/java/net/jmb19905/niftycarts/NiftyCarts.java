@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.jmb19905.niftycarts.advancement.NCCriteriaTriggers;
 import net.jmb19905.niftycarts.container.PlowMenu;
 import net.jmb19905.niftycarts.container.SeedDrillMenu;
 import net.jmb19905.niftycarts.entity.*;
@@ -175,7 +176,23 @@ public class NiftyCarts implements ModInitializer {
     public static final MenuType<ChestMenu> CHEST_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x8_MENU_TYPE, i, inv, new SimpleContainer(9 * 8), 8), FeatureFlags.DEFAULT_FLAGS);
     public static final MenuType<ChestMenu> CHEST_9x12_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x12_MENU_TYPE, i, inv, new SimpleContainer(9 * 12), 12), FeatureFlags.DEFAULT_FLAGS);
 
-	public static final ResourceLocation CART_ONE_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "cart_one_cm");
+    public static final Map<EntityType<?>, ResourceLocation> CART_PULL_CM;
+
+    static {
+        CART_PULL_CM = ImmutableMap.of(
+                SUPPLY_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "supply_cart_pull_cm"),
+                HAND_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "hand_cart_pull_cm"),
+                ANIMAL_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "animal_cart_pull_cm"),
+                PLOW_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow_pull_cm"),
+                REAPER_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "reaper_pull_cm"),
+                SEED_DRILL_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "seed_drill_pull_cm"),
+                WAGON_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "wagon_pull_cm")
+        );
+    }
+
+    public static final ResourceLocation RIDE_CART_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "ride_cart_cm");
+    public static final ResourceLocation STEER_ANIMAL_CART_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "steer_animal_cart_cm");
+    public static final ResourceLocation STEER_REAPER_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "steer_reaper_cm");
 
 	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/hoe"));
 	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "plow_breakable/shovel"));
@@ -183,14 +200,26 @@ public class NiftyCarts implements ModInitializer {
 	public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "seed_drill_plantable"));
     public static final TagKey<Block> REAPER_HARVESTABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "reaper_harvestable"));
 
+    private static void registerStat(ResourceLocation id, StatFormatter formatter) {
+        Registry.register(BuiltInRegistries.CUSTOM_STAT, id, id);
+        Stats.CUSTOM.get(id, formatter);
+    }
+
 	@Override
 	public void onInitialize() {
 		//needed for compatibility with 1.21
         //noinspection removal
         ForgeConfigRegistry.INSTANCE.register(MOD_ID, net.minecraftforge.fml.config.ModConfig.Type.COMMON, NiftyCartsConfig.spec());
 
-		Registry.register(BuiltInRegistries.CUSTOM_STAT, CART_ONE_CM, CART_ONE_CM);
-		Stats.CUSTOM.get(CART_ONE_CM, StatFormatter.DEFAULT);
+        for (ResourceLocation stat : CART_PULL_CM.values()) {
+            registerStat(stat, StatFormatter.DISTANCE);
+        }
+
+        registerStat(RIDE_CART_CM, StatFormatter.DISTANCE);
+        registerStat(STEER_ANIMAL_CART_CM, StatFormatter.DISTANCE);
+        registerStat(STEER_REAPER_CM, StatFormatter.DISTANCE);
+
+        NCCriteriaTriggers.register();
 
 		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "wheel"), WHEEL);
 		for (WoodType woodType : VANILLA_WOOD_TYPES) {

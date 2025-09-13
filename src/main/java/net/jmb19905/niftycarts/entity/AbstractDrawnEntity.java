@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
+import net.jmb19905.niftycarts.advancement.NCCriteriaTriggers;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnPayload;
 import net.jmb19905.niftycarts.network.serverbound.ToggleSlowPayload;
 import net.jmb19905.niftycarts.util.NiftyWorld;
@@ -19,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.stats.Stats;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -59,10 +61,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
@@ -190,13 +189,43 @@ public abstract class AbstractDrawnEntity extends Entity {
         }
     }
 
+    protected Optional<Player> getControllingPlayer() {
+        if (this.getPulling() instanceof Player pl) {
+            return Optional.of(pl);
+        } else if (this.getPulling() != null && this.getPulling().getControllingPassenger() instanceof Player pl) {
+            return Optional.of(pl);
+        }
+        return Optional.empty();
+    }
+
     private void addStats(final double x, final double y, final double z) {
         if (!this.level().isClientSide) {
             final int cm = Math.round(Mth.sqrt((float) (x * x + y * y + z * z)) * 100.0F);
             if (cm > 0) {
+                Entity pulling = getPulling();
+                if (pulling.getControllingPassenger() instanceof PostilionEntity
+                        && this.getControllingPassenger() instanceof ServerPlayer player) {
+                    if (this instanceof AnimalCartEntity) {
+                        player.awardStat(NiftyCarts.STEER_ANIMAL_CART_CM, cm);
+                        int allCm = player.getStats().getValue(Stats.CUSTOM.get(NiftyCarts.STEER_ANIMAL_CART_CM));
+                        NCCriteriaTriggers.STEER_CART.trigger(player, this, allCm);
+                    } else if (this instanceof ReaperEntity) {
+                        player.awardStat(NiftyCarts.STEER_REAPER_CM, cm);
+                    }
+                }
+                Optional<Player> playerOptional = getControllingPlayer();
+                playerOptional.ifPresent(player -> {
+                    var stat = NiftyCarts.CART_PULL_CM.get(this.getType());
+                    player.awardStat(stat, cm);
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        int allCm = serverPlayer.getStats().getValue(Stats.CUSTOM.get(stat));
+                        float fillLevel = this instanceof AbstractDrawnInventoryEntity invCart ? invCart.getFillLevel() : 0f;
+                        NCCriteriaTriggers.PULL_CART.trigger(serverPlayer, this, allCm, fillLevel);
+                    }
+                });
                 for (final Entity passenger : this.getPassengers()) {
                     if (passenger instanceof Player player) {
-                        player.awardStat(NiftyCarts.CART_ONE_CM, cm);
+                        player.awardStat(NiftyCarts.RIDE_CART_CM, cm);
                     }
                 }
             }
@@ -473,6 +502,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             ItemStack oldBanner = this.getBanner();
             if (!this.level().isClientSide) {
                 ItemStack banner = stack.split(1);
+                NCCriteriaTriggers.CART_ADD_BANNER.trigger((ServerPlayer) player, banner);
                 if (!oldBanner.isEmpty()) {
                     if (stack.isEmpty()) {
                         player.setItemInHand(hand, oldBanner);
