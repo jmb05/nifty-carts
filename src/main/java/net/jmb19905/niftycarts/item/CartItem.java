@@ -1,6 +1,7 @@
 package net.jmb19905.niftycarts.item;
 
 import net.jmb19905.niftycarts.NiftyCarts;
+import net.jmb19905.niftycarts.advancement.NCCriteriaTriggers;
 import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -8,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -88,6 +90,7 @@ public class CartItem extends Item {
                     if (!level.isClientSide()) {
                         level.addFreshEntity(cart);
                         level.playSound(null, cart.getX(), cart.getY(), cart.getZ(), NiftyCarts.PLACE_SOUND, SoundSource.BLOCKS, 0.75F, 0.8F);
+                        NCCriteriaTriggers.PLACE_CART_ITEM.trigger((ServerPlayer) player, stack);
                     }
                     if (!player.getAbilities().instabuild) {
                         stack.shrink(1);

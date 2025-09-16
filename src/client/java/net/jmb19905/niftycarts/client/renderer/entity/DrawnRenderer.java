@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -63,6 +64,11 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends Car
     public abstract ResourceLocation getTextureLocation(S state);
 
     @Override
+    protected @NotNull AABB getBoundingBoxForCulling(T entity) {
+        return super.getBoundingBoxForCulling(entity).inflate(entity.getBoundingBoxInflate());
+    }
+
+    @Override
     public void render(S state, PoseStack stack, MultiBufferSource source, int light) {
         stack.pushPose();
         this.setupRotation(state, stack);
@@ -102,15 +108,15 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends Car
         this.pole.x = 17.48f;
         this.pole.y = 12.43f;
         this.pole.render(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
-        this.bar.x = -4.0F;
+        this.bar.x = -3.9765F;
         this.bar.y = 16.01F;
-        this.bar.z = 0.01F;
+        this.bar.z = 0.001F;
         this.bar.render(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
-        this.flag.x = -4.0F;
-        this.flag.y = -26.0F;
+        this.flag.x = -3.95F;
+        this.flag.y = -27.1F;
         this.flag.z = 1.5F;
-        float k = ((float)Math.floorMod((int) ((state.x * 7 + state.y * 9 + state.z * 13) + state.ageInTicks), 100) + state.delta) / 100.0F;
-        this.flag.xRot = (0.01F * Mth.cos(Mth.TWO_PI * k)) * Mth.PI;
+        float animationTime = ((float)Math.floorMod((int)((state.x * 7 + state.y * 9 + state.z * 13) + state.ageInTicks), 100) + state.delta) / 100.0F;
+        this.flag.xRot = (0.01F * Mth.cos(((float)Math.PI * 2F) * animationTime)) * (float)Math.PI;
         BannerRenderer.renderPatterns(stack, source, packedLight, OverlayTexture.NO_OVERLAY, this.flag, ModelBakery.BANNER_BASE, true, state.bannerColor, state.bannerPattern);
         stack.popPose();
     }

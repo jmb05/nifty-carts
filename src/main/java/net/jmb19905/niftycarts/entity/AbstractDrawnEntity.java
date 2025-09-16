@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
+import net.jmb19905.niftycarts.advancement.NCCriteriaTriggers;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnPayload;
 import net.jmb19905.niftycarts.network.serverbound.ToggleSlowPayload;
 import net.jmb19905.niftycarts.util.NiftyWorld;
@@ -20,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.stats.Stats;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -70,6 +72,10 @@ public abstract class AbstractDrawnEntity extends Entity {
         super(entityTypeIn, worldIn);
         this.blocksBuilding = true;
         this.initWheels();
+    }
+
+    public float getBoundingBoxInflate() {
+        return 1;
     }
 
     protected double getSpacing() {
@@ -128,6 +134,15 @@ public abstract class AbstractDrawnEntity extends Entity {
         }
     }
 
+    protected Optional<Player> getControllingPlayer() {
+        if (this.getPulling() instanceof Player pl) {
+            return Optional.of(pl);
+        } else if (this.getPulling() != null && this.getPulling().getControllingPassenger() instanceof Player pl) {
+            return Optional.of(pl);
+        }
+        return Optional.empty();
+    }
+
     /**
      * This method is called for every cart that is being pulled by another entity
      * after all other
@@ -136,6 +151,10 @@ public abstract class AbstractDrawnEntity extends Entity {
      */
     public void pulledTick() {
         if (this.pulling == null) {
+            return;
+        }
+        if (!this.canPull(this.pulling)) {
+            setPulling(null);
             return;
         }
         Vec3 targetVec = this.getRelativeTargetVec(1.0F);
@@ -188,9 +207,30 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (!this.level().isClientSide) {
             final int cm = Math.round(Mth.sqrt((float) (x * x + y * y + z * z)) * 100.0F);
             if (cm > 0) {
+                Entity pulling = getPulling();
+                if (pulling.getControllingPassenger() instanceof PostilionEntity
+                        && this.getControllingPassenger() instanceof ServerPlayer player) {
+                    if (this instanceof AnimalCartEntity) {
+                        player.awardStat(NiftyCarts.STEER_ANIMAL_CART_CM, cm);
+                        int allCm = player.getStats().getValue(Stats.CUSTOM.get(NiftyCarts.STEER_ANIMAL_CART_CM));
+                        NCCriteriaTriggers.STEER_CART.trigger(player, this, allCm);
+                    } else if (this instanceof ReaperCartEntity) {
+                        player.awardStat(NiftyCarts.STEER_REAPER_CM, cm);
+                    }
+                }
+                Optional<Player> playerOptional = getControllingPlayer();
+                playerOptional.ifPresent(player -> {
+                    var stat = NiftyCarts.CART_PULL_CM.get(this.getType());
+                    player.awardStat(stat, cm);
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        int allCm = serverPlayer.getStats().getValue(Stats.CUSTOM.get(stat));
+                        float fillLevel = this instanceof AbstractDrawnInventoryEntity invCart ? invCart.getFillLevel() : 0f;
+                        NCCriteriaTriggers.PULL_CART.trigger(serverPlayer, this, allCm, fillLevel);
+                    }
+                });
                 for (final Entity passenger : this.getPassengers()) {
                     if (passenger instanceof Player player) {
-                        player.awardStat(NiftyCarts.CART_ONE_CM, cm);
+                        player.awardStat(NiftyCarts.RIDE_CART_CM, cm);
                     }
                 }
             }
@@ -405,14 +445,17 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (entityIn == null) {
             return true;
         }
-        System.out.println(this.pulling);
         return (this.pulling == null || !this.pulling.isAlive()) && !this.hasPassenger(entityIn) && this.canPull(entityIn);
     }
 
     private boolean canPull(final Entity entity) {
         final ArrayList<String> allowed = this.getConfig().pullEntities.get();
         if (allowed.isEmpty()) {
-            return entity instanceof Player || entity instanceof PlayerRideable;
+            if (entity instanceof Player player) {
+                return !player.isSpectator();
+            } else {
+                return entity instanceof PlayerRideable && !(entity instanceof ItemSteerable);
+            }
         } else return allowed.contains(EntityType.getKey(entity.getType()).toString());
     }
 
@@ -452,6 +495,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             ItemStack oldBanner = this.getBanner();
             if (!this.level().isClientSide) {
                 ItemStack banner = stack.split(1);
+                NCCriteriaTriggers.CART_ADD_BANNER.trigger((ServerPlayer) player, banner);
                 if (!oldBanner.isEmpty()) {
                     if (stack.isEmpty()) {
                         player.setItemInHand(hand, oldBanner);

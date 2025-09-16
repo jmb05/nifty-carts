@@ -1,9 +1,8 @@
-package net.jmb19905.niftycarts.client.datagen;
+package net.jmb19905.niftycarts.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.jmb19905.niftycarts.NiftyCarts;
-import net.jmb19905.niftycarts.client.NiftyCartsClient;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -54,7 +53,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             ResourceLocation.withDefaultNamespace(
                                     "stripped_"
                                             + woodType.name()
-                                            + "_" + (NiftyCartsClient.LOG_NAME_OVERRIDE.getOrDefault(woodType, "log"))));
+                                            + "_" + (NiftyCarts.LOG_NAME_OVERRIDE.getOrDefault(woodType, "log"))));
                     var recipeTrigger = RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, NiftyCarts.WHEEL), ItemPredicate.Builder.item().of(items, planks));
                     var wagonRecipeTrigger = RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, NiftyCarts.WHEEL), ItemPredicate.Builder.item().of(items, planks), ItemPredicate.Builder.item().of(items, ItemTags.WOOL));
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, supplyCart.get().value())

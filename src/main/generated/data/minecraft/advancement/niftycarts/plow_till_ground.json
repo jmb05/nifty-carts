@@ -1,0 +1,31 @@
+{
+  "parent": "minecraft:niftycarts/root",
+  "criteria": {
+    "plow_till_ground": {
+      "conditions": {
+        "item": {
+          "items": "#minecraft:hoes"
+        }
+      },
+      "trigger": "niftycarts:use_plow"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.niftycarts.plow_till_ground.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "niftycarts:oak_plow"
+    },
+    "title": {
+      "translate": "advancements.niftycarts.plow_till_ground.title"
+    }
+  },
+  "requirements": [
+    [
+      "plow_till_ground"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

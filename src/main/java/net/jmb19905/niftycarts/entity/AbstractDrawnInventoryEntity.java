@@ -40,6 +40,11 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
         this.itemStacks.setOnContentsChanged(this::onContentsChanged);
     }
 
+    protected float getFillLevel() {
+        float slots = getItemStacks().stream().filter(s -> !s.isEmpty()).count();
+        return slots / containerSize;
+    }
+
     public boolean stillValid(Player player) {
         return this.isChestVehicleStillValid(player);
     }

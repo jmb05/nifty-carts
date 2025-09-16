@@ -1,0 +1,30 @@
+{
+  "parent": "minecraft:niftycarts/root",
+  "criteria": {
+    "supply_cart_filled": {
+      "conditions": {
+        "type": "niftycarts:supply_cart",
+        "fill": 1.0
+      },
+      "trigger": "niftycarts:pull_cart"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.niftycarts.supply_cart_filled.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "niftycarts:oak_supply_cart"
+    },
+    "title": {
+      "translate": "advancements.niftycarts.supply_cart_filled.title"
+    }
+  },
+  "requirements": [
+    [
+      "supply_cart_filled"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

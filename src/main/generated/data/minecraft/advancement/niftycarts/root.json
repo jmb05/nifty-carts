@@ -1,0 +1,26 @@
+{
+  "criteria": {
+    "place_cart": {
+      "trigger": "niftycarts:place_cart_item"
+    }
+  },
+  "display": {
+    "background": "minecraft:gui/advancements/backgrounds/husbandry",
+    "description": {
+      "translate": "advancements.niftycarts.place_cart.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "niftycarts:wheel"
+    },
+    "title": {
+      "translate": "advancements.niftycarts.place_cart.title"
+    }
+  },
+  "requirements": [
+    [
+      "place_cart"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

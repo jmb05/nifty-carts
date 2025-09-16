@@ -1,0 +1,31 @@
+{
+  "parent": "minecraft:niftycarts/root",
+  "criteria": {
+    "attach_banner": {
+      "conditions": {
+        "item": {
+          "items": "#minecraft:banners"
+        }
+      },
+      "trigger": "niftycarts:cart_add_banner"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.niftycarts.attach_banner.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:red_banner"
+    },
+    "title": {
+      "translate": "advancements.niftycarts.attach_banner.title"
+    }
+  },
+  "requirements": [
+    [
+      "attach_banner"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

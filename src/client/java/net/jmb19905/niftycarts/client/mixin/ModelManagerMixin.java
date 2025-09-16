@@ -1,7 +1,6 @@
 package net.jmb19905.niftycarts.client.mixin;
 
 import net.jmb19905.niftycarts.NiftyCarts;
-import net.jmb19905.niftycarts.client.NiftyCartsClient;
 import net.jmb19905.niftycarts.client.renderer.texture.AssembledTexture;
 import net.jmb19905.niftycarts.client.renderer.texture.AssembledTextureFactory;
 import net.jmb19905.niftycarts.client.renderer.texture.Material;
@@ -34,7 +33,7 @@ public abstract class ModelManagerMixin {
         Material dirt = new Material(ResourceLocation.withDefaultNamespace("block/dirt"), 16)
                 .fill(0, 45, 16, 17);
         for (WoodType type : NiftyCarts.VANILLA_WOOD_TYPES) {
-            String logName = NiftyCartsClient.LOG_NAME_OVERRIDE.getOrDefault(type, "log");
+            String logName = NiftyCarts.LOG_NAME_OVERRIDE.getOrDefault(type, "log");
             factory.add(new AssembledTexture(NiftyCarts.resLoc("textures/entity/" + type.name() + "_animal_cart.png"),64, 64)
                 .add(new Material(ResourceLocation.withDefaultNamespace("block/" + type.name() + "_planks"), 16)
                         .fill(0, 0, 60, 38, Material.R0, 0, 2)
