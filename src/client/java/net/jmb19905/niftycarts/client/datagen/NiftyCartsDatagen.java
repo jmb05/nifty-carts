@@ -11,6 +11,7 @@ public class NiftyCartsDatagen implements DataGeneratorEntrypoint {
         var pack = fabricDataGenerator.createPack();
         pack.addProvider(NiftyCartRecipeProvider::new);
         pack.addProvider(NiftyCartsModelProvider::new);
+        pack.addProvider(NiftyCartsAdvancementProvider::new);
         pack.addProvider(NiftyCartsEnUsLanguageProvider::new);
         pack.addProvider(NiftyCartsDeDeLanguageProvider::new);
     }

@@ -1,0 +1,31 @@
+{
+  "parent": "minecraft:niftycarts/root",
+  "criteria": {
+    "wagon_cart_full": {
+      "conditions": {
+        "type": "niftycarts:wagon",
+        "distance": 1.0,
+        "passengers": 4
+      },
+      "trigger": "niftycarts:pull_cart"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.niftycarts.wagon_cart_full.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "niftycarts:oak_wagon"
+    },
+    "title": {
+      "translate": "advancements.niftycarts.wagon_cart_full.title"
+    }
+  },
+  "requirements": [
+    [
+      "wagon_cart_full"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

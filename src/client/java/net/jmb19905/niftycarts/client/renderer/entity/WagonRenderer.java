@@ -44,6 +44,12 @@ public class WagonRenderer extends DrawnRenderer<WagonEntity, WagonRenderState, 
         if (state.hasRoof) {
             model.getRoof(state.unfurled).render(stack, source.getBuffer(this.model.renderType(state.roofTexture)), packedLight, OverlayTexture.NO_OVERLAY);
         }
+        if (state.bannerColor != null) {
+            stack.pushPose();
+            stack.translate(0.0D, -0.58D, 2.62D);
+            this.renderBanner(state, stack, source, packedLight);
+            stack.popPose();
+        }
         stack.popPose();
     }
 

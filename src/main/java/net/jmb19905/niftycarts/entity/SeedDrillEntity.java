@@ -3,12 +3,15 @@ package net.jmb19905.niftycarts.entity;
 import com.google.common.collect.ImmutableList;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
+import net.jmb19905.niftycarts.advancement.NCCriteriaTriggers;
 import net.jmb19905.niftycarts.container.SeedDrillMenu;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
@@ -25,6 +28,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+
+import java.util.Optional;
 
 public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
 
@@ -49,22 +54,23 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
         return 1.3;
     }
 
-    private void plant() {
-        for (int j = 0; j < SLOT_COUNT; j++) {final ItemStack stack = this.getStackInSlot(j);
-            double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - 90));
-            double z = this.getZ() + Mth.cos((float) Math.toRadians(this.getYRot() - 90));
-            BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
-            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
-
-            x = this.getX();
-            z = this.getZ();
-            blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
-            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
-
-            x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90));
-            z = this.getZ() + Mth.cos((float) Math.toRadians(this.getYRot() + 90));
-            blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
-            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private void plant(Optional<ServerPlayer> playerOptional) {
+        for (int i = 0; i < 3; i++) {
+            int j = this.level().random.nextInt(SLOT_COUNT);
+            final ItemStack stack = this.getStackInSlot(j);
+            final float f = i - 1;
+            final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
+            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) {
+                playerOptional.ifPresent(player -> {
+                    player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+                    CriteriaTriggers.PLACED_BLOCK.trigger(player, blockPos.above(), stack);
+                    NCCriteriaTriggers.SEED_DRILL_PLACE.trigger(player, stack);
+                });
+                break;
+            }
         }
     }
 
@@ -91,7 +97,7 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
         }
         if (!this.level().isClientSide) {
             if (this.xo != this.getX() || this.zo != this.getZ()) {
-                this.plant();
+                this.plant(getControllingPlayer().flatMap(pl -> Optional.of((ServerPlayer) pl)));
             }
         }
     }

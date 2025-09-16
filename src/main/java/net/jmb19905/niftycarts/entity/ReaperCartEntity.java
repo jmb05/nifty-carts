@@ -2,11 +2,14 @@ package net.jmb19905.niftycarts.entity;
 
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
+import net.jmb19905.niftycarts.advancement.NCCriteriaTriggers;
+import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +26,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class ReaperCartEntity extends AbstractDrawnEntity {
 
@@ -116,7 +121,8 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
             return;
         }
         if (!this.level().isClientSide) {
-            if (this.getFirstPassenger() instanceof Player pl) {
+            Optional<Entity> pulling = NiftyWorld.get(this.level()).getCurrentlyPulling(this);
+            if (pulling.isPresent() && this.getFirstPassenger() instanceof ServerPlayer pl) {
                 if (this.xo != this.getX() || this.zo != this.getZ()) {
                     this.harvest(pl);
                 }
@@ -124,7 +130,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
         }
     }
 
-    private void harvest(Player player) {
+    private void harvest(ServerPlayer player) {
         for (int i = 0; i <= 12; i += 2) {
             float f = 1.1f + ((float) i / 10f);
             final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
@@ -134,6 +140,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
             BlockState state = level().getBlockState(pos);
             if (state.is(NiftyCarts.REAPER_HARVESTABLE)) {
                 if (level().removeBlock(pos, false)) {
+                    NCCriteriaTriggers.REAPER_HARVEST.trigger(player, state);
                     level().destroyBlock(pos, false);
                     if (!state.requiresCorrectToolForDrops()) {
                         Block.dropResources(state, level(), pos, level().getBlockEntity(pos), player, ItemStack.EMPTY);
