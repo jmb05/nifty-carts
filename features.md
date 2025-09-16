@@ -7,42 +7,49 @@
   - Summons Supply Cart Entity
   - Has tooltip that expands on holding Shift
   - exists for all wood types
+  - Placing triggers advancement: Carting around
   - Recipe:
   <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/23560032e7e8db0017c2e7f590d96f623ed009ce.png">
 - ### Animal Cart
   - Summons Animal Cart Entity
   - Has tooltip that expands on holding Shift
   - exists for all wood types
+  - Placing triggers advancement: Carting around
   - Recipe:
   <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/de8ca4369830fe55dba0cfc28d11227fbec5781c.png">
 - ### Plow
   - Summons Plow Entity
   - Has tooltip that expands on holding Shift
   - exists for all wood types
+  - Placing triggers advancement: Carting around
   - Recipe:
     <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/a3586b5eb22a4a8819bf8ed50f20a91eb9448d04.png">
 - ### Handcart
   - Summons Handcart Entity
   - Has tooltip that expands on holding Shift
   - exists for all wood types
+  - Placing triggers advancement: Carting around
   - Recipe:
   <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/1fe51705ccc0a4b8d8cc46a251f692745bddfc9d.webp">
 - ### Seed Drill
   - Summons Seed Drill Entity
   - Has tooltip that expands on holding Shift
   - exists for all wood types
+  - Placing triggers advancement: Carting around
   - Recipe:
   <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/57007fd449e42a6fdd2f1953e7fbe5ac86bdbb5c.png">
 - ### Reaper
   - Summons Reaper Entity
   - Has tooltip that expands on holding Shift
   - exists for all wood types
+  - Placing triggers advancement: Carting around
   - Recipe:
   <img src="https://cdn.modrinth.com/data/CXd6g9xp/images/f272deef5cced628997c3c5aa0bcae42905bc4bf.png">
 - ### Wagon
   - Summons Wagon Entity
   - has tooltip that expands on holding Shift
   - exists for all wood types
+  - Placing triggers advancement: Carting around
   - Recipe: TODO: add image
 ## Entities
 - ### Supply Cart
@@ -90,6 +97,7 @@
   - Drawn Cart
   - Can have roof by adding/clicking carpets (5 in survival)
   - roof has three variants that can be cycles by right-clicking top part of wagon
+  - banner can be added facing backwards
   - Can have up to three chests (added by clicking) each chest adds 36 slots
   - Can have up to four seats
   - Seat count restricted by chest count
