@@ -54,25 +54,17 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
     }
 
     private void plant(Optional<ServerPlayer> playerOptional) {
-        for (int j = 0; j < SLOT_COUNT; j++) {final ItemStack stack = this.getStackInSlot(j);
-            double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - 90));
-            double z = this.getZ() + Mth.cos((float) Math.toRadians(this.getYRot() - 90));
-            BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
-            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
-
-            x = this.getX();
-            z = this.getZ();
-            blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
-            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
-
-            x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90));
-            z = this.getZ() + Mth.cos((float) Math.toRadians(this.getYRot() + 90));
-            blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
+        for (int i = 0; i < 3; i++) {
+            int j = this.level().random.nextInt(SLOT_COUNT);
+            final ItemStack stack = this.getStackInSlot(j);
+            final float f = i - 1;
+            final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
             if (tryPlaceCrop(stack, blockPos.above(), level(), j)) {
-                BlockPos finalBlockPos = blockPos;
                 playerOptional.ifPresent(player -> {
                     player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
-                    CriteriaTriggers.PLACED_BLOCK.trigger(player, finalBlockPos.above(), stack);
+                    CriteriaTriggers.PLACED_BLOCK.trigger(player, blockPos.above(), stack);
                     NCCriteriaTriggers.SEED_DRILL_PLACE.trigger(player, stack);
                 });
                 break;
