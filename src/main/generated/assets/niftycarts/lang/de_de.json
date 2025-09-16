@@ -30,6 +30,7 @@
   "entity.niftycarts.wagon": "Wagen",
   "item.animal_cart.tooltip1": "This cart has two seats for animals or players and can be decorated with a banner",
   "item.animal_cart.tooltip2": "It can be also controlled from the front seat",
+  "item.cart.press_shift_tooltip": "Hold [Shift] for Details",
   "item.hand_cart.tooltip1": "This cart can hold up to 27 stacks of items",
   "item.hand_cart.tooltip2": "It can only be pulled by the player",
   "item.niftycarts.acacia_animal_cart": "Akazienholztierkarren",
@@ -125,6 +126,8 @@
   "item.seed_drill.tooltip2": "It has room for 9 stacks of seeds",
   "item.supply_cart.tooltip1": "This cart can hold up to 54 stacks of items",
   "item.supply_cart.tooltip2": "It has one seat and can be decorated with a banner",
+  "item.wagon.tooltip1": "Add 5 carpets as roof, add chests for storage",
+  "item.wagon.tooltip2": "Has up to four seats",
   "key.categories.niftycarts": "NiftyCarts",
   "key.niftycarts.action": "Attach/Detach Cart",
   "key.niftycarts.slow": "Toggle Slow",
@@ -143,5 +146,6 @@
   "stat.niftycarts.wagon_pull_cm": "Strecke Wagen gezogen",
   "subtitles.niftycarts.cart.attached": "Cart attaches",
   "subtitles.niftycarts.cart.detached": "Cart detaches",
-  "subtitles.niftycarts.cart.placed": "Cart placed"
+  "subtitles.niftycarts.cart.placed": "Cart placed",
+  "tag.item.niftycarts.seed_drill_plantable": "Plantable using the Seed Drill"
 }

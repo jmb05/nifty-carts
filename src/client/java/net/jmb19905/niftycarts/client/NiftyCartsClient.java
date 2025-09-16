@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -16,12 +17,15 @@ import net.jmb19905.niftycarts.client.renderer.entity.model.*;
 import net.jmb19905.niftycarts.client.screen.ChestScreen;
 import net.jmb19905.niftycarts.client.screen.PlowScreen;
 import net.jmb19905.niftycarts.client.screen.SeedDrillScreen;
+import net.jmb19905.niftycarts.item.CartItem;
 import net.jmb19905.niftycarts.network.clientbound.UpdateDrawnPayload;
 import net.jmb19905.niftycarts.network.serverbound.ActionKeyPayload;
 import net.jmb19905.niftycarts.network.serverbound.ToggleSlowPayload;
 import net.jmb19905.niftycarts.util.NiftyWorld;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.fml.config.ModConfig;
 import org.lwjgl.glfw.GLFW;
@@ -76,6 +80,17 @@ public class NiftyCartsClient implements ClientModInitializer {
 				GLFW.GLFW_KEY_Z,
 				"key.categories.niftycarts"
 		));
+
+        ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
+            if (stack.getItem() instanceof CartItem cart) {
+                if (!Screen.hasShiftDown()) {
+                    lines.add(Component.translatable("item.cart.press_shift_tooltip").withStyle(ChatFormatting.GRAY));
+                } else {
+                    lines.add(Component.translatable("item." + cart.getCartType() + ".tooltip1").withStyle(ChatFormatting.GRAY));
+                    lines.add(Component.translatable("item." + cart.getCartType() + ".tooltip2").withStyle(ChatFormatting.GRAY));
+                }
+            }
+        });
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (actionKeyMapping.consumeClick()) {
