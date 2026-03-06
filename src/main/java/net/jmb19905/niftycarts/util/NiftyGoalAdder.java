@@ -6,19 +6,19 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-@SuppressWarnings("resource")
 public final class NiftyGoalAdder<T extends Entity> {
     private final Class<T> type;
 
     private final Function<T, GoalSelector> selector;
 
-    private final ImmutableList<GoalEntry<T>> goals;
+    private final ImmutableList<@NotNull GoalEntry<T>> goals;
 
     private NiftyGoalAdder(final Builder<T> builder) {
         this.type = builder.type;
@@ -27,7 +27,7 @@ public final class NiftyGoalAdder<T extends Entity> {
     }
 
     public void onEntityJoinWorld(final Entity entity) {
-        if (!entity.level().isClientSide && this.type.isInstance(entity)) {
+        if (!entity.level().isClientSide() && this.type.isInstance(entity)) {
             final Set<WrappedGoal> oldGoals = this.getGoals(this.type.cast(entity));
             final List<WrappedGoal> newGoals = new ArrayList<>(oldGoals.size() + this.goals.size());
             for (final GoalEntry<T> goal : this.goals) {
@@ -60,7 +60,7 @@ public final class NiftyGoalAdder<T extends Entity> {
 
         private final Function<T, GoalSelector> selector;
 
-        private final ImmutableList.Builder<GoalEntry<T>> goals = new ImmutableList.Builder<>();
+        private final ImmutableList.Builder<@NotNull GoalEntry<T>> goals = new ImmutableList.Builder<>();
 
         private Builder(final Class<T> type, final Function<T, GoalSelector> selector) {
             this.type = type;

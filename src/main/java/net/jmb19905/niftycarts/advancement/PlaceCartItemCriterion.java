@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.jmb19905.niftycarts.item.CartItem;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class PlaceCartItemCriterion extends SimpleCriterionTrigger<PlaceCartItemCriterion.TriggerInstance> {
+public class PlaceCartItemCriterion extends SimpleCriterionTrigger<PlaceCartItemCriterion.@NotNull TriggerInstance> {
 
     public void trigger(ServerPlayer serverPlayer, ItemStack stack) {
         super.trigger(serverPlayer, ti -> ti.matches(stack));
@@ -31,15 +31,15 @@ public class PlaceCartItemCriterion extends SimpleCriterionTrigger<PlaceCartItem
                         ItemPredicate.CODEC.optionalFieldOf("item").forGetter(TriggerInstance::item)
                 ).apply(instance, TriggerInstance::new));
 
-        public static Criterion<TriggerInstance> placeCart() {
+        public static Criterion<@NotNull TriggerInstance> placeCart() {
             return NCCriteriaTriggers.PLACE_CART_ITEM.createCriterion(new TriggerInstance(Optional.empty(), Optional.empty()));
         }
 
-        public static Criterion<TriggerInstance> placeCart(CartItem item) {
+        public static Criterion<@NotNull TriggerInstance> placeCart(CartItem item) {
             return placeCart(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, item));
         }
 
-        public static Criterion<TriggerInstance> placeCart(ItemPredicate.Builder builder) {
+        public static Criterion<@NotNull TriggerInstance> placeCart(ItemPredicate.Builder builder) {
             return NCCriteriaTriggers.PLACE_CART_ITEM.createCriterion(new TriggerInstance(Optional.empty(), Optional.of(builder.build())));
         }
 

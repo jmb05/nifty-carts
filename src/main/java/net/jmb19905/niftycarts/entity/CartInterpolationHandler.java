@@ -79,7 +79,7 @@ public class CartInterpolationHandler extends InterpolationHandler {
         }
     }
 
-    public void interpolateTo(Vec3 pos, float yRot, float xRot) {
+    public void interpolateTo(@NotNull Vec3 pos, float yRot, float xRot) {
         this.interpolateTo(pos, yRot, xRot, Vec3.ZERO);
     }
 

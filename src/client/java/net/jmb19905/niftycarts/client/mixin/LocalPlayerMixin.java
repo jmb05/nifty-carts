@@ -6,7 +6,6 @@ import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
 import net.jmb19905.niftycarts.network.serverbound.CoachmanMovePayload;
 import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;

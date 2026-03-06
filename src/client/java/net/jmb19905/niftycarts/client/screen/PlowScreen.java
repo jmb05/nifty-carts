@@ -5,13 +5,13 @@ import net.jmb19905.niftycarts.container.PlowMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
-public final class PlowScreen extends AbstractContainerScreen<PlowMenu> {
-    private static final ResourceLocation PLOW_GUI_TEXTURES = NiftyCarts.resLoc("textures/gui/container/plow.png");
+public final class PlowScreen extends AbstractContainerScreen<@NotNull PlowMenu> {
+    private static final Identifier PLOW_GUI_TEXTURES = NiftyCarts.resLoc("textures/gui/container/plow.png");
 
     public PlowScreen(final PlowMenu screenContainer, final Inventory inv, final Component titleIn) {
         super(screenContainer, inv, titleIn);
@@ -25,7 +25,7 @@ public final class PlowScreen extends AbstractContainerScreen<PlowMenu> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);

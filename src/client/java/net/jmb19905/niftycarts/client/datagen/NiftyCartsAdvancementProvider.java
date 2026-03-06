@@ -7,16 +7,17 @@ import net.jmb19905.niftycarts.advancement.*;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.critereon.EntityTypePredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.EntityTypePredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -28,7 +29,7 @@ public class NiftyCartsAdvancementProvider extends FabricAdvancementProvider {
     }
 
     @Override
-    public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
+    public void generateAdvancement(HolderLookup.Provider registryLookup, @NotNull Consumer<AdvancementHolder> consumer) {
         var itemRegistry = registryLookup.lookupOrThrow(Registries.ITEM);
         var entityTypeRegistry = registryLookup.lookupOrThrow(Registries.ENTITY_TYPE);
 
@@ -37,7 +38,7 @@ public class NiftyCartsAdvancementProvider extends FabricAdvancementProvider {
                         NiftyCarts.WHEEL,
                         Component.translatable("advancements.niftycarts.place_cart.title"),
                         Component.translatable("advancements.niftycarts.place_cart.description"),
-                        ResourceLocation.withDefaultNamespace("gui/advancements/backgrounds/husbandry"),
+                        Identifier.withDefaultNamespace("gui/advancements/backgrounds/husbandry"),
                         AdvancementType.TASK,
                         true,
                         true,

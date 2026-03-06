@@ -7,7 +7,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.animal.AgeableWaterCreature;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public final class AnimalCartEntity extends AbstractDrawnEntity {
-    public AnimalCartEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
+    public AnimalCartEntity(final EntityType<? extends @NotNull Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -45,7 +45,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
         if (isLocked()) return;
         List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate(0.2F, -0.01F, 0.2F), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
-            boolean bl = !this.level().isClientSide && !(this.getControllingPassenger() instanceof Player);
+            boolean bl = !this.level().isClientSide() && !(this.getControllingPassenger() instanceof Player);
             for (Entity entity : list) {
                 if (!entity.hasPassenger(this)) {
                     if (bl
@@ -54,7 +54,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
                             && entity.getBbWidth() < this.getBbWidth()
                             && entity.getBbWidth() * entity.getBbHeight() < 1.5
                             && entity instanceof LivingEntity
-                            && !(entity instanceof WaterAnimal)
+                            && !(entity instanceof AgeableWaterCreature)
                             && !(entity instanceof Player)) {
                         if(entity instanceof TamableAnimal tamable) tamable.setInSittingPose(true);
                         entity.startRiding(this);
@@ -65,10 +65,10 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    public @NotNull InteractionResult interact(final Player player, final InteractionHand hand) {
+    public @NotNull InteractionResult interact(final @NotNull Player player, final @NotNull InteractionHand hand) {
         if (isLocked()) return InteractionResult.FAIL;
         if (player.isSecondaryUseActive()) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 for (final Entity entity : this.getPassengers()) {
                     if (!(entity instanceof Player)) {
                         entity.stopRiding();
@@ -85,7 +85,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
             if (!this.canAddPassenger(player)) {
                 return InteractionResult.PASS;
             }
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
             }
             return InteractionResult.SUCCESS;
@@ -96,8 +96,8 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     @Override
     public void push(final Entity entityIn) {
         if (!entityIn.hasPassenger(this)) {
-            if (!this.level().isClientSide && this.getPulling() != entityIn && this.getControllingPassenger() == null && this.getPassengers().size() < 2 && !entityIn.isPassenger() && entityIn.getBbWidth() < this.getBbWidth() && entityIn instanceof LivingEntity
-                    && !(entityIn instanceof WaterAnimal) && !(entityIn instanceof Player)) {
+            if (!this.level().isClientSide() && this.getPulling() != entityIn && this.getControllingPassenger() == null && this.getPassengers().size() < 2 && !entityIn.isPassenger() && entityIn.getBbWidth() < this.getBbWidth() && entityIn instanceof LivingEntity
+                    && !(entityIn instanceof AgeableWaterCreature) && !(entityIn instanceof Player)) {
                 entityIn.startRiding(this);
             } else {
                 super.push(entityIn);
@@ -106,7 +106,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    protected boolean canAddPassenger(final Entity passenger) {
+    protected boolean canAddPassenger(final @NotNull Entity passenger) {
         return this.getPassengers().size() < 2;
     }
 
@@ -115,7 +115,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    protected @NotNull Vec3 getPassengerAttachmentPoint(Entity entity, EntityDimensions entityDimensions, float f) {
+    protected @NotNull Vec3 getPassengerAttachmentPoint(@NotNull Entity entity, @NotNull EntityDimensions entityDimensions, float f) {
         double f1 = -0.1d;
         if (this.getPassengers().size() > 1) {
             f1 = this.getPassengers().indexOf(entity) == 0 ? 0.2d : -0.6d;
@@ -128,7 +128,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    public void positionRider(final Entity passenger, MoveFunction moveFunction) {
+    public void positionRider(final @NotNull Entity passenger, @NotNull MoveFunction moveFunction) {
         super.positionRider(passenger, moveFunction);
         if (this.hasPassenger(passenger)) {
             passenger.setYBodyRot(this.getYRot());

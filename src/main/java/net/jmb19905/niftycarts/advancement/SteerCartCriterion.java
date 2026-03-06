@@ -4,13 +4,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.jmb19905.niftycarts.entity.AbstractDrawnEntity;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.*;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class SteerCartCriterion extends SimpleCriterionTrigger<SteerCartCriterion.TriggerInstance> {
+public class SteerCartCriterion extends SimpleCriterionTrigger<SteerCartCriterion.@NotNull TriggerInstance> {
 
     @Override
     public @NotNull Codec<TriggerInstance> codec() {
@@ -30,11 +30,11 @@ public class SteerCartCriterion extends SimpleCriterionTrigger<SteerCartCriterio
                         Codec.FLOAT.optionalFieldOf("distance").forGetter(TriggerInstance::minDist)
                 ).apply(instance, TriggerInstance::new));
 
-        public static Criterion<TriggerInstance> steerCart() {
+        public static Criterion<@NotNull TriggerInstance> steerCart() {
             return NCCriteriaTriggers.STEER_CART.createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.empty()));
         }
 
-        public static Criterion<TriggerInstance> steerCart(EntityTypePredicate type, float minDist) {
+        public static Criterion<@NotNull TriggerInstance> steerCart(EntityTypePredicate type, float minDist) {
             return NCCriteriaTriggers.STEER_CART.createCriterion(new TriggerInstance(Optional.empty(), Optional.of(type), Optional.of(minDist)));
         }
 

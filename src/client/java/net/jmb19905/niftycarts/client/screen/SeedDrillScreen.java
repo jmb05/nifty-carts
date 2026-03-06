@@ -5,13 +5,13 @@ import net.jmb19905.niftycarts.container.SeedDrillMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
-public class SeedDrillScreen extends AbstractContainerScreen<SeedDrillMenu> {
-    private static final ResourceLocation SEED_DRILL_GUI_TEXTURES = NiftyCarts.resLoc("textures/gui/container/seed_drill.png");
+public class SeedDrillScreen extends AbstractContainerScreen<@NotNull SeedDrillMenu> {
+    private static final Identifier SEED_DRILL_GUI_TEXTURES = NiftyCarts.resLoc("textures/gui/container/seed_drill.png");
 
     public SeedDrillScreen(SeedDrillMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -25,7 +25,7 @@ public class SeedDrillScreen extends AbstractContainerScreen<SeedDrillMenu> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);

@@ -26,15 +26,17 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity implements HasCustomInventoryScreen, ContainerEntity {
 
     private NiftyInventory itemStacks;
     private final int containerSize;
     @Nullable
-    private ResourceKey<LootTable> lootTable;
+    private ResourceKey<@NotNull LootTable> lootTable;
     private long lootTableSeed;
 
-    public AbstractDrawnInventoryEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn, int containerSize) {
+    public AbstractDrawnInventoryEntity(EntityType<? extends @NotNull Entity> entityTypeIn, Level worldIn, int containerSize) {
         super(entityTypeIn, worldIn);
         this.itemStacks = NiftyInventory.withSize(containerSize, ItemStack.EMPTY);
         this.containerSize = containerSize;
@@ -46,7 +48,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
         return slots / containerSize;
     }
 
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return this.isChestVehicleStillValid(player);
     }
 
@@ -56,8 +58,8 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
         this.chestVehicleDestroyed(source, (ServerLevel) this.level(), this);
     }
 
-    public void remove(Entity.RemovalReason removalReason) {
-        if (!this.level().isClientSide && removalReason.shouldDestroy()) {
+    public void remove(Entity.@NotNull RemovalReason removalReason) {
+        if (!this.level().isClientSide() && removalReason.shouldDestroy()) {
             Containers.dropContents(this.level(), this, this);
         }
         super.remove(removalReason);
@@ -70,7 +72,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
     }
 
     @Override
-    public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand interactionHand) {
         if (isLocked()) return InteractionResult.FAIL;
         if (canInteractNotOpen() && this.canAddPassenger(player) && !player.isSecondaryUseActive()) {
             return onInteractNotOpen(player, interactionHand);
@@ -89,7 +91,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     public void openCustomInventoryScreen(Player player) {
         player.openMenu(this);
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             this.gameEvent(GameEvent.CONTAINER_OPEN, player);
             if (this.level() instanceof ServerLevel serverLevel) {
                 PiglinAi.angerNearbyPiglins(serverLevel, player, true);
@@ -117,12 +119,12 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
         return this.removeChestVehicleItemNoUpdate(i);
     }
 
-    public void setItem(int i, ItemStack itemStack) {
+    public void setItem(int i, @NotNull ItemStack itemStack) {
         this.setChestVehicleItem(i, itemStack);
     }
 
     public @NotNull SlotAccess getSlot(int i) {
-        return this.getChestVehicleSlot(i);
+        return Objects.requireNonNull(this.getChestVehicleSlot(i));
     }
 
     public void setChanged() {
@@ -130,7 +132,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+    public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
         if (this.lootTable != null && player.isSpectator()) {
             return null;
         } else {
@@ -141,7 +143,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     protected abstract AbstractContainerMenu createMenuLootUnpacked(int i, Inventory inventory, Player player);
 
-    public @NotNull NonNullList<ItemStack> getItemStacks() {
+    public @NotNull NonNullList<@NotNull ItemStack> getItemStacks() {
         return this.itemStacks;
     }
 
@@ -162,12 +164,12 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
     @Nullable
     @Override
-    public ResourceKey<LootTable> getContainerLootTable() {
+    public ResourceKey<@NotNull LootTable> getContainerLootTable() {
         return this.lootTable;
     }
 
     @Override
-    public void setContainerLootTable(@Nullable ResourceKey<LootTable> resourceLocation) {
+    public void setContainerLootTable(@Nullable ResourceKey<@NotNull LootTable> resourceLocation) {
         this.lootTable = resourceLocation;
     }
 
@@ -183,7 +185,7 @@ public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity i
 
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
         super.addAdditionalSaveData(output);
         saveInventory(output);
     }

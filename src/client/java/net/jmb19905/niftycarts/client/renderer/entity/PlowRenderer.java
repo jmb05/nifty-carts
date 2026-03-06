@@ -4,15 +4,18 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
+import net.jmb19905.niftycarts.client.renderer.entity.model.CartBannerFlagModel;
 import net.jmb19905.niftycarts.client.renderer.entity.model.PlowModel;
 import net.jmb19905.niftycarts.entity.PlowEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.object.banner.BannerModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +25,9 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowRenderStat
     private final ItemModelResolver itemRenderer;
 
     public PlowRenderer(final EntityRendererProvider.Context ctx) {
-        super(ctx, new PlowModel(ctx.bakeLayer(NiftyCartsModelLayers.PLOW)));
+        super(ctx, new PlowModel(ctx.bakeLayer(NiftyCartsModelLayers.PLOW),
+                new BannerModel(ctx.bakeLayer(ModelLayers.STANDING_BANNER)),
+                new CartBannerFlagModel(ctx.bakeLayer(ModelLayers.STANDING_BANNER_FLAG))));
         this.shadowRadius = 1.0F;
         this.itemRenderer = ctx.getItemModelResolver();
     }
@@ -48,12 +53,12 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowRenderStat
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(PlowRenderState state) {
+    public @NotNull Identifier getTextureLocation(PlowRenderState state) {
         return NiftyCarts.resLoc("textures/entity/" + state.woodType.name() + "_plow.png");
     }
 
     @Override
-    protected void renderContents(PlowRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
+    protected void submitContents(PlowRenderState state, final PoseStack stack, final SubmitNodeCollector collector) {
         for (int i = 0; i < state.items.size(); i++) {
             final ItemStack itemStack = state.items.get(i);
             if (itemStack.isEmpty()) {
@@ -68,7 +73,7 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowRenderStat
                     s.translate(0.0D, -0.1D, 0.0D);
                     s.mulPose(Axis.ZP.rotationDegrees(180.0F));
                 }
-                state.itemStates.get(finalI).render(stack, source, packedLight, OverlayTexture.NO_OVERLAY);
+                state.itemStates.get(finalI).submit(stack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             }, stack);
         }
     }

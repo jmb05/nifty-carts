@@ -32,19 +32,20 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private static final int SLOT_COUNT = 3;
     private static final double BLADEOFFSET = 1.7D;
-    private static final EntityDataAccessor<Boolean> PLOWING = SynchedEntityData.defineId(PlowEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final ImmutableList<EntityDataAccessor<ItemStack>> TOOLS = ImmutableList.of(
+    private static final EntityDataAccessor<@NotNull Boolean> PLOWING = SynchedEntityData.defineId(PlowEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final ImmutableList<@NotNull EntityDataAccessor<@NotNull ItemStack>> TOOLS = ImmutableList.of(
             SynchedEntityData.defineId(PlowEntity.class, EntityDataSerializers.ITEM_STACK),
             SynchedEntityData.defineId(PlowEntity.class, EntityDataSerializers.ITEM_STACK),
             SynchedEntityData.defineId(PlowEntity.class, EntityDataSerializers.ITEM_STACK));
 
-    public PlowEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
+    public PlowEntity(final EntityType<? extends @NotNull Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn, SLOT_COUNT);
     }
 
@@ -68,7 +69,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
         if (this.getPulling() == null) {
             return;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             Optional<Player> playerOptional = getControllingPlayer();
             if (getPlowing() && playerOptional.isPresent()) {
                 if (this.xo != this.getX() || this.zo != this.getZ()) {
@@ -101,7 +102,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     private void tryBreakBlock(ItemStack stack, BlockPos pos, Level level, Player player) {
         BlockState state = level.getBlockState(pos);
-        TagKey<Block> tag;
+        TagKey<@NotNull Block> tag;
         switch (stack.getItem()) {
             case HoeItem ignored -> tag = NiftyCarts.PLOW_BREAKABLE_HOE;
             case ShovelItem ignored -> tag = NiftyCarts.PLOW_BREAKABLE_SHOVEL;
@@ -132,7 +133,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     }
 
     public void updateSlot(final int slot) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.getItemStacks().get(slot).isEmpty()) {
                 this.entityData.set(TOOLS.get(slot), ItemStack.EMPTY);
             } else {
@@ -155,21 +156,21 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(PLOWING, false);
-        for (final EntityDataAccessor<ItemStack> param : TOOLS) {
+        for (final EntityDataAccessor<@NotNull ItemStack> param : TOOLS) {
             builder.define(param, ItemStack.EMPTY);
         }
     }
 
     @Override
     protected InteractionResult onInteractNotOpen(Player player, InteractionHand hand) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.entityData.set(PLOWING, !this.entityData.get(PLOWING));
         }
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
         super.addAdditionalSaveData(output);
         output.putBoolean("Plowing", this.entityData.get(PLOWING));
     }

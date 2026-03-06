@@ -3,14 +3,14 @@ package net.jmb19905.niftycarts.advancement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class CartAddBannerCriterion extends SimpleCriterionTrigger<CartAddBannerCriterion.TriggerInstance> {
+public class CartAddBannerCriterion extends SimpleCriterionTrigger<CartAddBannerCriterion.@NotNull TriggerInstance> {
 
     @Override
     public @NotNull Codec<TriggerInstance> codec() {
@@ -33,7 +33,7 @@ public class CartAddBannerCriterion extends SimpleCriterionTrigger<CartAddBanner
             return item.isEmpty() || item.get().test(stack);
         }
 
-        public static Criterion<TriggerInstance> usedBanner(ItemPredicate.Builder builder) {
+        public static Criterion<@NotNull TriggerInstance> usedBanner(ItemPredicate.Builder builder) {
             return NCCriteriaTriggers.CART_ADD_BANNER.createCriterion(new TriggerInstance(Optional.empty(), Optional.of(builder.build())));
         }
 

@@ -31,9 +31,9 @@ import java.util.Optional;
 
 public class ReaperCartEntity extends AbstractDrawnEntity {
 
-    private static final EntityDataAccessor<Boolean> FOLDED = SynchedEntityData.defineId(ReaperCartEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<@NotNull Boolean> FOLDED = SynchedEntityData.defineId(ReaperCartEntity.class, EntityDataSerializers.BOOLEAN);
 
-    public ReaperCartEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
+    public ReaperCartEntity(EntityType<? extends @NotNull Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -81,13 +81,13 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    protected @NotNull Vec3 getPassengerAttachmentPoint(Entity entity, EntityDimensions entityDimensions, float f) {
+    protected @NotNull Vec3 getPassengerAttachmentPoint(@NotNull Entity entity, @NotNull EntityDimensions entityDimensions, float f) {
         final Vec3 forward = this.getLookAngle().scale(-0.45);
         return new Vec3(forward.x, getPassengersRidingOffsetY(entityDimensions, f) + forward.y, forward.z);
     }
 
     @Override
-    protected void positionRider(Entity passenger, MoveFunction moveFunction) {
+    protected void positionRider(@NotNull Entity passenger, @NotNull MoveFunction moveFunction) {
         super.positionRider(passenger, moveFunction);
         if (this.hasPassenger(passenger)) {
             passenger.setYBodyRot(this.getYRot());
@@ -100,9 +100,9 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand interactionHand) {
         if (isLocked()) return InteractionResult.FAIL;
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (player.isSecondaryUseActive()) {
                 player.displayClientMessage(Component.translatable("message.niftycarts.use_reaper"), true);
             } else if (!player.isSecondaryUseActive() && this.pulling != null && this.pulling != player) {
@@ -120,7 +120,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
         if (this.getPulling() == null) {
             return;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             Optional<Entity> pulling = NiftyWorld.get(this.level()).getCurrentlyPulling(this);
             if (pulling.isPresent() && this.getFirstPassenger() instanceof ServerPlayer pl) {
                 if (this.xo != this.getX() || this.zo != this.getZ()) {

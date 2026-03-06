@@ -17,8 +17,8 @@ import java.util.Comparator;
 
 public record ActionKeyPayload() implements CustomPacketPayload {
 
-    public static final Type<ActionKeyPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_action_key");
-    public static final StreamCodec<FriendlyByteBuf, ActionKeyPayload> CODEC = new StreamCodec<>() {
+    public static final Type<@NotNull ActionKeyPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_action_key");
+    public static final StreamCodec<@NotNull FriendlyByteBuf, @NotNull ActionKeyPayload> CODEC = new StreamCodec<>() {
         @Override
         public @NotNull ActionKeyPayload decode(FriendlyByteBuf object) {
             return new ActionKeyPayload();
@@ -29,7 +29,7 @@ public record ActionKeyPayload() implements CustomPacketPayload {
     };
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends @NotNull CustomPacketPayload> type() {
         return TYPE;
     }
 

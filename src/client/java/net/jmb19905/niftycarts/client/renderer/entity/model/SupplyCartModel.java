@@ -4,11 +4,13 @@ import net.jmb19905.niftycarts.client.renderer.entity.CargoCartRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.object.banner.BannerFlagModel;
+import net.minecraft.client.model.object.banner.BannerModel;
 
 public final class SupplyCartModel extends CargoCartModel<CargoCartRenderState> {
 
-    public SupplyCartModel(final ModelPart root) {
-        super(root);
+    public SupplyCartModel(final ModelPart root, BannerModel bannerModel, BannerFlagModel flagModel) {
+        super(root, bannerModel, flagModel);
     }
 
     @Override
@@ -79,7 +81,8 @@ public final class SupplyCartModel extends CargoCartModel<CargoCartRenderState> 
         rightSide.yRot = (float) -Math.PI / 2.0F;
         rightSide.addBox(-11.5F, -7.0F, 8.0F, 17.0F, 5.0F, 2.0F);
         flowerBasket.addChild(rightSide);
-        flowerBasket.build(def.getRoot());
+
+        EasyMeshBuilder extraWheel = createWheel("extraWheel", 5, 2, 9, 0, -1, 1, 1);
 
         final EasyMeshBuilder body = CartModel.createBody(9);
         body.addChild(axis);
@@ -92,6 +95,8 @@ public final class SupplyCartModel extends CargoCartModel<CargoCartRenderState> 
         body.addChild(boardsSide[1]);
         body.addChild(boardsSide[2]);
         body.addChild(boardsSide[3]);
+        body.addChild(flowerBasket);
+        body.addChild(extraWheel);
         body.build(def.getRoot());
 
         return LayerDefinition.create(def, 64, 64);

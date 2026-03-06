@@ -6,35 +6,35 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.AtlasManager;
+import net.minecraft.resources.Identifier;
 
 public class AssembledTexture {
-    private final ResourceLocation id;
+    private final Identifier id;
     private final int width;
     private final int height;
 
-    private final ObjectList<Material> materials = new ObjectArrayList<>();
+    private final ObjectList<CartMaterial> materials = new ObjectArrayList<>();
 
-    public AssembledTexture(ResourceLocation id, final int width, final int height) {
+    public AssembledTexture(Identifier id, final int width, final int height) {
         this.id = id;
         this.width = width;
         this.height = height;
     }
 
-    public AssembledTexture add(final Material material) {
+    public AssembledTexture add(final CartMaterial material) {
         this.materials.add(material);
         return this;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 
-    AbstractTexture assemble(final ModelManager sprites) {
+    AbstractTexture assemble(final AtlasManager sprites) {
         final PreparedMaterial[] prepared = new PreparedMaterial[this.materials.size()];
         int resolution = 1;
-        for (final ObjectListIterator<Material> it = this.materials.iterator(); it.hasNext(); ) {
+        for (final ObjectListIterator<CartMaterial> it = this.materials.iterator(); it.hasNext(); ) {
             final int i = it.nextIndex();
             final PreparedMaterial p = it.next().prepare(sprites);
             prepared[i] = p;

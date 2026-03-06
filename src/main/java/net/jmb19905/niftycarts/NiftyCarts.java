@@ -26,8 +26,8 @@ import net.jmb19905.niftycarts.util.NiftyGoalAdder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.StatFormatter;
@@ -46,7 +46,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.fml.config.ModConfig;
-import org.apache.commons.lang3.function.TriFunction;
+import org.jetbrains.annotations.NotNull;
+import oshi.util.tuples.Triplet;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,10 +58,10 @@ public class NiftyCarts implements ModInitializer {
 	public static final String MOD_ID = "niftycarts";
 
 	public static final Item WHEEL = register("wheel", Item::new);
-	private static final TriFunction<WoodType, String, FeatureFlag[], CartItem> CART_ITEM_SUPPLIER =
-            (wood, type, flags) ->
-                    register(wood.name() + "_" + type, prop ->
-                            new CartItem(wood, type, prop.stacksTo(1).requiredFeatures(flags)));
+	private static final Function<Triplet<WoodType, String, FeatureFlag[]>, CartItem> CART_ITEM_SUPPLIER =
+            (triplet) ->
+                    register(triplet.getA().name() + "_" + triplet.getB(), prop ->
+                            new CartItem(triplet.getA(), triplet.getB(), prop.stacksTo(1).requiredFeatures(triplet.getC())));
 	public static final Map<WoodType, CartItem> SUPPLY_CART = new HashMap<>();
 	public static final Map<WoodType, CartItem> HAND_CART = new HashMap<>();
 	public static final Map<WoodType, CartItem> PLOW = new HashMap<>();
@@ -87,48 +88,48 @@ public class NiftyCarts implements ModInitializer {
 	static {
 		for (WoodType woodType : VANILLA_WOOD_TYPES) {
 			FeatureFlag[] flags = {};
-			SUPPLY_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "supply_cart", flags));
-			HAND_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "hand_cart", flags));
-			PLOW.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "plow", flags));
-			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "seed_drill", flags));
-			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "reaper", flags));
-			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "animal_cart", flags));
-            WAGON.put(woodType, CART_ITEM_SUPPLIER.apply(woodType, "wagon", flags));
+			SUPPLY_CART.put(woodType, CART_ITEM_SUPPLIER.apply(new Triplet<>(woodType, "supply_cart", flags)));
+			HAND_CART.put(woodType, CART_ITEM_SUPPLIER.apply(new Triplet<>(woodType, "hand_cart", flags)));
+			PLOW.put(woodType, CART_ITEM_SUPPLIER.apply(new Triplet<>(woodType, "plow", flags)));
+			SEED_DRILL.put(woodType, CART_ITEM_SUPPLIER.apply(new Triplet<>(woodType, "seed_drill", flags)));
+			REAPER.put(woodType, CART_ITEM_SUPPLIER.apply(new Triplet<>(woodType, "reaper", flags)));
+			ANIMAL_CART.put(woodType, CART_ITEM_SUPPLIER.apply(new Triplet<>(woodType, "animal_cart", flags)));
+            WAGON.put(woodType, CART_ITEM_SUPPLIER.apply(new Triplet<>(woodType, "wagon", flags)));
 		}
 	}
 
 	public static MinecraftServer server = null;
 
-	public static final ResourceLocation ATTACH_SOUND_ID = resLoc("entity.cart.attach");
-	public static final ResourceLocation DETACH_SOUND_ID = resLoc("entity.cart.detach");
-	public static final ResourceLocation PLACE_SOUND_ID = resLoc("entity.cart.place");
+	public static final Identifier ATTACH_SOUND_ID = resLoc("entity.cart.attach");
+	public static final Identifier DETACH_SOUND_ID = resLoc("entity.cart.detach");
+	public static final Identifier PLACE_SOUND_ID = resLoc("entity.cart.place");
 
 	public static SoundEvent ATTACH_SOUND = SoundEvent.createVariableRangeEvent(ATTACH_SOUND_ID);
 	public static SoundEvent DETACH_SOUND = SoundEvent.createVariableRangeEvent(DETACH_SOUND_ID);
 	public static SoundEvent PLACE_SOUND = SoundEvent.createVariableRangeEvent(PLACE_SOUND_ID);
 
-	public static final EntityType<SupplyCartEntity> SUPPLY_CART_ENTITY = register("supply_cart",
+	public static final EntityType<@NotNull SupplyCartEntity> SUPPLY_CART_ENTITY = register("supply_cart",
 			EntityType.Builder.of(SupplyCartEntity::new, MobCategory.MISC).sized(1.5f, 1.4f));
 
-	public static final EntityType<AnimalCartEntity> ANIMAL_CART_ENTITY = register("animal_cart",
+	public static final EntityType<@NotNull AnimalCartEntity> ANIMAL_CART_ENTITY = register("animal_cart",
 			EntityType.Builder.of(AnimalCartEntity::new, MobCategory.MISC).sized(1.3f, 1.4f));
 
-	public static final EntityType<PlowEntity> PLOW_ENTITY = register("plow",
+	public static final EntityType<@NotNull PlowEntity> PLOW_ENTITY = register("plow",
 			EntityType.Builder.of(PlowEntity::new, MobCategory.MISC).sized(1.3f, 1.4f));
 
-	public static final EntityType<HandCartEntity> HAND_CART_ENTITY = register("hand_cart",
+	public static final EntityType<@NotNull HandCartEntity> HAND_CART_ENTITY = register("hand_cart",
 			EntityType.Builder.of(HandCartEntity::new, MobCategory.MISC).sized(1.3f, 1.1f));
 
-	public static final EntityType<SeedDrillEntity> SEED_DRILL_ENTITY = register("seed_drill",
+	public static final EntityType<@NotNull SeedDrillEntity> SEED_DRILL_ENTITY = register("seed_drill",
 			EntityType.Builder.of(SeedDrillEntity::new, MobCategory.MISC).sized(1.3f, 1.4f));
 
-	public static final EntityType<ReaperCartEntity> REAPER_ENTITY = register("reaper",
+	public static final EntityType<@NotNull ReaperCartEntity> REAPER_ENTITY = register("reaper",
 			EntityType.Builder.of(ReaperCartEntity::new, MobCategory.MISC).sized(1.3f, 1.4f));
 
-    public static final EntityType<WagonEntity> WAGON_ENTITY = register("wagon",
+    public static final EntityType<@NotNull WagonEntity> WAGON_ENTITY = register("wagon",
             EntityType.Builder.of(WagonEntity::new, MobCategory.MISC).sized(2.5f, 3f));
 
-	public static final EntityType<PostilionEntity> POSTILION_ENTITY = register("postilion",
+	public static final EntityType<@NotNull PostilionEntity> POSTILION_ENTITY = register("postilion",
 			EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
 					.sized(0.25f, 0.25f)
 					.noSummon()
@@ -146,37 +147,37 @@ public class NiftyCarts implements ModInitializer {
             .add(3, mob -> new AvoidCartGoal<>(mob, ReaperCartEntity.class, 3.0f, 0.5f))
 			.build();
 
-	public static final MenuType<PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
-	public static final MenuType<SeedDrillMenu> SEED_DRILL_MENU_TYPE = new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS);
-    public static final MenuType<ChestMenu> CHEST_9x4_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x4_MENU_TYPE, i, inv, new SimpleContainer(4 * 9), 4), FeatureFlags.DEFAULT_FLAGS);
-    public static final MenuType<ChestMenu> CHEST_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x8_MENU_TYPE, i, inv, new SimpleContainer(8 * 9), 8), FeatureFlags.DEFAULT_FLAGS);
-    public static final MenuType<ChestMenu> CHEST_9x12_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x12_MENU_TYPE, i, inv, new SimpleContainer(12 * 9), 12), FeatureFlags.DEFAULT_FLAGS);
+	public static final MenuType<@NotNull PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
+	public static final MenuType<@NotNull SeedDrillMenu> SEED_DRILL_MENU_TYPE = new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<@NotNull ChestMenu> CHEST_9x4_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x4_MENU_TYPE, i, inv, new SimpleContainer(4 * 9), 4), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<@NotNull ChestMenu> CHEST_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x8_MENU_TYPE, i, inv, new SimpleContainer(8 * 9), 8), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<@NotNull ChestMenu> CHEST_9x12_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x12_MENU_TYPE, i, inv, new SimpleContainer(12 * 9), 12), FeatureFlags.DEFAULT_FLAGS);
 
-    public static final Map<EntityType<?>, ResourceLocation> CART_PULL_CM;
+    public static final Map<EntityType<?>, Identifier> CART_PULL_CM;
 
     static {
         CART_PULL_CM = ImmutableMap.of(
-                SUPPLY_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "supply_cart_pull_cm"),
-                HAND_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "hand_cart_pull_cm"),
-                ANIMAL_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "animal_cart_pull_cm"),
-                PLOW_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "plow_pull_cm"),
-                REAPER_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "reaper_pull_cm"),
-                SEED_DRILL_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "seed_drill_pull_cm"),
-                WAGON_ENTITY, ResourceLocation.fromNamespaceAndPath(MOD_ID, "wagon_pull_cm")
+                SUPPLY_CART_ENTITY, Identifier.fromNamespaceAndPath(MOD_ID, "supply_cart_pull_cm"),
+                HAND_CART_ENTITY, Identifier.fromNamespaceAndPath(MOD_ID, "hand_cart_pull_cm"),
+                ANIMAL_CART_ENTITY, Identifier.fromNamespaceAndPath(MOD_ID, "animal_cart_pull_cm"),
+                PLOW_ENTITY, Identifier.fromNamespaceAndPath(MOD_ID, "plow_pull_cm"),
+                REAPER_ENTITY, Identifier.fromNamespaceAndPath(MOD_ID, "reaper_pull_cm"),
+                SEED_DRILL_ENTITY, Identifier.fromNamespaceAndPath(MOD_ID, "seed_drill_pull_cm"),
+                WAGON_ENTITY, Identifier.fromNamespaceAndPath(MOD_ID, "wagon_pull_cm")
         );
     }
 
-    public static final ResourceLocation RIDE_CART_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "ride_cart_cm");
-    public static final ResourceLocation STEER_ANIMAL_CART_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "steer_animal_cart_cm");
-    public static final ResourceLocation STEER_REAPER_CM = ResourceLocation.fromNamespaceAndPath(MOD_ID, "steer_reaper_cm");
+    public static final Identifier RIDE_CART_CM = Identifier.fromNamespaceAndPath(MOD_ID, "ride_cart_cm");
+    public static final Identifier STEER_ANIMAL_CART_CM = Identifier.fromNamespaceAndPath(MOD_ID, "steer_animal_cart_cm");
+    public static final Identifier STEER_REAPER_CM = Identifier.fromNamespaceAndPath(MOD_ID, "steer_reaper_cm");
 
-	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/hoe"));
-	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/shovel"));
-	public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/axe"));
-    public static final TagKey<Block> REAPER_HARVESTABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "reaper_harvestable"));
-	public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, NiftyCarts.resLoc("seed_drill_plantable"));
+	public static final TagKey<@NotNull Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/hoe"));
+	public static final TagKey<@NotNull Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/shovel"));
+	public static final TagKey<@NotNull Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, NiftyCarts.resLoc("plow_breakable/axe"));
+    public static final TagKey<@NotNull Block> REAPER_HARVESTABLE = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(NiftyCarts.MOD_ID, "reaper_harvestable"));
+	public static final TagKey<@NotNull Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, NiftyCarts.resLoc("seed_drill_plantable"));
 
-    private static void registerStat(ResourceLocation id, StatFormatter formatter) {
+    private static void registerStat(Identifier id, StatFormatter formatter) {
         Registry.register(BuiltInRegistries.CUSTOM_STAT, id, id);
         Stats.CUSTOM.get(id, formatter);
     }
@@ -185,7 +186,7 @@ public class NiftyCarts implements ModInitializer {
 	public void onInitialize() {
 		ConfigRegistry.INSTANCE.register(MOD_ID, ModConfig.Type.COMMON, NiftyCartsConfig.spec());
 
-        for (ResourceLocation stat : CART_PULL_CM.values()) {
+        for (Identifier stat : CART_PULL_CM.values()) {
             registerStat(stat, StatFormatter.DISTANCE);
         }
 
@@ -234,7 +235,7 @@ public class NiftyCarts implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPED.register(s -> server = null);
 
 		ServerTickEvents.END_SERVER_TICK.register(e -> {
-			for (ResourceKey<Level> levelKey : e.levelKeys()) {
+			for (ResourceKey<@NotNull Level> levelKey : e.levelKeys()) {
 				NiftyWorld.getServer(server, levelKey).tick(server.getLevel(levelKey));
 			}
 		});
@@ -256,19 +257,19 @@ public class NiftyCarts implements ModInitializer {
 		FabricDefaultAttributeRegistry.register(POSTILION_ENTITY, LivingEntity.createLivingAttributes());
 	}
 
-	public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
-		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, resLoc(id));
+	public static <T extends Entity> EntityType<@NotNull T> register(String id, EntityType.Builder<@NotNull T> builder) {
+		ResourceKey<@NotNull EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, resLoc(id));
 		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
 	}
 
 	public static <I extends Item> I register(String id, Function<Item.Properties, I> function) {
-		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, resLoc(id));
+		ResourceKey<@NotNull Item> key = ResourceKey.create(Registries.ITEM, resLoc(id));
 		I item = function.apply(new Item.Properties().setId(key));
 		return Registry.register(BuiltInRegistries.ITEM, key, item);
 	}
 
-	public static ResourceLocation resLoc(String name) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, name);
+	public static Identifier resLoc(String name) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, name);
 	}
 
 }

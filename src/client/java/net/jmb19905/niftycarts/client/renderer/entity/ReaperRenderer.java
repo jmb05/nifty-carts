@@ -3,17 +3,22 @@ package net.jmb19905.niftycarts.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
+import net.jmb19905.niftycarts.client.renderer.entity.model.CartBannerFlagModel;
 import net.jmb19905.niftycarts.client.renderer.entity.model.ReaperModel;
 import net.jmb19905.niftycarts.entity.ReaperCartEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.object.banner.BannerModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public final class ReaperRenderer extends DrawnRenderer<ReaperCartEntity, ReaperRenderState, ReaperModel> {
 
     public ReaperRenderer(final EntityRendererProvider.Context renderManager) {
-        super(renderManager, new ReaperModel(renderManager.bakeLayer(NiftyCartsModelLayers.REAPER)));
+        super(renderManager, new ReaperModel(renderManager.bakeLayer(NiftyCartsModelLayers.REAPER),
+                new BannerModel(renderManager.bakeLayer(ModelLayers.STANDING_BANNER)),
+                new CartBannerFlagModel(renderManager.bakeLayer(ModelLayers.STANDING_BANNER_FLAG))));
         this.shadowRadius = 1.0F;
     }
 
@@ -29,10 +34,10 @@ public final class ReaperRenderer extends DrawnRenderer<ReaperCartEntity, Reaper
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(ReaperRenderState state) {
+    public @NotNull Identifier getTextureLocation(ReaperRenderState state) {
         return NiftyCarts.resLoc("textures/entity/" + state.woodType.name() + "_reaper.png");
     }
 
     @Override
-    protected void renderContents(ReaperRenderState state, PoseStack stack, MultiBufferSource source, int packedLight) {}
+    protected void submitContents(ReaperRenderState state, PoseStack stack, SubmitNodeCollector collector) {}
 }

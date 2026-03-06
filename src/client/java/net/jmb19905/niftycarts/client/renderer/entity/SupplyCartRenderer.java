@@ -1,19 +1,24 @@
 package net.jmb19905.niftycarts.client.renderer.entity;
 
+import net.jmb19905.niftycarts.client.renderer.entity.model.CartBannerFlagModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.object.banner.BannerModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.entity.SupplyCartEntity;
 import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
 import net.jmb19905.niftycarts.client.renderer.entity.model.SupplyCartModel;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public final class SupplyCartRenderer extends CargoCartRenderer<SupplyCartEntity, SupplyCartModel> {
 
     public SupplyCartRenderer(final EntityRendererProvider.Context ctx) {
-        super(ctx, new SupplyCartModel(ctx.bakeLayer(NiftyCartsModelLayers.SUPPLY_CART)));
+        super(ctx, new SupplyCartModel(ctx.bakeLayer(NiftyCartsModelLayers.SUPPLY_CART),
+                new BannerModel(ctx.bakeLayer(ModelLayers.STANDING_BANNER)),
+                new CartBannerFlagModel(ctx.bakeLayer(ModelLayers.STANDING_BANNER_FLAG))));
     }
 
     @Override
@@ -67,7 +72,7 @@ public final class SupplyCartRenderer extends CargoCartRenderer<SupplyCartEntity
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(CargoCartRenderState state) {
+    public @NotNull Identifier getTextureLocation(CargoCartRenderState state) {
         return NiftyCarts.resLoc("textures/entity/" + state.woodType.name() + "_supply_cart.png");
     }
 }

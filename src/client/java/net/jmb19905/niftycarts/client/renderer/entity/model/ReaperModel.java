@@ -4,6 +4,8 @@ import net.jmb19905.niftycarts.client.renderer.entity.ReaperRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.object.banner.BannerFlagModel;
+import net.minecraft.client.model.object.banner.BannerModel;
 import net.minecraft.util.Mth;
 
 public final class ReaperModel extends CartModel<ReaperRenderState> {
@@ -11,8 +13,8 @@ public final class ReaperModel extends CartModel<ReaperRenderState> {
     private final ModelPart frame;
     private final ModelPart foldedFrame;
 
-    public ReaperModel(final ModelPart root) {
-        super(root);
+    public ReaperModel(final ModelPart root, BannerModel bannerModel, BannerFlagModel flagModel) {
+        super(root, bannerModel, flagModel);
         this.frame = root.getChild("body").getChild("frame");
         this.foldedFrame = root.getChild("body").getChild("foldedFrame");
     }

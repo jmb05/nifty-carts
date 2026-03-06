@@ -26,15 +26,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
 
     private static final int SLOT_COUNT = 9;
-    private static final ImmutableList<EntityDataAccessor<ItemStack>> SEEDS = ImmutableList.of(
+    private static final ImmutableList<@NotNull EntityDataAccessor<@NotNull ItemStack>> SEEDS = ImmutableList.of(
             SynchedEntityData.defineId(SeedDrillEntity.class, EntityDataSerializers.ITEM_STACK),
             SynchedEntityData.defineId(SeedDrillEntity.class, EntityDataSerializers.ITEM_STACK),
             SynchedEntityData.defineId(SeedDrillEntity.class, EntityDataSerializers.ITEM_STACK),
@@ -45,7 +47,7 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
             SynchedEntityData.defineId(SeedDrillEntity.class, EntityDataSerializers.ITEM_STACK),
             SynchedEntityData.defineId(SeedDrillEntity.class, EntityDataSerializers.ITEM_STACK));
 
-    public SeedDrillEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
+    public SeedDrillEntity(EntityType<? extends @NotNull Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn, SLOT_COUNT);
     }
 
@@ -75,8 +77,8 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
     }
 
     private boolean tryPlaceCrop(ItemStack stack, BlockPos pos, Level level, int slot) {
-        if (stack.is(NiftyCarts.SEED_DRILL_PLANTABLE)) {
-            if (stack.getItem() instanceof BlockItem item) {
+        if (stack.getItem() instanceof BlockItem item) {
+            if (stack.is(NiftyCarts.SEED_DRILL_PLANTABLE) || item.getBlock() instanceof CropBlock) {
                 Block block = item.getBlock();
                 if (level.getBlockState(pos).isAir() && block.defaultBlockState().canSurvive(level, pos)) {
                     level.setBlockAndUpdate(pos, block.defaultBlockState());
@@ -95,7 +97,7 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
         if (this.getPulling() == null) {
             return;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.xo != this.getX() || this.zo != this.getZ()) {
                 this.plant(getControllingPlayer().flatMap(pl -> Optional.of((ServerPlayer) pl)));
             }
@@ -108,7 +110,7 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
     }
 
     public void updateSlot(final int slot) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.getItemStacks().get(slot).isEmpty()) {
                 this.entityData.set(SEEDS.get(slot), ItemStack.EMPTY);
             } else {
@@ -124,7 +126,7 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        for (final EntityDataAccessor<ItemStack> param : SEEDS) {
+        for (final EntityDataAccessor<@NotNull ItemStack> param : SEEDS) {
             builder.define(param, ItemStack.EMPTY);
         }
     }

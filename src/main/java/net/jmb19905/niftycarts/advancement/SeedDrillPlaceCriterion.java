@@ -3,14 +3,14 @@ package net.jmb19905.niftycarts.advancement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class SeedDrillPlaceCriterion extends SimpleCriterionTrigger<SeedDrillPlaceCriterion.TriggerInstance> {
+public class SeedDrillPlaceCriterion extends SimpleCriterionTrigger<SeedDrillPlaceCriterion.@NotNull TriggerInstance> {
 
     @Override
     public @NotNull Codec<TriggerInstance> codec() {
@@ -29,11 +29,11 @@ public class SeedDrillPlaceCriterion extends SimpleCriterionTrigger<SeedDrillPla
                         ItemPredicate.CODEC.optionalFieldOf("item").forGetter(TriggerInstance::item)
                 ).apply(instance, TriggerInstance::new));
 
-        public static Criterion<TriggerInstance> seedDrillPlace() {
+        public static Criterion<@NotNull TriggerInstance> seedDrillPlace() {
             return NCCriteriaTriggers.SEED_DRILL_PLACE.createCriterion(new TriggerInstance(Optional.empty(), Optional.empty()));
         }
 
-        public static Criterion<TriggerInstance> seedDrillPlace(ItemPredicate.Builder builder) {
+        public static Criterion<@NotNull TriggerInstance> seedDrillPlace(ItemPredicate.Builder builder) {
             return NCCriteriaTriggers.SEED_DRILL_PLACE.createCriterion(new TriggerInstance(Optional.empty(), Optional.of(builder.build())));
         }
 

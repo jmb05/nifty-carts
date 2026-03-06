@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -29,7 +30,7 @@ public class NiftyWorld extends SavedData {
                             .map(entry ->
                                     new EntityWithId(entry.getIntKey(), entry.getValue()))
                             .toList())).apply(instance, NiftyWorld::new));
-    public static final SavedDataType<NiftyWorld> TYPE = new SavedDataType<>(
+    public static final SavedDataType<@NotNull NiftyWorld> TYPE = new SavedDataType<>(
             NiftyCarts.MOD_ID + "_world",
             NiftyWorld::new,
             CODEC,
@@ -120,7 +121,7 @@ public class NiftyWorld extends SavedData {
         return clientInstance;
     }
 
-    public static NiftyWorld getServer(MinecraftServer server, ResourceKey<Level> levelType) {
+    public static NiftyWorld getServer(MinecraftServer server, ResourceKey<@NotNull Level> levelType) {
         var dataStorage = Objects.requireNonNull(server.getLevel(levelType)).getDataStorage();
         return dataStorage.computeIfAbsent(TYPE);
     }

@@ -16,7 +16,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -39,11 +39,11 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
@@ -55,13 +55,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public abstract class AbstractDrawnEntity extends Entity {
-    private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
-    private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<Boolean> LOCKED = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final ResourceLocation PULL_MODIFIER_ID = NiftyCarts.resLoc("pull");
+    private static final EntityDataAccessor<@NotNull Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<@NotNull Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<@NotNull Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<@NotNull ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<@NotNull String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<@NotNull Boolean> LOCKED = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final Identifier PULL_MODIFIER_ID = NiftyCarts.resLoc("pull");
     private final CartInterpolationHandler interpolation = new CartInterpolationHandler(this);
     protected List<CartWheel> wheels;
     private int pullingId = -1;
@@ -69,7 +69,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     public Entity pulling;
     protected AbstractDrawnEntity drawn;
 
-    public AbstractDrawnEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
+    public AbstractDrawnEntity(final EntityType<? extends @NotNull Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
         this.blocksBuilding = true;
         this.initWheels();
@@ -97,13 +97,13 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     @Override
-    public @NotNull InteractionResult interact(Player player, InteractionHand hand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
         if (isLocked()) return InteractionResult.FAIL;
         return super.interact(player, hand);
     }
 
     @Override
-    public @NotNull InteractionResult interactAt(Player player, Vec3 vec, InteractionHand hand) {
+    public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
         if (isLocked()) return InteractionResult.FAIL;
         return super.interactAt(player, vec, hand);
     }
@@ -175,7 +175,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             return;
         }
         this.addStats(this.getX() - startX, this.getY() - startY, this.getZ() - startZ);
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             for (final CartWheel wheel : this.wheels) {
                 wheel.tick();
             }
@@ -201,7 +201,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     private void addStats(final double x, final double y, final double z) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final int cm = Math.round(Mth.sqrt((float) (x * x + y * y + z * z)) * 100.0F);
             if (cm > 0) {
                 Entity pulling = getPulling();
@@ -267,7 +267,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      * @param entityIn new pulling entity
      */
     public void setPulling(final Entity entityIn) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.canBePulledBy(entityIn)) {
                 if (entityIn == null) {
                     if (this.pulling instanceof LivingEntity) {
@@ -347,7 +347,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      * Attempts to reattach the cart to the last pulling entity.
      */
     private void attemptReattach() {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             if (this.pullingId != -1) {
                 final Entity entity = this.level().getEntity(this.pullingId);
                 if (entity != null && entity.isAlive()) {
@@ -372,7 +372,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 this.pulling = null;
             }
             return true;
-        } else if (!this.level().isClientSide && this.shouldRemovePulling()) {
+        } else if (!this.level().isClientSide() && this.shouldRemovePulling()) {
             this.setPulling(null);
             return true;
         }
@@ -436,7 +436,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      */
     protected boolean canBePulledBy(final Entity entityIn) {
         if (this.isLocked()) return false;
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return true;
         }
         if (entityIn == null) {
@@ -457,11 +457,11 @@ public abstract class AbstractDrawnEntity extends Entity {
     public abstract NiftyCartsConfig.CartConfig getConfig();
 
     @Override
-    public boolean hurtServer(ServerLevel serverLevel, final DamageSource source, final float amount) {
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, final @NotNull DamageSource source, final float amount) {
         if (isLocked()) return false;
         if (this.isInvulnerableToBase(source)) {
             return false;
-        } else if (!this.level().isClientSide && this.isAlive()) {
+        } else if (!this.level().isClientSide() && this.isAlive()) {
             if (source.is(DamageTypes.CACTUS)) {
                 return false;
             }
@@ -488,7 +488,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         ItemStack stack = player.getItemInHand(hand);
         if (stack.is(ItemTags.BANNERS)) {
             ItemStack oldBanner = this.getBanner();
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 ItemStack banner = stack.split(1);
                 NCCriteriaTriggers.CART_ADD_BANNER.trigger((ServerPlayer) player, banner);
                 if (!oldBanner.isEmpty()) {
@@ -513,7 +513,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      */
     public void onDestroyed(final DamageSource source, final boolean byCreativePlayer) {
         if (!(this.level() instanceof ServerLevel serverLevel)) return;
-        if (serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (serverLevel.getGameRules().get(GameRules.ENTITY_DROPS)) {
             if (!byCreativePlayer) {
                 this.spawnAtLocation(serverLevel, this.getCartItem());
                 this.spawnAtLocation(serverLevel, this.getBanner());
@@ -690,7 +690,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
         if (this.pullingUUID != null) {
             output.store("PullingUUID", UUIDUtil.CODEC, this.pullingUUID);
         }

@@ -4,10 +4,12 @@ import net.jmb19905.niftycarts.client.renderer.entity.CartRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.object.banner.BannerFlagModel;
+import net.minecraft.client.model.object.banner.BannerModel;
 
 public final class AnimalCartModel extends CartModel<CartRenderState> {
-    public AnimalCartModel(final ModelPart root) {
-        super(root);
+    public AnimalCartModel(final ModelPart root, BannerModel bannerModel, BannerFlagModel flagModel) {
+        super(root, bannerModel, flagModel);
     }
 
     public static LayerDefinition createLayer() {

@@ -33,7 +33,6 @@ public final class CartWheel {
         this(cartIn, offsetX, 0.0F, (float) (10 * Math.PI * 2 / 16));
     }
 
-    @SuppressWarnings("resource")
     public void tick() {
         this.rotation += this.rotationIncrement;
         this.prevPosX = this.posX;

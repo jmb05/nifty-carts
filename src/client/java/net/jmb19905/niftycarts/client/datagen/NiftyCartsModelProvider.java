@@ -7,6 +7,7 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import org.jetbrains.annotations.NotNull;
 
 public class NiftyCartsModelProvider extends FabricModelProvider {
 
@@ -15,7 +16,7 @@ public class NiftyCartsModelProvider extends FabricModelProvider {
     }
 
     @Override
-    public void generateBlockStateModels(BlockModelGenerators blockModelGenerators) {
+    public void generateBlockStateModels(@NotNull BlockModelGenerators blockModelGenerators) {
 
     }
 

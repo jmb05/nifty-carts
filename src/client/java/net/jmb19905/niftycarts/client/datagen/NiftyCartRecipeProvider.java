@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.client.NiftyCartsClient;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,7 +13,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -31,7 +31,7 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+    protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.@NotNull Provider provider, @NotNull RecipeOutput recipeOutput) {
         return new RecipeProvider(provider, recipeOutput) {
             @SuppressWarnings("OptionalGetWithoutIsPresent")
             @Override
@@ -47,11 +47,11 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                         .save(recipeOutput);
 
                 WoodType.values().forEach(woodType -> {
-                    ResourceLocation supplyCartId = NiftyCarts.resLoc(woodType.name() + "_supply_cart");
-                    Optional<Holder.Reference<Item>> supplyCart = BuiltInRegistries.ITEM.get(supplyCartId);
-                    Item planks = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks"));
+                    Identifier supplyCartId = NiftyCarts.resLoc(woodType.name() + "_supply_cart");
+                    Optional<Holder.Reference<@NotNull Item>> supplyCart = BuiltInRegistries.ITEM.get(supplyCartId);
+                    Item planks = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(woodType.name() + "_planks"));
                     Item strippedLogs = BuiltInRegistries.ITEM.getValue(
-                            ResourceLocation.withDefaultNamespace(
+                            Identifier.withDefaultNamespace(
                                     "stripped_"
                                             + woodType.name()
                                             + "_" + (NiftyCartsClient.LOG_NAME_OVERRIDE.getOrDefault(woodType, "log"))));
@@ -67,8 +67,8 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             .pattern("wpw")
                             .save(recipeOutput);
 
-                    ResourceLocation animalCartId = NiftyCarts.resLoc(woodType.name() + "_animal_cart");
-                    Optional<Holder.Reference<Item>>  animalCart = BuiltInRegistries.ITEM.get(animalCartId);
+                    Identifier animalCartId = NiftyCarts.resLoc(woodType.name() + "_animal_cart");
+                    Optional<Holder.Reference<@NotNull Item>>  animalCart = BuiltInRegistries.ITEM.get(animalCartId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, animalCart.get().value())
                             .define('p', planks)
                             .define('w', NiftyCarts.WHEEL)
@@ -78,8 +78,8 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             .pattern("wpw")
                             .save(recipeOutput);
 
-                    ResourceLocation handCartId = NiftyCarts.resLoc(woodType.name() + "_hand_cart");
-                    Optional<Holder.Reference<Item>>  handCart = BuiltInRegistries.ITEM.get(handCartId);
+                    Identifier handCartId = NiftyCarts.resLoc(woodType.name() + "_hand_cart");
+                    Optional<Holder.Reference<@NotNull Item>>  handCart = BuiltInRegistries.ITEM.get(handCartId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, handCart.get().value())
                             .define('p', planks)
                             .define('w', NiftyCarts.WHEEL)
@@ -89,8 +89,8 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             .pattern("wpw")
                             .save(recipeOutput);
 
-                    ResourceLocation plowId = NiftyCarts.resLoc(woodType.name() + "_plow");
-                    Optional<Holder.Reference<Item>>  plow = BuiltInRegistries.ITEM.get(plowId);
+                    Identifier plowId = NiftyCarts.resLoc(woodType.name() + "_plow");
+                    Optional<Holder.Reference<@NotNull Item>>  plow = BuiltInRegistries.ITEM.get(plowId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, plow.get().value())
                             .define('p', planks)
                             .define('w', NiftyCarts.WHEEL)
@@ -101,11 +101,11 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             .pattern("wpw")
                             .save(recipeOutput);
 
-                    ResourceLocation reaperId = NiftyCarts.resLoc(woodType.name() + "_reaper");
-                    Optional<Holder.Reference<Item>>  reaper = BuiltInRegistries.ITEM.get(reaperId);
+                    Identifier reaperId = NiftyCarts.resLoc(woodType.name() + "_reaper");
+                    Optional<Holder.Reference<@NotNull Item>>  reaper = BuiltInRegistries.ITEM.get(reaperId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, reaper.get().value())
                             .define('p', planks)
-                            .define('l', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_slab")).get().value())
+                            .define('l', BuiltInRegistries.ITEM.get(Identifier.withDefaultNamespace(woodType.name() + "_slab")).get().value())
                             .define('w', NiftyCarts.WHEEL)
                             .define('s', Items.STICK)
                             .define('i', Items.IRON_INGOT)
@@ -115,8 +115,8 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             .pattern("iww")
                             .save(recipeOutput);
 
-                    ResourceLocation seedDrillId = NiftyCarts.resLoc(woodType.name() + "_seed_drill");
-                    Optional<Holder.Reference<Item>>  seedDrill = BuiltInRegistries.ITEM.get(seedDrillId);
+                    Identifier seedDrillId = NiftyCarts.resLoc(woodType.name() + "_seed_drill");
+                    Optional<Holder.Reference<@NotNull Item>>  seedDrill = BuiltInRegistries.ITEM.get(seedDrillId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, seedDrill.get().value())
                             .define('p', planks)
                             .define('w', NiftyCarts.WHEEL)
@@ -128,8 +128,8 @@ public class NiftyCartRecipeProvider extends FabricRecipeProvider {
                             .pattern("wpw")
                             .save(recipeOutput);
 
-                    ResourceLocation wagonId = NiftyCarts.resLoc(woodType.name() + "_wagon");
-                    Optional<Holder.Reference<Item>> wagon = BuiltInRegistries.ITEM.get(wagonId);
+                    Identifier wagonId = NiftyCarts.resLoc(woodType.name() + "_wagon");
+                    Optional<Holder.Reference<@NotNull Item>> wagon = BuiltInRegistries.ITEM.get(wagonId);
                     ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, wagon.get().value())
                             .define('p', planks)
                             .define('w', NiftyCarts.WHEEL)

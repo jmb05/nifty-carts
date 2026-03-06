@@ -5,11 +5,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,7 +24,7 @@ public abstract class AbstractHorseMixin extends LivingEntity {
 
     @Shadow public abstract @Nullable LivingEntity getControllingPassenger();
 
-    protected AbstractHorseMixin(EntityType<? extends LivingEntity> entityType, Level level) {
+    protected AbstractHorseMixin(EntityType<? extends @NotNull LivingEntity> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -45,7 +46,7 @@ public abstract class AbstractHorseMixin extends LivingEntity {
 
     @SuppressWarnings("UnreachableCode")
     @Override
-    public void travel(Vec3 vec3) {
+    public void travel(@NotNull Vec3 vec3) {
         var living = ((AbstractHorse) (Object) this).getControllingPassenger();
         if (living instanceof PostilionEntity) {
             float xxa = living.xxa * 0.5f;

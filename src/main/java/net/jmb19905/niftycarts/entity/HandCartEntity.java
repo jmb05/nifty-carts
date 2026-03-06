@@ -12,10 +12,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class HandCartEntity extends AbstractCargoCart {
 
-    public HandCartEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
+    public HandCartEntity(EntityType<? extends @NotNull Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn, 27);
     }
 

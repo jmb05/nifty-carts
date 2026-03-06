@@ -45,12 +45,12 @@ public class PlowMenu extends AbstractContainerMenu {
         }
     }
 
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return this.container.stillValid(player);
     }
 
     @Override
-    public @NotNull ItemStack quickMoveStack(final Player playerIn, final int index) {
+    public @NotNull ItemStack quickMoveStack(final @NotNull Player playerIn, final int index) {
         final ItemStack itemstack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
         if (slot.hasItem()) {
@@ -71,7 +71,7 @@ public class PlowMenu extends AbstractContainerMenu {
         return itemstack;
     }
 
-    public void removed(Player player) {
+    public void removed(@NotNull Player player) {
         super.removed(player);
         this.container.stopOpen(player);
     }

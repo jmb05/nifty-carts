@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SupplyCartEntity extends AbstractCargoCart {
 
-    public SupplyCartEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
+    public SupplyCartEntity(EntityType<? extends @NotNull Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn, 54);
     }
 
@@ -38,13 +38,13 @@ public class SupplyCartEntity extends AbstractCargoCart {
     }
 
     @Override
-    protected @NotNull Vec3 getPassengerAttachmentPoint(Entity entity, EntityDimensions entityDimensions, float f) {
+    protected @NotNull Vec3 getPassengerAttachmentPoint(@NotNull Entity entity, @NotNull EntityDimensions entityDimensions, float f) {
         final Vec3 forward = this.getLookAngle().scale(-0.68);
         return new Vec3(forward.x, getPassengersRidingOffsetY(entityDimensions, f) + forward.y, forward.z);
     }
 
     @Override
-    protected void positionRider(Entity passenger, MoveFunction moveFunction) {
+    protected void positionRider(@NotNull Entity passenger, @NotNull MoveFunction moveFunction) {
         super.positionRider(passenger, moveFunction);
         if (this.hasPassenger(passenger)) {
             passenger.setYBodyRot(this.getYRot() + 180.0F);
@@ -65,7 +65,7 @@ public class SupplyCartEntity extends AbstractCargoCart {
         if (this.isVehicle()) {
             return InteractionResult.PASS;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
         }
         return InteractionResult.SUCCESS;

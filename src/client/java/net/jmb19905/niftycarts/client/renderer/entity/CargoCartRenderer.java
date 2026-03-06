@@ -1,7 +1,6 @@
 package net.jmb19905.niftycarts.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -12,38 +11,40 @@ import net.jmb19905.niftycarts.client.renderer.entity.model.CargoCartModel;
 import net.jmb19905.niftycarts.entity.AbstractCargoCart;
 import net.jmb19905.niftycarts.util.NiftyItemUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Rotations;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.PaintingVariantTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.decoration.PaintingVariant;
+import net.minecraft.world.entity.decoration.painting.PaintingVariant;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -56,24 +57,19 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Predicate;
 
+import static net.jmb19905.niftycarts.client.renderer.entity.CargoRenderUtil.BACK_SPRITE_LOCATION;
+
 public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends CargoCartModel<CargoCartRenderState>> extends DrawnRenderer<T, CargoCartRenderState, M> {
 
-    private final HumanoidModel<HumanoidRenderState> leggings, armor;
+    private final ArmorModelSet<@NotNull ArmorStandArmorModel> armorSet;
+    private final EntityRendererProvider.Context ctx;
     private final EquipmentLayerRenderer equipmentRenderer;
     private final ItemModelResolver itemModelResolver;
 
-    private static final HumanoidRenderState humanoidRenderState = new HumanoidRenderState();
-
-    static {
-        humanoidRenderState.isCrouching = false;
-        humanoidRenderState.isUsingItem = false;
-        humanoidRenderState.isVisuallySwimming = false;
-    }
-
     protected CargoCartRenderer(EntityRendererProvider.Context ctx, M model) {
         super(ctx, model);
-        this.leggings = new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR));
-        this.armor = new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR));
+        this.armorSet = ArmorModelSet.bake(ModelLayers.ARMOR_STAND_ARMOR, ctx.getModelSet(), ArmorStandArmorModel::new);
+        this.ctx = ctx;
         this.shadowRadius = 1.0F;
         this.equipmentRenderer = ctx.getEquipmentRenderer();
         this.itemModelResolver = ctx.getItemModelResolver();
@@ -97,10 +93,20 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
         }
         state.rngSeed = entity.getUUID().getMostSignificantBits() ^ entity.getUUID().getLeastSignificantBits();
         state.level = entity.level();
+        state.extraWheel = false;
+        state.flowerBasket = false;
+        state.armorRenderState = new ArmorStandRenderState();
+        state.armorRenderState.isCrouching = false;
+        state.armorRenderState.isUsingItem = false;
+        state.armorRenderState.isVisuallySwimming = false;
+        state.armorRenderState2 = new ArmorStandRenderState();
+        state.armorRenderState2.isCrouching = false;
+        state.armorRenderState2.isUsingItem = false;
+        state.armorRenderState2.isVisuallySwimming = false;
     }
 
     @Override
-    protected void renderContents(CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
+    protected void submitContents(CargoCartRenderState state, final PoseStack stack, final SubmitNodeCollector collector) {
         Contents contents = Contents.SUPPLIES;
         final Iterator<ItemStack> it = state.cargo.iterator();
         outer: while (it.hasNext()) {
@@ -126,22 +132,24 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
         stack.pushPose();
         this.model.getBody().translateAndRotate(stack);
         switch (contents) {
-            case FLOWERS -> renderFlowers(state, stack, source, packedLight, state.cargo);
-            case PAINTINGS -> renderPaintings(state, stack, source, packedLight, state.cargo);
-            case WHEEL -> renderWheel(state, stack, source, packedLight);
-            case SUPPLIES -> renderSupplies(state, stack, source, packedLight, state.cargo);
+            case FLOWERS -> submitFlowers(state, stack, collector, state.cargo);
+            case PAINTINGS -> submitPaintings(state, stack, collector, state.cargo);
+            case WHEEL -> state.extraWheel = true;
+            case SUPPLIES -> submitSupplies(state, stack, collector, state.cargo);
         }
         if (state.bannerColor != null) {
             stack.translate(0.0D, -0.6D, 1.5D);
-            this.renderBanner(state, stack, source, packedLight);
+            this.submitBanner(state, stack, collector);
         }
         stack.popPose();
     }
 
-    void renderFlowers(CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
-        this.model.getFlowerBasket().visible = true;
-        this.model.getFlowerBasket().render(stack, source.getBuffer(this.model.renderType(this.getTextureLocation(state))), packedLight, OverlayTexture.NO_OVERLAY);
-        this.model.getFlowerBasket().visible = false;
+    void submitFlowers(
+            CargoCartRenderState state,
+            final PoseStack stack,
+            final SubmitNodeCollector collector,
+            final NonNullList<@NotNull ItemStack> cargo) {
+        state.flowerBasket = true;
         final BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
         for (int i = 0; i < cargo.size(); i++) {
             final ItemStack itemStack = cargo.get(i);
@@ -159,23 +167,17 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
             stack.scale(0.65F, 0.65F, 0.65F);
             stack.translate(ix, 0.5D, iz - 1.0D);
             stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-            ModelBlockRenderer.renderModel(stack.last(), source.getBuffer(RenderType.cutout()), model, r, g, b, packedLight, OverlayTexture.NO_OVERLAY);
+            collector.submitCustomGeometry(stack, RenderTypes.cutoutMovingBlock(),
+                    (pose, vertexConsumer) -> ModelBlockRenderer.renderModel(pose, vertexConsumer, model, r, g, b, state.lightCoords, OverlayTexture.NO_OVERLAY));
             stack.popPose();
         }
     }
 
-    private void renderWheel(CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
-        stack.pushPose();
-        stack.translate(getWheelOffset());
-        final ModelPart wheel = this.model.getWheel();
-        wheel.xRot = 0.9F;
-        wheel.zRot = (float) Math.PI * 0.3F;
-        wheel.render(stack, source.getBuffer(this.model.renderType(this.getTextureLocation(state))), packedLight, OverlayTexture.NO_OVERLAY);
-        stack.popPose();
-    }
-
-    private void renderPaintings(CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
-        final VertexConsumer buf = source.getBuffer(RenderType.entitySolid(Minecraft.getInstance().getPaintingTextures().getBackSprite().atlasLocation()));
+    private void submitPaintings(
+            CargoCartRenderState state,
+            final PoseStack stack,
+            final SubmitNodeCollector collector,
+            final NonNullList<@NotNull ItemStack> cargo) {
         final Random rng = new Random(state.rngSeed);
         int count = 0;
         for (final ItemStack itemStack : cargo) {
@@ -195,7 +197,7 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
             final ItemStack itemStack = cargo.get(i);
             if (itemStack.isEmpty()) continue;
 
-            Holder<PaintingVariant> holder = itemStack.get(DataComponents.PAINTING_VARIANT);
+            Holder<@NotNull PaintingVariant> holder = itemStack.get(DataComponents.PAINTING_VARIANT);
             PaintingVariant paintingVariant = null;
             if (holder != null) paintingVariant = holder.value();
             if (paintingVariant == null || paintingVariant.area() > 1) {
@@ -206,7 +208,9 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
             stack.translate(getPaintingOffset(i, n, count));
             n++;
             stack.mulPose(Axis.ZP.rotation(rng.nextFloat() * (float) Math.PI * getPaintingAngleFactor()));
-            CargoRenderUtil.renderPainting(paintingVariant, stack, buf, packedLight);
+            var atlas = ctx.getAtlas(AtlasIds.PAINTINGS);
+            final TextureAtlasSprite back = atlas.getSprite(BACK_SPRITE_LOCATION);
+            CargoRenderUtil.renderPainting(ctx, paintingVariant, stack, RenderTypes.entitySolidZOffsetForward(back.atlasLocation()), collector, state.lightCoords);
             stack.popPose();
         }
         stack.popPose();
@@ -216,7 +220,7 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
         var blacklist = NiftyCartsConfig.getClient().renderBlacklist;
         for (String item : blacklist.get()) {
             if (item.startsWith("#")) {
-                var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(item.substring(1)));
+                var tag = TagKey.create(Registries.ITEM, Identifier.parse(item.substring(1)));
                 if (stack.is(tag)) {
                     return false;
                 }
@@ -227,7 +231,7 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
         return true;
     }
 
-    private void renderSupplies(CargoCartRenderState state, final PoseStack stack, final MultiBufferSource source, final int packedLight, final NonNullList<ItemStack> cargo) {
+    private void submitSupplies(CargoCartRenderState state, final PoseStack stack, final SubmitNodeCollector collector, final NonNullList<@NotNull ItemStack> cargo) {
         final Random rng = new Random();
         for (int i = 0; i < cargo.size(); i++) {
             final ItemStack itemStack = cargo.get(i);
@@ -247,13 +251,13 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
                     if (iz < 1 && itemStack.is(ItemTags.BEDS)) {
                         stack.translate(0.0D, 0.0D, 1.0D);
                     }
-                    cargoState.render(stack, source, packedLight, OverlayTexture.NO_OVERLAY);
+                    cargoState.submit(stack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
                 } else {
                     rng.setSeed(32L * i + Objects.hashCode(BuiltInRegistries.ITEM.getKey(itemStack.getItem())));
                     stack.translate(x, -0.15D + ((ix + iz) % 2 == 0 ? 0.0D : 1.0e-4D), z);
                     if (NiftyItemUtil.isHumanoidArmor(itemStack) && NiftyCartsConfig.getClient().renderSupplyGear.get()) {
                         stack.scale(getArmorSize(), getArmorSize(), getArmorSize());
-                        this.renderArmor(stack, source, packedLight, itemStack, ix);
+                        this.renderArmor(state, stack, collector, itemStack, ix);
                     } else {
                         if (itemStack.getItem() == Items.SHIELD) {
                             //stack.translate(x, -0.46D, z);
@@ -269,12 +273,12 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
                             stack.mulPose(Axis.XP.rotationDegrees(-90.0F));
                         }
                         final int copies = Math.min(itemStack.getCount(), (itemStack.getCount() - 1) / 16 + 2);
-                        cargoState.render(stack, source, packedLight, OverlayTexture.NO_OVERLAY);
+                        cargoState.submit(stack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
                         for (int n = 1; n < copies; n++) {
                             stack.pushPose();
                             stack.mulPose(Axis.ZP.rotation(rng.nextFloat() * (float) Math.PI));
                             stack.translate((rng.nextFloat() * 2.0F - 1.0F) * 0.05F, (rng.nextFloat() * 2.0F - 1.0F) * 0.05F, -0.1D * n);
-                            cargoState.render(stack, source, packedLight, OverlayTexture.NO_OVERLAY);
+                            cargoState.submit(stack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
                             stack.popPose();
                         }
                     }
@@ -284,58 +288,49 @@ public abstract class CargoCartRenderer<T extends AbstractCargoCart, M extends C
         }
     }
 
-    private void renderArmor(final PoseStack stack, final MultiBufferSource source, final int packedLight, final ItemStack itemStack, final int ix) {
+    private void renderArmor(CargoCartRenderState state, final PoseStack stack, final SubmitNodeCollector collector, final ItemStack itemStack, final int ix) {
         Equippable equippable = itemStack.get(DataComponents.EQUIPPABLE);
         if (equippable == null) return;
         EquipmentSlot slot = equippable.slot();
-        final HumanoidModel<HumanoidRenderState> m = slot == EquipmentSlot.LEGS ? this.leggings : this.armor;
+        final ArmorStandArmorModel model = this.armorSet.get(slot);
         stack.mulPose(Axis.YP.rotation(ix == 0 ? (float) Math.PI * 0.5F : (float) -Math.PI * 0.5F));
-        m.setAllVisible(false);
-        m.setupAnim(humanoidRenderState);
+        ArmorStandRenderState armorRenderState = null;
         switch (slot) {
             case HEAD -> {
-                stack.translate(0.0D, 0.1D, 0.0D);
-                m.head.xRot = 0.2F;
-                m.hat.copyFrom(m.head);
-                m.head.visible = true;
-                m.hat.visible = true;
+                stack.translate(0.0D, 0.105D, 0.0D);
+                state.armorRenderState.headPose = new Rotations(0.25f * 180f / Mth.PI, 0, 0);
+                armorRenderState = state.armorRenderState;
             }
             case CHEST -> {
-                stack.translate(0.0D, -0.4D, -0.15D);
-                m.leftArm.xRot = -0.15F;
-                m.rightArm.xRot = -0.15F;
-                m.body.xRot = 0.9F;
-                m.body.visible = true;
-                m.rightArm.visible = true;
-                m.leftArm.visible = true;
+                stack.translate(0.0D, -0.3D, -0.27D);
+                stack.mulPose(Axis.XP.rotation(0.9f));
+                state.armorRenderState.leftArmPose = new Rotations(-0.75f * 180f / Mth.PI, 0, 0);
+                state.armorRenderState.rightArmPose = new Rotations(-0.75f * 180f / Mth.PI, 0, 0);
+                armorRenderState = state.armorRenderState;
             }
             case LEGS -> {
-                stack.translate(0.0D, -0.7D, -0.15D);
-                m.body.xRot = 0.0F;
-                m.rightLeg.xRot = 1.2F;
-                m.leftLeg.xRot = 1.2F;
-                m.rightLeg.yRot = -0.3F;
-                m.leftLeg.yRot = 0.3F;
-                m.body.visible = true;
-                m.rightLeg.visible = true;
-                m.leftLeg.visible = true;
+                stack.translate(0.0D, -0.7D, -0.226D);
+                state.armorRenderState.bodyPose = new Rotations(0, 0,0);
+                state.armorRenderState.rightLegPose = new Rotations(1.2f * 180f / Mth.PI, -0.3f * 180f / Mth.PI, 0);
+                state.armorRenderState.leftLegPose = new Rotations(1.2f * 180f / Mth.PI, 0.3f * 180f / Mth.PI, 0);
+                armorRenderState = state.armorRenderState;
             }
             case FEET -> {
-                stack.translate(0.0D, -1.15D, -0.1D);
-                m.rightLeg.xRot = 0.0F;
-                m.leftLeg.xRot = 0.0F;
-                m.rightLeg.yRot = -0.1F;
-                m.leftLeg.yRot = 0.0F;
-                m.rightLeg.visible = true;
-                m.leftLeg.visible = true;
+                stack.translate(0.0D, -1.096D, -0.19D);
+                state.armorRenderState2.rightLegPose = new Rotations(0, -0.1f * 180f / Mth.PI, 0);
+                state.armorRenderState2.leftLegPose = new Rotations(0, 0, 0);
+                armorRenderState = state.armorRenderState2;
             }
         }
+        assert armorRenderState != null;
+        model.setupAnim(armorRenderState);
         stack.scale(0.75F, 0.75F, 0.75F);
 
-        ResourceKey<EquipmentAsset> resourceLocation = equippable.assetId().orElseThrow();
         boolean usesInnerModel = slot == EquipmentSlot.LEGS;
-        EquipmentClientInfo.LayerType layerType = usesInnerModel ? EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS : EquipmentClientInfo.LayerType.HUMANOID;
-        equipmentRenderer.renderLayers(layerType, resourceLocation, m, itemStack, stack, source, packedLight);
+        EquipmentClientInfo.LayerType layerType = usesInnerModel ? EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS
+                : EquipmentClientInfo.LayerType.HUMANOID;
+        equipmentRenderer.renderLayers(layerType, equippable.assetId().orElseThrow(), model, armorRenderState,
+                itemStack, stack, collector, state.lightCoords, state.outlineColor);
     }
 
     protected abstract double getFlowerOffsetZ();

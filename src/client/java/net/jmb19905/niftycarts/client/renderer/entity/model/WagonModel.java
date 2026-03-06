@@ -4,6 +4,8 @@ import net.jmb19905.niftycarts.client.renderer.entity.WagonRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.object.banner.BannerFlagModel;
+import net.minecraft.client.model.object.banner.BannerModel;
 import net.minecraft.util.Mth;
 
 public class WagonModel extends CartModel<WagonRenderState> {
@@ -13,8 +15,8 @@ public class WagonModel extends CartModel<WagonRenderState> {
     private final ModelPart roof;
     private final ModelPart chests;
 
-    public WagonModel(ModelPart root, ModelPart roofRoot, ModelPart chestRoot) {
-        super(root, 2);
+    public WagonModel(ModelPart root, ModelPart roofRoot, ModelPart chestRoot, BannerModel bannerModel, BannerFlagModel flagModel) {
+        super(root, 2, bannerModel, flagModel);
         this.roof = roofRoot.getChild("roof");
         this.chests = chestRoot;
     }

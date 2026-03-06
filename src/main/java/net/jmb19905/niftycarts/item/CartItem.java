@@ -43,7 +43,7 @@ public class CartItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
+    public @NotNull InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand interactionHand) {
         final ItemStack stack = player.getItemInHand(interactionHand);
         final BlockHitResult result = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY);
         if (result.getType() == HitResult.Type.MISS) {
@@ -62,8 +62,8 @@ public class CartItem extends Item {
             }
 
             if (result.getType() == HitResult.Type.BLOCK) {
-                ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, NiftyCarts.resLoc(cartType));
-                final Optional<Holder.Reference<EntityType<?>>> type = BuiltInRegistries.ENTITY_TYPE.get(key);
+                ResourceKey<@NotNull EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, NiftyCarts.resLoc(cartType));
+                final Optional<Holder.Reference<@NotNull EntityType<?>>> type = BuiltInRegistries.ENTITY_TYPE.get(key);
                 if (type.isEmpty()) return InteractionResult.PASS;
                 final Entity cart = type.get().value().create(level, EntitySpawnReason.SPAWN_ITEM_USE);
                 if (cart == null) return InteractionResult.PASS;

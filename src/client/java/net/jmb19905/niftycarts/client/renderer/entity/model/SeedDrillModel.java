@@ -4,12 +4,14 @@ import net.jmb19905.niftycarts.client.renderer.entity.SeedDrillRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.object.banner.BannerFlagModel;
+import net.minecraft.client.model.object.banner.BannerModel;
 import net.minecraft.util.Mth;
 
 public final class SeedDrillModel extends CartModel<SeedDrillRenderState> {
 
-    public SeedDrillModel(final ModelPart root) {
-        super(root);
+    public SeedDrillModel(final ModelPart root, BannerModel bannerModel, BannerFlagModel flagModel) {
+        super(root, bannerModel, flagModel);
     }
 
     public static LayerDefinition createLayer() {

@@ -15,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 public record CoachmanMovePayload(float zza) implements CustomPacketPayload {
 
-    public static final Type<CoachmanMovePayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_coachman_move");
-    public static final StreamCodec<FriendlyByteBuf, CoachmanMovePayload> CODEC = new StreamCodec<>() {
+    public static final Type<@NotNull CoachmanMovePayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_coachman_move");
+    public static final StreamCodec<@NotNull FriendlyByteBuf, @NotNull CoachmanMovePayload> CODEC = new StreamCodec<>() {
         @Override
         public @NotNull CoachmanMovePayload decode(FriendlyByteBuf buf) {
             return new CoachmanMovePayload(buf.readFloat());
@@ -29,7 +29,7 @@ public record CoachmanMovePayload(float zza) implements CustomPacketPayload {
     };
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends @NotNull CustomPacketPayload> type() {
         return TYPE;
     }
 

@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -18,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,26 +25,26 @@ import java.util.Iterator;
 
 public abstract class AbstractCargoCart extends AbstractDrawnInventoryEntity {
 
-    private static final ImmutableList<EntityDataAccessor<ItemStack>> CARGO = ImmutableList.of(
+    private static final ImmutableList<@NotNull EntityDataAccessor<@NotNull ItemStack>> CARGO = ImmutableList.of(
             SynchedEntityData.defineId(AbstractCargoCart.class, EntityDataSerializers.ITEM_STACK),
             SynchedEntityData.defineId(AbstractCargoCart.class, EntityDataSerializers.ITEM_STACK),
             SynchedEntityData.defineId(AbstractCargoCart.class, EntityDataSerializers.ITEM_STACK),
             SynchedEntityData.defineId(AbstractCargoCart.class, EntityDataSerializers.ITEM_STACK));
 
-    public AbstractCargoCart(EntityType<? extends Entity> entityTypeIn, Level worldIn, int inventorySize) {
+    public AbstractCargoCart(EntityType<? extends @NotNull Entity> entityTypeIn, Level worldIn, int inventorySize) {
         super(entityTypeIn, worldIn, inventorySize);
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        for (final EntityDataAccessor<ItemStack> parameter : CARGO) {
+        for (final EntityDataAccessor<@NotNull ItemStack> parameter : CARGO) {
             builder.define(parameter, ItemStack.EMPTY);
         }
     }
 
-    public NonNullList<ItemStack> getCargo() {
-        final NonNullList<ItemStack> cargo = NonNullList.withSize(CARGO.size(), ItemStack.EMPTY);
+    public NonNullList<@NotNull ItemStack> getCargo() {
+        final NonNullList<@NotNull ItemStack> cargo = NonNullList.withSize(CARGO.size(), ItemStack.EMPTY);
         for (int i = 0; i < CARGO.size(); i++) {
             cargo.set(i, this.entityData.get(CARGO.get(i)));
         }

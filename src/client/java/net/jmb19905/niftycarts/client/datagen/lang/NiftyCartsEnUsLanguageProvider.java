@@ -7,6 +7,7 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class NiftyCartsEnUsLanguageProvider extends FabricLanguageProvider {
     }
 
     @Override
-    public void generateTranslations(HolderLookup.Provider provider, TranslationBuilder translationBuilder) {
+    public void generateTranslations(HolderLookup.@NotNull Provider provider, TranslationBuilder translationBuilder) {
         translationBuilder.add(NiftyCarts.WHEEL, "Wheel");
         WoodType.values().forEach(woodType -> {
             translationBuilder.add(NiftyCarts.SUPPLY_CART.get(woodType), capitalizeWordStart(woodType.name()) + "Supply Cart");

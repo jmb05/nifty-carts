@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DummyLivingEntity extends LivingEntity {
 
-    protected DummyLivingEntity(final EntityType<? extends LivingEntity> type, final Level world) {
+    protected DummyLivingEntity(final EntityType<? extends @NotNull LivingEntity> type, final Level world) {
         super(type, world);
         this.setSilent(true);
         this.setNoGravity(true);
@@ -23,17 +23,17 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
     }
 
     @Override
-    public @NotNull ItemStack getItemBySlot(final EquipmentSlot slotIn) {
+    public @NotNull ItemStack getItemBySlot(final @NotNull EquipmentSlot slotIn) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public void setItemSlot(final EquipmentSlot slotIn, final ItemStack stack) {
+    public void setItemSlot(final @NotNull EquipmentSlot slotIn, final @NotNull ItemStack stack) {
     }
 
     @Override
@@ -42,7 +42,7 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public boolean ignoreExplosion(Explosion explosion) {
+    public boolean ignoreExplosion(@NotNull Explosion explosion) {
         return true;
     }
 
@@ -92,12 +92,12 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public boolean canAttackType(final EntityType<?> type) {
+    public boolean canAttackType(final @NotNull EntityType<?> type) {
         return false;
     }
 
     @Override
-    public boolean canAttack(final LivingEntity living) {
+    public boolean canAttack(final @NotNull LivingEntity living) {
         return false;
     }
 
@@ -107,12 +107,12 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public void kill(ServerLevel serverLevel) {
+    public void kill(@NotNull ServerLevel serverLevel) {
         this.discard();
     }
 
     @Override
-    public void push(Entity p_21294_) {
+    public void push(@NotNull Entity p_21294_) {
     }
 
     @Override
@@ -124,7 +124,7 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public boolean addEffect(final MobEffectInstance effect, @Nullable Entity entity) {
+    public boolean addEffect(final @NotNull MobEffectInstance effect, @Nullable Entity entity) {
         return false;
     }
 

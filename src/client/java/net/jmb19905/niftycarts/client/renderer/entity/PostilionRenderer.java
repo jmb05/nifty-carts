@@ -2,13 +2,14 @@ package net.jmb19905.niftycarts.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.jmb19905.niftycarts.entity.PostilionEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import org.jetbrains.annotations.NotNull;
 
-public class PostilionRenderer extends EntityRenderer<PostilionEntity, EntityRenderState> {
+public class PostilionRenderer extends EntityRenderer<@NotNull PostilionEntity, @NotNull EntityRenderState> {
 
     public PostilionRenderer(final EntityRendererProvider.Context manager) {
         super(manager);
@@ -20,10 +21,12 @@ public class PostilionRenderer extends EntityRenderer<PostilionEntity, EntityRen
     }
 
     @Override
-    public void render(EntityRenderState state, PoseStack stack, MultiBufferSource source, int light) {}
+    public void submit(EntityRenderState renderState, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector nodeCollector, @NotNull CameraRenderState cameraRenderState) {
+        super.submit(renderState, poseStack, nodeCollector, cameraRenderState);
+    }
 
     @Override
     protected boolean shouldShowName(PostilionEntity entity, double d) {
-        return true;
+        return false;
     }
 }

@@ -8,14 +8,15 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.*;
 
-public record SimpleBlockPredicate(Optional<TagKey<Block>> blockTag,
-                                   Optional<HolderSet<Block>> blocks) implements Predicate<BlockState> {
+public record SimpleBlockPredicate(Optional<TagKey<@NotNull Block>> blockTag,
+                                   Optional<HolderSet<@NotNull Block>> blocks) implements Predicate<BlockState> {
 
     public static final Codec<SimpleBlockPredicate> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
@@ -30,9 +31,9 @@ public record SimpleBlockPredicate(Optional<TagKey<Block>> blockTag,
 
     public static class Builder {
         @Nullable
-        private HolderSet<Block> blocks;
+        private HolderSet<@NotNull Block> blocks;
         @Nullable
-        private TagKey<Block> tag;
+        private TagKey<@NotNull Block> tag;
 
         private Builder() {
         }
@@ -46,7 +47,7 @@ public record SimpleBlockPredicate(Optional<TagKey<Block>> blockTag,
             return this;
         }
 
-        public Builder of(TagKey<Block> tag) {
+        public Builder of(TagKey<@NotNull Block> tag) {
             this.tag = tag;
             return this;
         }

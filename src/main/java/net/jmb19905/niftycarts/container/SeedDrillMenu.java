@@ -33,7 +33,7 @@ public class SeedDrillMenu extends AbstractContainerMenu {
         for (int i = 0; i < SLOT_COUNT; i++) {
             this.addSlot(new Slot(container, i, 8 + 18 * i, 28) {
                 @Override
-                public boolean mayPlace(ItemStack itemStack) {
+                public boolean mayPlace(@NotNull ItemStack itemStack) {
                     //return itemStack.is(NiftyCarts.SEED_DRILL_PLANTABLE);
                     return true;
                 }
@@ -52,7 +52,7 @@ public class SeedDrillMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public @NotNull ItemStack quickMoveStack(Player player, int index) {
+    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
         final ItemStack itemstack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
         if (slot.hasItem()) {
@@ -73,7 +73,7 @@ public class SeedDrillMenu extends AbstractContainerMenu {
         return itemstack;
     }
 
-    public void removed(Player player) {
+    public void removed(@NotNull Player player) {
         super.removed(player);
         this.container.stopOpen(player);
     }
@@ -83,7 +83,7 @@ public class SeedDrillMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return this.container.stillValid(player);
     }
 

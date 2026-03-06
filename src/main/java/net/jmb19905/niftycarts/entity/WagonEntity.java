@@ -5,7 +5,7 @@ import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
@@ -15,15 +15,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.animal.AgeableWaterCreature;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.WoolCarpetBlock;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
@@ -34,19 +34,19 @@ import java.util.List;
 
 public class WagonEntity extends AbstractDrawnInventoryEntity {
 
-    private static final EntityDataAccessor<Integer> UNFURL = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> ROOF_COLOR = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<ItemStack> EQUIPPED_CARPET = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.ITEM_STACK);
-    private static final EntityDataAccessor<Integer> CHEST_COUNT = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<@NotNull Integer> UNFURL = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<@NotNull Integer> ROOF_COLOR = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<@NotNull ItemStack> EQUIPPED_CARPET = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<@NotNull Integer> CHEST_COUNT = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
 
-    public WagonEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
+    public WagonEntity(EntityType<? extends @NotNull Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn, 3 * 4 * 9);
     }
 
     @Override
     public void onDestroyedAndDoDrops(DamageSource source) {
         super.onDestroyedAndDoDrops(source);
-        if (level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.ENTITY_DROPS)) {
             this.spawnAtLocation(serverLevel, new ItemStack(Items.CHEST, getChestCount()));
             this.spawnAtLocation(serverLevel, this.entityData.get(EQUIPPED_CARPET));
         }
@@ -88,13 +88,13 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         return DyeColor.byId(this.entityData.get(ROOF_COLOR));
     }
 
-    public ResourceLocation getRoofTexture() {
+    public Identifier getRoofTexture() {
         DyeColor color = getRoofColor();
         String name = "white";
         if (color != null) {
             name = color.getName();
         }
-        return ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/wagon_roof_" + name + ".png");
+        return Identifier.fromNamespaceAndPath(NiftyCarts.MOD_ID, "textures/entity/wagon_roof_" + name + ".png");
     }
 
     @Override
@@ -117,7 +117,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    public @NotNull InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
+    public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec3, @NotNull InteractionHand interactionHand) {
         if (isLocked()) return InteractionResult.FAIL;
         ItemStack itemStack = player.getItemInHand(interactionHand);
         final InteractionResult bannerResult = this.useBanner(player, interactionHand);
@@ -126,7 +126,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
             return interactCarpet(itemStack, player);
         } else if (itemStack.is(Items.CHEST) && canAddChest()) {
             return interactChest(itemStack, player);
-        } else if (player.isSecondaryUseActive() && !getPassengers().isEmpty() && !this.level().isClientSide) {
+        } else if (player.isSecondaryUseActive() && !getPassengers().isEmpty() && !this.level().isClientSide()) {
             for (final Entity entity : this.getPassengers()) {
                 if (!(entity instanceof Player)) {
                     entity.stopRiding();
@@ -193,7 +193,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
             if (!this.canAddPassenger(player)) {
                 return InteractionResult.PASS;
             }
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
             }
             return InteractionResult.SUCCESS;
@@ -202,7 +202,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected boolean canAddPassenger(Entity entity) {
+    protected boolean canAddPassenger(@NotNull Entity entity) {
         return switch (getChestCount()) {
             case 0, 1 -> getPassengers().size() < 4;
             case 2 -> getPassengers().size() < 2;
@@ -215,7 +215,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected @NotNull Vec3 getPassengerAttachmentPoint(Entity entity, EntityDimensions entityDimensions, float factor) {
+    protected @NotNull Vec3 getPassengerAttachmentPoint(@NotNull Entity entity, @NotNull EntityDimensions entityDimensions, float factor) {
         int idx = this.getPassengers().indexOf(entity);
         double f = (idx == 0 || idx == 2) ? 0.1 : -1.2;
         double s = (idx == 0 || idx == 1) ? 0.7 : -0.7;
@@ -227,7 +227,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    public void positionRider(final Entity passenger, MoveFunction moveFunction) {
+    public void positionRider(final @NotNull Entity passenger, @NotNull MoveFunction moveFunction) {
         super.positionRider(passenger, moveFunction);
         int idx = this.getPassengers().indexOf(passenger);
         int dir = idx == 0 || idx == 3 ? 1 : -1;
@@ -247,7 +247,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         if (isLocked()) return;
         List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate(0.2F, -0.01F, 0.2F), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
-            boolean bl = !this.level().isClientSide && !(this.getControllingPassenger() instanceof Player);
+            boolean bl = !this.level().isClientSide() && !(this.getControllingPassenger() instanceof Player);
             for (Entity entity : list) {
                 if (!entity.hasPassenger(this)) {
                     if (bl
@@ -256,7 +256,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
                             && entity.getBbWidth() < this.getBbWidth() / 2
                             && entity.getBbWidth() * entity.getBbHeight() < 1.5
                             && entity instanceof LivingEntity
-                            && !(entity instanceof WaterAnimal)
+                            && !(entity instanceof AgeableWaterCreature)
                             && !(entity instanceof Player)) {
                         if(entity instanceof TamableAnimal tamable) tamable.setInSittingPose(true);
                         entity.startRiding(this);
@@ -279,7 +279,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
         super.addAdditionalSaveData(output);
         output.putInt("Unfurl", this.entityData.get(UNFURL));
         output.putInt("RoofColor", this.entityData.get(ROOF_COLOR));

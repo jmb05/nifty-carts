@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 public record OpenSupplyCartPayload() implements CustomPacketPayload {
 
-    public static final Type<OpenSupplyCartPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_open_supply_cart");
-    public static final StreamCodec<FriendlyByteBuf, OpenSupplyCartPayload> CODEC = new StreamCodec<>() {
+    public static final Type<@NotNull OpenSupplyCartPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_open_supply_cart");
+    public static final StreamCodec<@NotNull FriendlyByteBuf, @NotNull OpenSupplyCartPayload> CODEC = new StreamCodec<>() {
         @Override
         public @NotNull OpenSupplyCartPayload decode(FriendlyByteBuf object) {
             return new OpenSupplyCartPayload();
@@ -24,7 +24,7 @@ public record OpenSupplyCartPayload() implements CustomPacketPayload {
     };
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends @NotNull CustomPacketPayload> type() {
         return TYPE;
     }
 

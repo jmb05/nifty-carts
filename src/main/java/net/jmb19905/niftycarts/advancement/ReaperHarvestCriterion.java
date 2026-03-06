@@ -3,14 +3,14 @@ package net.jmb19905.niftycarts.advancement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class ReaperHarvestCriterion extends SimpleCriterionTrigger<ReaperHarvestCriterion.TriggerInstance>  {
+public class ReaperHarvestCriterion extends SimpleCriterionTrigger<ReaperHarvestCriterion.@NotNull TriggerInstance>  {
 
     public void trigger(ServerPlayer serverPlayer, BlockState state) {
         super.trigger(serverPlayer, t -> t.matches(state));
@@ -29,11 +29,11 @@ public class ReaperHarvestCriterion extends SimpleCriterionTrigger<ReaperHarvest
                         SimpleBlockPredicate.CODEC.optionalFieldOf("block").forGetter(TriggerInstance::block)
                 ).apply(instance, TriggerInstance::new));
 
-        public static Criterion<TriggerInstance> reaperHarvest() {
+        public static Criterion<@NotNull TriggerInstance> reaperHarvest() {
             return NCCriteriaTriggers.REAPER_HARVEST.createCriterion(new TriggerInstance(Optional.empty(), Optional.empty()));
         }
 
-        public static Criterion<TriggerInstance> reaperHarvest(SimpleBlockPredicate.Builder builder) {
+        public static Criterion<@NotNull TriggerInstance> reaperHarvest(SimpleBlockPredicate.Builder builder) {
             return NCCriteriaTriggers.REAPER_HARVEST.createCriterion(new TriggerInstance(Optional.empty(), Optional.of(builder.build())));
         }
 

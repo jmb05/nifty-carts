@@ -4,7 +4,7 @@ import net.jmb19905.niftycarts.NiftyCarts;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class NCCriteriaTriggers {
 
@@ -17,7 +17,7 @@ public class NCCriteriaTriggers {
     public static UsePlowCriterion USE_PLOW;
 
     private static <T extends CriterionTrigger<?>> T register(String string, T criterionTrigger) {
-        return Registry.register(BuiltInRegistries.TRIGGER_TYPES, ResourceLocation.fromNamespaceAndPath(NiftyCarts.MOD_ID, string), criterionTrigger);
+        return Registry.register(BuiltInRegistries.TRIGGER_TYPES, Identifier.fromNamespaceAndPath(NiftyCarts.MOD_ID, string), criterionTrigger);
     }
 
     public static void register() {

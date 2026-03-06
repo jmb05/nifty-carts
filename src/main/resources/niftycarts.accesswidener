@@ -5,6 +5,7 @@ accessible field net/minecraft/world/entity/Mob goalSelector Lnet/minecraft/worl
 accessible field net/minecraft/world/entity/Mob targetSelector Lnet/minecraft/world/entity/ai/goal/GoalSelector;
 accessible method net/minecraft/client/renderer/entity/layers/HumanoidArmorLayer usesInnerModel (Lnet/minecraft/world/entity/EquipmentSlot;)Z
 extendable method net/minecraft/world/entity/Entity positionRider (Lnet/minecraft/world/entity/Entity;)V
-accessible field net/minecraft/world/entity/animal/horse/AbstractHorse gallopSoundCounter I
 accessible method net/minecraft/world/entity/Entity makeBoundingBox ()Lnet/minecraft/world/phys/AABB;
 accessible method net/minecraft/world/entity/Entity setRot (FF)V
+accessible field net/minecraft/world/entity/animal/equine/AbstractHorse gallopSoundCounter I
+accessible field net/minecraft/client/model/object/banner/BannerFlagModel flag Lnet/minecraft/client/model/geom/ModelPart;

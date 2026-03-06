@@ -4,13 +4,15 @@ import net.jmb19905.niftycarts.client.renderer.entity.PlowRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.object.banner.BannerFlagModel;
+import net.minecraft.client.model.object.banner.BannerModel;
 
 public final class PlowModel extends CartModel<PlowRenderState> {
     private final ModelPart[] plowShaftUpper = new ModelPart[3];
     private final ModelPart[] plowShaftLower = new ModelPart[3];
 
-    public PlowModel(final ModelPart root) {
-        super(root);
+    public PlowModel(final ModelPart root, BannerModel bannerModel, BannerFlagModel flagModel) {
+        super(root, bannerModel, flagModel);
         ModelPart parts = root.getChild("body").getChild("parts");
         for (int i = 0; i < this.plowShaftUpper.length; i++) {
             this.plowShaftUpper[i] = parts.getChild("plow_shaft_upper_" + i);

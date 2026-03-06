@@ -7,7 +7,7 @@ import net.jmb19905.niftycarts.util.NiftyWorld;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -20,10 +20,10 @@ import java.util.Optional;
 
 public record ToggleSlowPayload() implements CustomPacketPayload {
 
-    public static final ResourceLocation PULL_SLOWLY_MODIFIER_ID = NiftyCarts.resLoc("pull_slowly");
+    public static final Identifier PULL_SLOWLY_MODIFIER_ID = NiftyCarts.resLoc("pull_slowly");
 
-    public static final Type<ToggleSlowPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_toggle_slow");
-    public static final StreamCodec<FriendlyByteBuf, ToggleSlowPayload> CODEC = new StreamCodec<>() {
+    public static final Type<@NotNull ToggleSlowPayload> TYPE = CustomPacketPayload.createType(NiftyCarts.MOD_ID + "_toggle_slow");
+    public static final StreamCodec<@NotNull FriendlyByteBuf, @NotNull ToggleSlowPayload> CODEC = new StreamCodec<>() {
         @Override
         public @NotNull ToggleSlowPayload decode(FriendlyByteBuf object) {
             return new ToggleSlowPayload();
@@ -35,7 +35,7 @@ public record ToggleSlowPayload() implements CustomPacketPayload {
     };
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends @NotNull CustomPacketPayload> type() {
         return TYPE;
     }
 
