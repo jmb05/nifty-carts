@@ -211,7 +211,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     public float getPassengersRidingOffsetY(EntityDimensions entityDimensions, float f) {
-        return (entityDimensions.height() - 2 - 1f/16f) * f;
+        return (entityDimensions.height() - 2 - 2f/16f) * f;
     }
 
     @Override

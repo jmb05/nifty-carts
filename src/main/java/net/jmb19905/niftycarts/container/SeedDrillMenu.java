@@ -8,7 +8,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.CropBlock;
 import org.jetbrains.annotations.NotNull;
 
 public class SeedDrillMenu extends AbstractContainerMenu {
@@ -34,8 +36,8 @@ public class SeedDrillMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(container, i, 8 + 18 * i, 28) {
                 @Override
                 public boolean mayPlace(@NotNull ItemStack itemStack) {
-                    //return itemStack.is(NiftyCarts.SEED_DRILL_PLANTABLE);
-                    return true;
+                    return itemStack.is(NiftyCarts.SEED_DRILL_PLANTABLE)
+                            || (itemStack.getItem() instanceof BlockItem item) && item.getBlock() instanceof CropBlock;
                 }
             });
         }

@@ -13,45 +13,45 @@ public class WagonModel extends CartModel<WagonRenderState> {
     private static final float Z_FIGHTING_EPSILON = 0.001f;
 
     private final ModelPart roof;
-    private final ModelPart chests;
+    private final WagonChestModel chestModel;
 
-    public WagonModel(ModelPart root, ModelPart roofRoot, ModelPart chestRoot, BannerModel bannerModel, BannerFlagModel flagModel) {
+    public WagonModel(ModelPart root, ModelPart roofRoot, WagonChestModel chestModel, BannerModel bannerModel, BannerFlagModel flagModel) {
         super(root, 2, bannerModel, flagModel);
         this.roof = roofRoot.getChild("roof");
-        this.chests = chestRoot;
+        this.chestModel = chestModel;
     }
 
-    public ModelPart getChests() {
-        return chests;
+    public WagonChestModel getChestModel() {
+        return chestModel;
     }
 
-    public ModelPart getChest(int idx) {
-        return chests.getChild("chest" + idx);
-    }
-
-    public ModelPart getChestLid(int idx) {
-        return getChest(idx).getChild("chestLid");
-    }
-
-    public ModelPart getRoof(int unfurl) {
-        switch (unfurl) {
-            case 0 -> {
-                this.roof.getChild("roofUnfurled").visible = true;
-                this.roof.getChild("roofPartUnfurled").visible = false;
-                this.roof.getChild("roofFurled").visible = false;
+    @Override
+    public void setupAnim(WagonRenderState state) {
+        super.setupAnim(state);
+        if (state.hasRoof) {
+            switch (state.unfurled) {
+                case 0 -> {
+                    this.roof.getChild("roofUnfurled").visible = true;
+                    this.roof.getChild("roofPartUnfurled").visible = false;
+                    this.roof.getChild("roofFurled").visible = false;
+                }
+                case 1 -> {
+                    this.roof.getChild("roofUnfurled").visible = false;
+                    this.roof.getChild("roofPartUnfurled").visible = true;
+                    this.roof.getChild("roofFurled").visible = false;
+                }
+                default -> {
+                    this.roof.getChild("roofUnfurled").visible = false;
+                    this.roof.getChild("roofPartUnfurled").visible = false;
+                    this.roof.getChild("roofFurled").visible = true;
+                }
             }
-            case 1 -> {
-                this.roof.getChild("roofUnfurled").visible = false;
-                this.roof.getChild("roofPartUnfurled").visible = true;
-                this.roof.getChild("roofFurled").visible = false;
-            }
-            default -> {
-                this.roof.getChild("roofUnfurled").visible = false;
-                this.roof.getChild("roofPartUnfurled").visible = false;
-                this.roof.getChild("roofFurled").visible = true;
-            }
+        } else {
+            this.roof.getChild("roofUnfurled").visible = false;
+            this.roof.getChild("roofPartUnfurled").visible = false;
+            this.roof.getChild("roofFurled").visible = false;
         }
-        return roof;
+        chestModel.setupAnim(state);
     }
 
     public static LayerDefinition createRoofLayer() {

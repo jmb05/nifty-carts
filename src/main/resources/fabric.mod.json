@@ -33,11 +33,11 @@
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.17.2",
+		"fabricloader": ">=0.18.4",
 		"minecraft": ["1.21.11"],
 		"java": ">=21",
 		"fabric-api": "*",
-		"forgeconfigapiport": ">=21.6.4"
+		"forgeconfigapiport": ">=21.11.1"
 	},
 	"suggests": {
 		"forgeconfigscreens": "*"
