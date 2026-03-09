@@ -14,7 +14,7 @@ import net.jmb19905.niftycarts.NiftyCartsConfig;
 import net.jmb19905.niftycarts.client.renderer.NiftyCartsModelLayers;
 import net.jmb19905.niftycarts.client.renderer.entity.*;
 import net.jmb19905.niftycarts.client.renderer.entity.model.*;
-import net.jmb19905.niftycarts.client.screen.ChestScreen;
+import net.jmb19905.niftycarts.client.screen.WagonScreen;
 import net.jmb19905.niftycarts.client.screen.PlowScreen;
 import net.jmb19905.niftycarts.client.screen.SeedDrillScreen;
 import net.jmb19905.niftycarts.item.CartItem;
@@ -67,14 +67,14 @@ public class NiftyCartsClient implements ClientModInitializer {
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.SEED_DRILL, SeedDrillModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.REAPER, ReaperModel::createLayer);
         EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.WAGON, WagonModel::createLayer);
-        EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.WAGON_ROOF, WagonModel::createRoofLayer);
+        EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.WAGON_ROOF, WagonRoofModel::createRoofLayer);
         EntityModelLayerRegistry.registerModelLayer(NiftyCartsModelLayers.WAGON_CHEST, WagonModel::createChestLayer);
 
 		MenuScreens.register(NiftyCarts.PLOW_MENU_TYPE, PlowScreen::new);
 		MenuScreens.register(NiftyCarts.SEED_DRILL_MENU_TYPE, SeedDrillScreen::new);
-        MenuScreens.register(NiftyCarts.CHEST_9x4_MENU_TYPE, ChestScreen::new);
-        MenuScreens.register(NiftyCarts.CHEST_9x8_MENU_TYPE, ChestScreen::new);
-        MenuScreens.register(NiftyCarts.CHEST_9x12_MENU_TYPE, ChestScreen::new);
+        MenuScreens.register(NiftyCarts.WAGON_9x4_MENU_TYPE, WagonScreen::new);
+        MenuScreens.register(NiftyCarts.WAGON_9x8_MENU_TYPE, WagonScreen::new);
+        MenuScreens.register(NiftyCarts.WAGON_12x9_MENU_TYPE, WagonScreen::new);
 
         KeyMapping.Category keyCategory = KeyMapping.Category.register(NiftyCarts.resLoc("niftycarts"));
 

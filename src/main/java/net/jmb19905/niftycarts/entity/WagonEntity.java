@@ -269,9 +269,9 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     @Override
     protected AbstractContainerMenu createMenuLootUnpacked(int i, Inventory inventory, Player player) {
         var type = switch (this.getChestCount()) {
-            case 1 -> NiftyCarts.CHEST_9x4_MENU_TYPE;
-            case 2 -> NiftyCarts.CHEST_9x8_MENU_TYPE;
-            case 3 -> NiftyCarts.CHEST_9x12_MENU_TYPE;
+            case 1 -> NiftyCarts.WAGON_9x4_MENU_TYPE;
+            case 2 -> NiftyCarts.WAGON_9x8_MENU_TYPE;
+            case 3 -> NiftyCarts.WAGON_12x9_MENU_TYPE;
             default -> null;
         };
         if (type == null) return null;

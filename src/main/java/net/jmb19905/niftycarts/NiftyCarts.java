@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.jmb19905.niftycarts.advancement.NCCriteriaTriggers;
 import net.jmb19905.niftycarts.container.PlowMenu;
 import net.jmb19905.niftycarts.container.SeedDrillMenu;
+import net.jmb19905.niftycarts.container.WagonMenu;
 import net.jmb19905.niftycarts.entity.*;
 import net.jmb19905.niftycarts.entity.ai.goal.AvoidCartGoal;
 import net.jmb19905.niftycarts.entity.ai.goal.PullCartGoal;
@@ -38,7 +39,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.flag.FeatureFlag;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -149,9 +149,9 @@ public class NiftyCarts implements ModInitializer {
 
 	public static final MenuType<@NotNull PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
 	public static final MenuType<@NotNull SeedDrillMenu> SEED_DRILL_MENU_TYPE = new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS);
-    public static final MenuType<@NotNull ChestMenu> CHEST_9x4_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x4_MENU_TYPE, i, inv, new SimpleContainer(4 * 9), 4), FeatureFlags.DEFAULT_FLAGS);
-    public static final MenuType<@NotNull ChestMenu> CHEST_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x8_MENU_TYPE, i, inv, new SimpleContainer(8 * 9), 8), FeatureFlags.DEFAULT_FLAGS);
-    public static final MenuType<@NotNull ChestMenu> CHEST_9x12_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x12_MENU_TYPE, i, inv, new SimpleContainer(12 * 9), 12), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<@NotNull WagonMenu> WAGON_9x4_MENU_TYPE = new MenuType<>((i, inv) -> new WagonMenu(NiftyCarts.WAGON_9x4_MENU_TYPE, i, inv, new SimpleContainer(4 * 9), 4), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<@NotNull WagonMenu> WAGON_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new WagonMenu(NiftyCarts.WAGON_9x8_MENU_TYPE, i, inv, new SimpleContainer(8 * 9), 8), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<@NotNull WagonMenu> WAGON_12x9_MENU_TYPE = new MenuType<>((i, inv) -> new WagonMenu(NiftyCarts.WAGON_12x9_MENU_TYPE, i, inv, new SimpleContainer(12 * 9), 12), FeatureFlags.DEFAULT_FLAGS);
 
     public static final Map<EntityType<?>, Identifier> CART_PULL_CM;
 
@@ -177,6 +177,7 @@ public class NiftyCarts implements ModInitializer {
     public static final TagKey<@NotNull Block> REAPER_HARVESTABLE = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(NiftyCarts.MOD_ID, "reaper_harvestable"));
 	public static final TagKey<@NotNull Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, NiftyCarts.resLoc("seed_drill_plantable"));
 
+    @SuppressWarnings("SameParameterValue")
     private static void registerStat(Identifier id, StatFormatter formatter) {
         Registry.register(BuiltInRegistries.CUSTOM_STAT, id, id);
         Stats.CUSTOM.get(id, formatter);
@@ -198,9 +199,9 @@ public class NiftyCarts implements ModInitializer {
 
 		Registry.register(BuiltInRegistries.MENU, resLoc("plow"), PLOW_MENU_TYPE);
 		Registry.register(BuiltInRegistries.MENU, resLoc("seed_drill"), SEED_DRILL_MENU_TYPE);
-        Registry.register(BuiltInRegistries.MENU, resLoc("chest_four_rows"), CHEST_9x4_MENU_TYPE);
-        Registry.register(BuiltInRegistries.MENU, resLoc("chest_eight_rows"), CHEST_9x8_MENU_TYPE);
-        Registry.register(BuiltInRegistries.MENU, resLoc("chest_quad"), CHEST_9x12_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, resLoc("chest_four_rows"), WAGON_9x4_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, resLoc("chest_eight_rows"), WAGON_9x8_MENU_TYPE);
+        Registry.register(BuiltInRegistries.MENU, resLoc("chest_quad"), WAGON_12x9_MENU_TYPE);
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(WHEEL));
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> Arrays.stream(VANILLA_WOOD_TYPES).forEach(woodType -> {
