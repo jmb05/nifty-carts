@@ -98,13 +98,13 @@ public abstract class CartModel<T extends CartRenderState> extends EntityModel<@
         wheel.setRotationPoint(xOffset, yOffset - wheelRadius,1.0F + axleDist * d);
         wheel.addBox(boxOffset, -1, -1, 2, 2, 2);
         for (int i = 0; i < 8; i++) {
-            final EasyMeshBuilder rim = new EasyMeshBuilder("rim_" + i, 58, 64 - ((int) rimLength + 1));
+            final EasyMeshBuilder rim = new EasyMeshBuilder(name + "_rim_" + i, 58, 64 - ((int) rimLength + 1));
             float epsilon = 0.001f * i % 2;
             rim.addBox(boxOffset + epsilon, -rimLength / 2f, wheelRadius - 1, 2, rimLength, 1);
             rim.xRot = i * (float) Math.PI / 4.0F;
             wheel.addChild(rim);
 
-            final EasyMeshBuilder spoke = new EasyMeshBuilder("spoke_" + i, 54, 64 - Mth.ceil(wheelRadius - 1));
+            final EasyMeshBuilder spoke = new EasyMeshBuilder(name + "_spoke_" + i, 54, 64 - Mth.ceil(wheelRadius - 1));
             spoke.addBox(0.5f + boxOffset, 1.0F, -0.5F, 1,  wheelRadius - 2, 1);
             spoke.xRot = i * (float) Math.PI / 4.0F;
             wheel.addChild(spoke);
