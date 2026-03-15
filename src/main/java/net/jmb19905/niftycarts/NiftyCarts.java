@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.jmb19905.niftycarts.advancement.NCCriteriaTriggers;
 import net.jmb19905.niftycarts.container.PlowMenu;
 import net.jmb19905.niftycarts.container.SeedDrillMenu;
+import net.jmb19905.niftycarts.container.CartChestMenu;
 import net.jmb19905.niftycarts.entity.*;
 import net.jmb19905.niftycarts.entity.ai.goal.AvoidCartGoal;
 import net.jmb19905.niftycarts.entity.ai.goal.PullCartGoal;
@@ -34,10 +35,8 @@ import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -172,9 +171,9 @@ public class NiftyCarts implements ModInitializer {
 
 	public static final MenuType<PlowMenu> PLOW_MENU_TYPE = new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS);
 	public static final MenuType<SeedDrillMenu> SEED_DRILL_MENU_TYPE = new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS);
-    public static final MenuType<ChestMenu> CHEST_9x4_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x4_MENU_TYPE, i, inv, new SimpleContainer(9 * 4), 4), FeatureFlags.DEFAULT_FLAGS);
-    public static final MenuType<ChestMenu> CHEST_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x8_MENU_TYPE, i, inv, new SimpleContainer(9 * 8), 8), FeatureFlags.DEFAULT_FLAGS);
-    public static final MenuType<ChestMenu> CHEST_9x12_MENU_TYPE = new MenuType<>((i, inv) -> new ChestMenu(NiftyCarts.CHEST_9x12_MENU_TYPE, i, inv, new SimpleContainer(9 * 12), 12), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<CartChestMenu> CHEST_9x4_MENU_TYPE = new MenuType<>((i, inv) -> new CartChestMenu(NiftyCarts.CHEST_9x4_MENU_TYPE, i, inv,4), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<CartChestMenu> CHEST_9x8_MENU_TYPE = new MenuType<>((i, inv) -> new CartChestMenu(NiftyCarts.CHEST_9x8_MENU_TYPE, i, inv, 8), FeatureFlags.DEFAULT_FLAGS);
+    public static final MenuType<CartChestMenu> CHEST_9x12_MENU_TYPE = new MenuType<>((i, inv) -> new CartChestMenu(NiftyCarts.CHEST_9x12_MENU_TYPE, i, inv, 12), FeatureFlags.DEFAULT_FLAGS);
 
     public static final Map<EntityType<?>, ResourceLocation> CART_PULL_CM;
 
