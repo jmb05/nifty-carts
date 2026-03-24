@@ -50,11 +50,9 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
         if (isLocked()) return;
         List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate(0.2F, -0.01F, 0.2F), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
-            boolean bl = !this.level().isClientSide && !(this.getControllingPassenger() instanceof Player);
-
             for (Entity entity : list) {
                 if (!entity.hasPassenger(this)) {
-                    if (bl
+                    if (!this.level().isClientSide
                             && canAddPassenger(entity)
                             && !entity.isPassenger()
                             && entity.getBbWidth() < this.getBbWidth()

@@ -159,6 +159,10 @@ public abstract class AbstractDrawnEntity extends Entity {
         final double relativeSpacing = Math.max(this.getSpacing() + 0.5D * this.pulling.getBbWidth(), 1.0D);
         final double diff = targetVecLength - relativeSpacing;
         final Vec3 move;
+        if (diff > 2.0) {
+            this.setPulling(null);
+            return;
+        }
         if (Math.abs(diff) < r) {
             move = this.getDeltaMovement();
         } else {

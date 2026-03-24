@@ -27,6 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CropBlock;
 
 import java.util.Optional;
 
@@ -73,8 +74,8 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
     }
 
     private boolean tryPlaceCrop(ItemStack stack, BlockPos pos, Level level, int slot) {
-        if (stack.is(NiftyCarts.SEED_DRILL_PLANTABLE)) {
-            if (stack.getItem() instanceof BlockItem item) {
+        if (stack.getItem() instanceof BlockItem item) {
+            if (stack.is(NiftyCarts.SEED_DRILL_PLANTABLE) || item.getBlock() instanceof CropBlock) {
                 Block block = item.getBlock();
                 if (level.getBlockState(pos).isAir() && block.defaultBlockState().canSurvive(level, pos)) {
                     level.setBlockAndUpdate(pos, block.defaultBlockState());
