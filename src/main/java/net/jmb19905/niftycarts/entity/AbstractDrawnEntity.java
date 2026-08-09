@@ -384,6 +384,9 @@ public abstract class AbstractDrawnEntity extends Entity {
      * Relative to the cart position.
      */
     public Vec3 getRelativeTargetVec(final float delta) {
+        if (this.pulling == null) {
+            return Vec3.ZERO;
+        }
         final double x;
         final double y;
         final double z;
