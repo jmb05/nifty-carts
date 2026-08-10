@@ -73,15 +73,15 @@ public final class NiftyCartsConfig {
             this.slowSpeed = builder.comment("Slow speed modifier toggled by the sprint key")
                     .defineInRange("slow_speed", -0.65D, -1.0D, 0.0D);
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
-            this.supplyCart = new CartConfig(builder, "supply_cart", "The Supply Cart, a type of cart that stores items");
+            this.supplyCart = new CartConfig(builder, "supply_cart", "The Supply Cart, a type of cart that stores items", new ArrayList<>(), 0, true, new ArrayList<>());
             this.animalCart = new CartConfig(builder, "animal_cart", "The Animal Cart, a type of cart to haul other animals");
             this.plow = new CartConfig(builder, "plow", "The Plow, an animal pulled machine for tilling soil and creating paths");
             ArrayList<String> list = new ArrayList<>();
             list.add("minecraft:player");
-            this.handCart = new CartConfig(builder, "hand_cart", "The Hand Cart, a player pulled cart that stores items", list, 0);
+            this.handCart = new CartConfig(builder, "hand_cart", "The Hand Cart, a player pulled cart that stores items", list, 0, true, new ArrayList<>());
             this.reaper = new CartConfig(builder, "reaper", "The Reaper, a cart that harvests crops");
             this.seedDrill = new CartConfig(builder, "seed_drill", "The Seed Drill, a cart that plants crops");
-            this.wagon = new CartConfig(builder, "wagon", "The Covered wagon, a horse drawn cart that multiple people and/or lots of items", -0.2f);
+            this.wagon = new CartConfig(builder, "wagon", "The Covered wagon, a horse drawn cart that multiple people and/or lots of items", new ArrayList<>(), -0.2f, true, new ArrayList<>());
             builder.pop();
         }
     }
@@ -91,16 +91,13 @@ public final class NiftyCartsConfig {
         public final ForgeConfigSpec.DoubleValue pullSpeed;
         public final ForgeConfigSpec.IntValue destroyDamage;
         public final ForgeConfigSpec.BooleanValue adventureModeInteract;
+        public ForgeConfigSpec.ConfigValue<ArrayList<String>> cargoBlacklist;
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description) {
-            this(builder, name, description, new ArrayList<>(), 0);
+            this(builder, name, description, new ArrayList<>(), 0, false, null);
         }
 
-        CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description, float defaultPullSpeed) {
-            this(builder, name, description, new ArrayList<>(), defaultPullSpeed);
-        }
-
-        CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description, ArrayList<String> defaultEntityList, double defaultPullSpeed) {
+        CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description, ArrayList<String> defaultEntityList, double defaultPullSpeed, boolean cargoCart, ArrayList<String> cargoBlacklistList) {
             builder.comment(description).push(name);
             this.pullEntities = builder
                     .comment(
@@ -114,6 +111,10 @@ public final class NiftyCartsConfig {
                             .defineInRange("destroy_damage", 4, 1, 100);
             this.adventureModeInteract = builder.comment("Players in adventure mode can interact with cart")
                     .define("adventure_mode_interact", true);
+            if (cargoCart) {
+                this.cargoBlacklist = builder.comment("Disallow items from cart")
+                        .define("cargo_blacklist", cargoBlacklistList);
+            }
             builder.pop();
         }
     }
