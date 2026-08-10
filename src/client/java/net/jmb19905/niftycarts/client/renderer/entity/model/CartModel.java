@@ -88,12 +88,12 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
             leftWheel.setRotationPoint(f, -wheelRadius, 1.0F + axleDist * d);
             leftWheel.addBox(-2.0F, -1.0F, -1.0F, 2, 2, 2);
             for (int i = 0; i < 8; i++) {
-                final EasyMeshBuilder rim = new EasyMeshBuilder("rim_" + i, 58, 64 - ((int) rimLength + 1));
+                final EasyMeshBuilder rim = new EasyMeshBuilder("leftWheel_" + k + "rim_" + i, 58, 64 - ((int) rimLength + 1));
                 rim.addBox(-2.0F, -rimLength / 2f, wheelRadius - 1, 2, rimLength, 1);
                 rim.xRot = i * (float) Math.PI / 4.0F;
                 leftWheel.addChild(rim);
 
-                final EasyMeshBuilder spoke = new EasyMeshBuilder("spoke_" + i, 54, 64 - Mth.ceil(wheelRadius - 1));
+                final EasyMeshBuilder spoke = new EasyMeshBuilder("leftWheel_" + k + "spoke_" + i, 54, 64 - Mth.ceil(wheelRadius - 1));
                 spoke.addBox(-1.5F, 1.0F, -0.5F, 1, wheelRadius - 2, 1);
                 spoke.xRot = i * (float) Math.PI / 4.0F;
                 leftWheel.addChild(spoke);
@@ -104,12 +104,12 @@ public abstract class CartModel<T extends AbstractDrawnEntity> extends EntityMod
             rightWheel.setRotationPoint(-f, -wheelRadius, 1.0F + axleDist * d);
             rightWheel.addBox(0.0F, -1.0F, -1.0F, 2, 2, 2);
             for (int i = 0; i < 8; i++) {
-                final EasyMeshBuilder rim = new EasyMeshBuilder("rim_" + i, 58, 64 - ((int) rimLength + 1));
+                final EasyMeshBuilder rim = new EasyMeshBuilder("rightWheel_" + k + "rim_" + i, 58, 64 - ((int) rimLength + 1));
                 rim.addBox(0.0F, -rimLength / 2f, wheelRadius - 1, 2, rimLength, 1);
                 rim.xRot = i * (float) Math.PI / 4.0F;
                 rightWheel.addChild(rim);
 
-                final EasyMeshBuilder spoke = new EasyMeshBuilder("spoke_" + i, 54, 64 - Mth.ceil(wheelRadius - 1));
+                final EasyMeshBuilder spoke = new EasyMeshBuilder("rightWheel_" + k + "spoke_" + i, 54, 64 - Mth.ceil(wheelRadius - 1));
                 spoke.addBox(0.5F, 1.0F, -0.5F, 1, wheelRadius - 2, 1);
                 spoke.xRot = i * (float) Math.PI / 4.0F;
                 rightWheel.addChild(spoke);
