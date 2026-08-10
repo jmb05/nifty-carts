@@ -40,7 +40,6 @@ public final class NiftyCartsConfig {
         }
     }
 
-
     public static class Client {
         public final ForgeConfigSpec.BooleanValue renderSupplies;
         public final ForgeConfigSpec.BooleanValue renderSupplyGear;
@@ -59,9 +58,7 @@ public final class NiftyCartsConfig {
             this.renderSupplyWheel = builder.comment("Falls back to rendering as items if false").define("render_supply_wheel", true);
             this.renderDebugBoxes = builder.comment("Render boxes used for debugging the carts when Hitbox rendering is enabled").define("render_debug_boxes", false);
         }
-
     }
-
 
     public static class Common {
         public final ForgeConfigSpec.DoubleValue slowSpeed;
@@ -77,11 +74,11 @@ public final class NiftyCartsConfig {
             this.slowSpeed = builder.comment("Slow speed modifier toggled by the sprint key")
                     .defineInRange("slow_speed", -0.65D, -1.0D, 0.0D);
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
-            this.supplyCart = new CartConfig(builder, "supply_cart", "The Supply Cart, a type of cart that stores items");
+            this.supplyCart = new CartConfig(builder, "supply_cart", "The Supply Cart, a type of cart that stores items", new ArrayList<>(), -0.1, true, new ArrayList<>());
             this.supplyCart.pop();
             ArrayList<String> list = new ArrayList<>();
             list.add("minecraft:player");
-            this.handCart = new CartConfig(builder, "handCart", "The Hand Cart, a player pulled cart that stores items", list, -0.1);
+            this.handCart = new CartConfig(builder, "handCart", "The Hand Cart, a player pulled cart that stores items", list, -0.1, true, new ArrayList<>());
             this.handCart.pop();
             this.animalCart = new CartConfig(builder, "animal_cart", "The Animal Cart, a type of cart to haul other animals");
             this.animalCart.pop();
@@ -91,7 +88,7 @@ public final class NiftyCartsConfig {
             this.seedDrill.pop();
             this.reaper = new CartConfig(builder, "reaper", "The Reaper, a cart that harvests crops");
             this.reaper.pop();
-            this.wagon = new CartConfig(builder, "wagon", "The Covered wagon, a horse drawn cart that multiple people and/or lots of items", new ArrayList<>(), -0.2f);
+            this.wagon = new CartConfig(builder, "wagon", "The Covered wagon, a horse drawn cart that multiple people and/or lots of items", new ArrayList<>(), -0.2f, true, new ArrayList<>());
             this.wagon.pop();
             builder.pop();
         }
@@ -102,13 +99,14 @@ public final class NiftyCartsConfig {
         public final ForgeConfigSpec.DoubleValue pullSpeed;
         public final ForgeConfigSpec.IntValue destroyDamage;
         public final ForgeConfigSpec.BooleanValue adventureModeInteract;
+        public ForgeConfigSpec.ConfigValue<ArrayList<String>> cargoBlacklist;
         private final ForgeConfigSpec.Builder builder;
 
         CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description) {
-            this(builder, name, description, new ArrayList<>(), -0.1);
+            this(builder, name, description, new ArrayList<>(), -0.1, false, new ArrayList<>());
         }
 
-        CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description, ArrayList<String> defaultEntityList, double defaultPullSpeed) {
+        CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description, ArrayList<String> defaultEntityList, double defaultPullSpeed, boolean cargoCart, ArrayList<String> cargoBlacklistList) {
             this.builder = builder;
             builder.comment(description).push(name);
             this.pullEntities = builder
@@ -123,6 +121,10 @@ public final class NiftyCartsConfig {
                     .defineInRange("destroy_damage", 4, 1, 100);
             this.adventureModeInteract = builder.comment("Players in adventure mode can interact with cart")
                     .define("adventure_mode_interact", true);
+            if (cargoCart) {
+                this.cargoBlacklist = builder.comment("Disallow items from cart")
+                        .define("cargo_blacklist", cargoBlacklistList);
+            }
         }
 
         protected void pop() {
