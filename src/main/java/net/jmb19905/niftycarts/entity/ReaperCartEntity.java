@@ -43,7 +43,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(FOLDED, true);
     }

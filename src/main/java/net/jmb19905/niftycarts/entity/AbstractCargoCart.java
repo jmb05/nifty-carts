@@ -36,7 +36,7 @@ public abstract class AbstractCargoCart extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         for (final EntityDataAccessor<@NotNull ItemStack> parameter : CARGO) {
             builder.define(parameter, ItemStack.EMPTY);

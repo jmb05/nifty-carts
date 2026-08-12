@@ -153,7 +153,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(PLOWING, false);
         for (final EntityDataAccessor<@NotNull ItemStack> param : TOOLS) {

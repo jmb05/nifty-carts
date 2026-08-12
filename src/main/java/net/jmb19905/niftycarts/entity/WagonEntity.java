@@ -102,7 +102,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity implements Leashab
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(UNFURL, 0);
         builder.define(ROOF_COLOR, -1);

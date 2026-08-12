@@ -64,9 +64,9 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends Car
         state.wheelRotation1 = entity.getWheelRotation(1);
         state.wheelRotationInc0 = entity.getWheelRotationIncrement(0);
         state.wheelRotationInc1 = entity.getWheelRotationIncrement(1);
-        state.timeSinceHit = entity.getTimeSinceHit();
-        state.damage = entity.getDamageTaken();
-        state.forward = entity.getForwardDirection();
+        state.timeSinceHit = entity.getHurtTime();
+        state.damage = entity.getDamage();
+        state.forward = entity.getHurtDir();
         state.bannerColor = entity.getBannerColor();
         state.bannerPattern = entity.getBannerPattern();
         state.woodType = entity.getWoodType();

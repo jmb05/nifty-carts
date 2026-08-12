@@ -34,12 +34,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.DismountHelper;
+import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.block.state.properties.WoodType;
@@ -54,10 +54,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public abstract class AbstractDrawnEntity extends Entity {
-    private static final EntityDataAccessor<@NotNull Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<@NotNull Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<@NotNull Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
+public abstract class AbstractDrawnEntity extends VehicleEntity {
     private static final EntityDataAccessor<@NotNull ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<@NotNull String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<@NotNull Boolean> LOCKED = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.BOOLEAN);
@@ -110,14 +107,14 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     @Override
     public void tick() {
-        if (this.getTimeSinceHit() > 0) {
-            this.setTimeSinceHit(this.getTimeSinceHit() - 1);
+        if (this.getHurtTime() > 0) {
+            this.setHurtTime(this.getHurtTime() - 1);
         }
         if (!this.isNoGravity()) {
             this.setDeltaMovement(0.0D, this.getDeltaMovement().y - 0.08D, 0.0D);
         }
-        if (this.getDamageTaken() > 0.0F) {
-            this.setDamageTaken(this.getDamageTaken() - 1.0F);
+        if (this.getDamage() > 0.0F) {
+            this.setDamage(this.getDamage() - 1.0F);
         }
         super.tick();
         this.interpolation.interpolate();
@@ -462,29 +459,19 @@ public abstract class AbstractDrawnEntity extends Entity {
     @Override
     public boolean hurtServer(@NotNull ServerLevel serverLevel, final @NotNull DamageSource source, final float amount) {
         if (isLocked()) return false;
-        if (this.isInvulnerableToBase(source)) {
-            return false;
-        } else if (!this.level().isClientSide() && this.isAlive()) {
-            if (source.is(DamageTypes.CACTUS)) {
-                return false;
-            }
-            if (source.getEntity() != null && this.hasPassenger(source.getEntity())) {
-                return false;
-            }
-            this.setForwardDirection(-this.getForwardDirection());
-            this.setTimeSinceHit(10);
-            this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
-            final boolean flag = source.getEntity() instanceof Player player && player.getAbilities().instabuild;
-            final boolean adventureFlag = source.getEntity() instanceof Player player && player.gameMode() == GameType.ADVENTURE && !this.getConfig().adventureModeInteract.get();
-            if (adventureFlag) return false;
-            if (flag || this.getDamageTaken() > 40.0F) {
-                this.onDestroyed(source, flag);
-                this.setPulling(null);
-                this.discard();
-            }
-            return true;
-        }
-        return false;
+        if (source.is(DamageTypes.CACTUS)) return false;
+        return super.hurtServer(serverLevel, source, amount);
+    }
+
+    @Override
+    protected @NotNull Item getDropItem() {
+        return this.getCartItem();
+    }
+
+    @Override
+    protected void destroy(@NotNull ServerLevel level, @NotNull DamageSource damageSource) {
+        onDestroyed(damageSource);
+        super.destroy(level, damageSource);
     }
 
     protected InteractionResult useBanner(final Player player, final InteractionHand hand) {
@@ -514,19 +501,16 @@ public abstract class AbstractDrawnEntity extends Entity {
      * health hit 0.
      *
      */
-    public void onDestroyed(final DamageSource source, final boolean byCreativePlayer) {
+    public void onDestroyed(final DamageSource source) {
         if (!(this.level() instanceof ServerLevel serverLevel)) return;
         if (serverLevel.getGameRules().get(GameRules.ENTITY_DROPS)) {
-            if (!byCreativePlayer) {
-                this.spawnAtLocation(serverLevel, this.getCartItem());
-                this.spawnAtLocation(serverLevel, this.getBanner());
-            }
+            this.spawnAtLocation(serverLevel, this.getBanner());
             this.onDestroyedAndDoDrops(source);
         }
     }
 
     /**
-     * This method is called from {@link #onDestroyed(DamageSource, boolean)} if the
+     * This method is called from {@link #onDestroyed(DamageSource)} if the
      * GameRules allow entities to drop items.
      *
      */
@@ -600,30 +584,6 @@ public abstract class AbstractDrawnEntity extends Entity {
         return null;
     }
 
-    public void setDamageTaken(final float damageTaken) {
-        this.entityData.set(DAMAGE_TAKEN, damageTaken);
-    }
-
-    public float getDamageTaken() {
-        return this.entityData.get(DAMAGE_TAKEN);
-    }
-
-    public void setTimeSinceHit(final int timeSinceHit) {
-        this.entityData.set(TIME_SINCE_HIT, timeSinceHit);
-    }
-
-    public int getTimeSinceHit() {
-        return this.entityData.get(TIME_SINCE_HIT);
-    }
-
-    public void setForwardDirection(final int forwardDirection) {
-        this.entityData.set(FORWARD_DIRECTION, forwardDirection);
-    }
-
-    public int getForwardDirection() {
-        return this.entityData.get(FORWARD_DIRECTION);
-    }
-
     public void setBanner(final ItemStack banner) {
         this.entityData.set(BANNER, banner);
     }
@@ -670,10 +630,8 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(TIME_SINCE_HIT, 0);
-        builder.define(FORWARD_DIRECTION, 1);
-        builder.define(DAMAGE_TAKEN, 0.0F);
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
         builder.define(BANNER, ItemStack.EMPTY);
         builder.define(WOOD_TYPE, "oak");
         builder.define(LOCKED, false);
