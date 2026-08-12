@@ -2,6 +2,7 @@ package net.jmb19905.niftycarts.entity;
 
 import net.jmb19905.niftycarts.NiftyCarts;
 import net.jmb19905.niftycarts.NiftyCartsConfig;
+import net.jmb19905.niftycarts.container.WagonMenu;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -19,7 +20,6 @@ import net.minecraft.world.entity.animal.AgeableWaterCreature;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.WoolCarpetBlock;
@@ -350,7 +350,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity implements Leashab
             default -> null;
         };
         if (type == null) return null;
-        return new ChestMenu(type, i, inventory, this, getCurrentRowCount());
+        return new WagonMenu(type, i, inventory, this, getCurrentRowCount());
     }
 
     @Override

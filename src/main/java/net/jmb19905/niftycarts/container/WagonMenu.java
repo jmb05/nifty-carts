@@ -21,22 +21,15 @@ public class WagonMenu extends AbstractContainerMenu {
         container.startOpen(playerInventory.player);
         int slotSize = 18;
         this.addChestGrid(container, 8, slotSize);
+        int i = this.containerRows < 12 ? 0 : 27;
         int j = this.containerRows < 12 ? slotSize + this.containerRows * slotSize + 13 : slotSize + 9 * slotSize + 13;
-        this.addStandardInventorySlots(playerInventory, 8 + 27, j);
+        this.addStandardInventorySlots(playerInventory, 8 + i, j);
     }
 
     private void addChestGrid(Container container, int xOffset, int yOffset) {
-        if (this.containerRows < 12) {
-            for(int i = 0; i < this.containerRows; ++i) {
-                for(int j = 0; j < 9; ++j) {
-                    this.addSlot(new Slot(container, j + i * 9, xOffset + j + 27 * 18, yOffset + i * 18));
-                }
-            }
-        } else {
-            for(int i = 0; i < 9; ++i) {
-                for(int j = 0; j < this.containerRows; ++j) {
-                    this.addSlot(new Slot(container, j * 9 + i, (xOffset + j * 18), yOffset + i * 18));
-                }
+        for(int i = 0; i < 9; ++i) {
+            for(int j = 0; j < this.containerRows; ++j) {
+                this.addSlot(new Slot(container, j * 9 + i, xOffset + j * 18, yOffset + i * 18));
             }
         }
     }
