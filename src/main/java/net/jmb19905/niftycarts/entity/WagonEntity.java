@@ -23,6 +23,7 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.WoolCarpetBlock;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -32,12 +33,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class WagonEntity extends AbstractDrawnInventoryEntity {
+public class WagonEntity extends AbstractDrawnInventoryEntity implements Leashable {
 
     private static final EntityDataAccessor<@NotNull Integer> UNFURL = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<@NotNull Integer> ROOF_COLOR = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<@NotNull ItemStack> EQUIPPED_CARPET = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<@NotNull Integer> CHEST_COUNT = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
+
+    @Nullable
+    private Leashable.LeashData leashData;
 
     public WagonEntity(EntityType<? extends @NotNull Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn, 3 * 4 * 9);
@@ -117,8 +121,18 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
+    public boolean canHaveALeashAttachedTo(@NotNull Entity entity) {
+        if (entity instanceof Player) return false;
+        return Leashable.super.canHaveALeashAttachedTo(entity);
+    }
+
+    @Override
     public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec3, @NotNull InteractionHand interactionHand) {
         if (isLocked()) return InteractionResult.FAIL;
+        var leashResult = interactLeash(player, interactionHand);
+        if (leashResult != InteractionResult.PASS) {
+            return leashResult;
+        }
         ItemStack itemStack = player.getItemInHand(interactionHand);
         final InteractionResult bannerResult = this.useBanner(player, interactionHand);
         if (bannerResult.consumesAction()) return bannerResult;
@@ -135,6 +149,67 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
             return InteractionResult.SUCCESS_SERVER;
         }
         return super.interact(player, interactionHand);
+    }
+
+    private InteractionResult interactLeash(@NotNull Player player, @NotNull InteractionHand hand) {
+        if (!this.level().isClientSide() && player.isSecondaryUseActive()) {
+            if (this.canBeLeashed() && this.isAlive()) {
+                List<Leashable> list = Leashable.leashableInArea(this, (leashable) -> leashable.getLeashHolder() == player);
+                if (!list.isEmpty()) {
+                    boolean bl = false;
+
+                    for (Leashable leashable2 : list) {
+                        if (leashable2.canHaveALeashAttachedTo(this)) {
+                            leashable2.setLeashedTo(this, true);
+                            bl = true;
+                        }
+                    }
+
+                    if (bl) {
+                        this.level().gameEvent(GameEvent.ENTITY_ACTION, this.blockPosition(), GameEvent.Context.of(player));
+                        this.playSound(SoundEvents.LEAD_TIED);
+                        return InteractionResult.SUCCESS_SERVER.withoutItem();
+                    }
+                }
+            }
+        }
+
+        if (this.isAlive()) {
+            if (this.getLeashHolder() == player) {
+                if (!this.level().isClientSide()) {
+                    if (player.hasInfiniteMaterials()) {
+                        this.removeLeash();
+                    } else {
+                        this.dropLeash();
+                    }
+
+                    this.gameEvent(GameEvent.ENTITY_INTERACT, player);
+                    this.playSound(SoundEvents.LEAD_UNTIED);
+                }
+
+                return InteractionResult.SUCCESS.withoutItem();
+            }
+
+            ItemStack itemStack2 = player.getItemInHand(hand);
+            if (itemStack2.is(Items.LEAD) && !(this.getLeashHolder() instanceof Player)) {
+                if (this.level().isClientSide()) {
+                    return InteractionResult.CONSUME;
+                }
+
+                if (this.canHaveALeashAttachedTo(player)) {
+                    if (this.isLeashed()) {
+                        this.dropLeash();
+                    }
+
+                    this.setLeashedTo(player, true);
+                    this.playSound(SoundEvents.LEAD_TIED);
+                    itemStack2.shrink(1);
+                    return InteractionResult.SUCCESS_SERVER;
+                }
+            }
+        }
+
+        return InteractionResult.PASS;
     }
 
     private InteractionResult interactCarpet(ItemStack itemStack, Player player) {
@@ -288,6 +363,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
             var itemStack = this.entityData.get(EQUIPPED_CARPET);
             output.store("Carpet", ItemStack.CODEC, itemStack);
         }
+        writeLeashData(output, this.leashData);
     }
 
     @Override
@@ -297,6 +373,7 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
         this.entityData.set(ROOF_COLOR, input.getInt("RoofColor").orElse(-1));
         this.entityData.set(CHEST_COUNT, input.getInt("ChestCount").orElse(0));
         this.entityData.set(EQUIPPED_CARPET, input.read("Carpet", ItemStack.CODEC).orElse(ItemStack.EMPTY));
+        readLeashData(input);
     }
 
     @Override
@@ -307,5 +384,38 @@ public class WagonEntity extends AbstractDrawnInventoryEntity {
     @Override
     protected void readInventory(ValueInput input) {
         ContainerHelper.loadAllItems(input, this.getItemStacks());
+    }
+
+    @Override
+    public @org.jspecify.annotations.Nullable LeashData getLeashData() {
+        return this.leashData;
+    }
+
+    @Override
+    public void setLeashData(@org.jspecify.annotations.Nullable LeashData leashData) {
+        this.leashData = leashData;
+    }
+
+    @Override
+    public @NotNull Vec3 getLeashOffset() {
+        return new Vec3(0.0, this.getEyeHeight(), this.getBbWidth() * 0.4f);
+    }
+
+    @Override
+    public @NotNull Vec3 getRopeHoldPosition(float partialTicks) {
+        final float yaw = (float) Math.toRadians(this.getYRot());
+        final float nx = -Mth.sin(yaw);
+        final float nz = Mth.cos(yaw);
+        final double r = 0.2D;
+        Vec3 target = new Vec3(nx * r, 0, nz * r).normalize();
+        return this.getPosition(partialTicks).add(this.getBbWidth() * 0.8f * -target.x, this.getEyeHeight() * 0.35, this.getBbWidth() * 0.8f * -target.z);
+    }
+
+    @Override
+    public void remove(@NotNull RemovalReason removalReason) {
+        if (!this.level().isClientSide() && removalReason.shouldDestroy() && this.isLeashed()) {
+            this.dropLeash();
+        }
+        super.remove(removalReason);
     }
 }
